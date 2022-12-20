@@ -1,5 +1,5 @@
-name: tivn_chart
-description: A new Flutter project.
+name: "Biểu đồ SX"
+description: Dev by Thai Son - IT
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -61,7 +61,8 @@ dev_dependencies:
   intl: ^0.17.0 
   flutter_launcher_name: ^0.0.1
 flutter_launcher_name:
-  name: "Kết quả sản xuất"
+  name: "Biểu đồ SX"
+  # ----> flutter pub run flutter_launcher_name:main
   # icons_launcher: ^2.0.6
 # icons_launcher:
 #   image_path: 'D:\Programming\Flutter\ShowChart\tivn_chart\asset\icon_laucher.png'
