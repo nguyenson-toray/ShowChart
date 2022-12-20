@@ -51,14 +51,25 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   change_app_package_name: ^1.1.0 
+  # ---> flutter pub run change_app_package_name:main com.tivn.chart
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-  intl: ^0.17.0
-
+  intl: ^0.17.0 
+  flutter_launcher_name: ^0.0.1
+flutter_launcher_name:
+  name: "Kết quả sản xuất"
+  # icons_launcher: ^2.0.6
+# icons_launcher:
+#   image_path: 'D:\Programming\Flutter\ShowChart\tivn_chart\asset\icon_laucher.png'
+#   platforms:
+#     android:
+#       enable: true
+#     ios:
+#       enable: true
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -75,6 +86,7 @@ flutter:
     - asset/inspection.xlsx
     - asset/logo.png
     - asset/chart.png
+    - asset/icon_laucher.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

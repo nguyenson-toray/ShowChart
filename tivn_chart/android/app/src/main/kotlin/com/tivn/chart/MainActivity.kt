@@ -1,4 +1,4 @@
-package com.example.tivn_chart
+package com.tivn.chart
 
 import io.flutter.embedding.android.FlutterActivity
 

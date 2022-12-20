@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tivn_chart">
+    package="com.tivn.chart">
     <!-- Enable Leanback UI required for Android TV. If the app is designed to run on both mobile devices as well as Android TV, we need to set the required attribute value to false. -->
     <uses-feature android:name="android.software.leanback" android:required="false"/>
     <!-- Identify the app as not requiring a touchscreen which is needed for the app to be considered as an Android TV app. -->
@@ -16,7 +16,7 @@
     <uses-feature android:name="android.hardware.wifi"
  android:required="false"/>
    <application
-        android:label="tivn_chart"
+        android:label="Kết quả sản xuất"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
