@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tivn.chart">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Enable Leanback UI required for Android TV. If the app is designed to run on both mobile devices as well as Android TV, we need to set the required attribute value to false. -->
     <uses-feature android:name="android.software.leanback" android:required="false"/>
     <!-- Identify the app as not requiring a touchscreen which is needed for the app to be considered as an Android TV app. -->
