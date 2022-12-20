@@ -16,7 +16,7 @@
     <uses-feature android:name="android.hardware.wifi"
  android:required="false"/>
    <application
-        android:label="Kết quả sản xuất"
+        android:label="Biểu đồ SX"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
