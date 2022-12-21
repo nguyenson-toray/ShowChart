@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+// import 'package:sendkeyboardevent/sendkeyboardevent.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:tivn_chart/inspectionChartData.dart';
@@ -23,6 +25,8 @@ class _ChartState extends State<Chart> {
   ChartSeriesController? _chartSeriesController;
   final lines = [1, 2, 3, 4, 5, 6, 7, 8];
   var days = new List<int>.generate(30, (i) => i + 1);
+  bool isSetting = false;
+  final FocusNode focusNode = FocusNode();
   @override
   changeSetting() async {
     // TODO: implement initState
@@ -36,7 +40,7 @@ class _ChartState extends State<Chart> {
           updatedDataIndex: global.inspectionChartData.length - 1);
     });
 
-    print('------------refresh');
+    print('------------changeSetting');
   }
 
   @override
@@ -64,7 +68,6 @@ class _ChartState extends State<Chart> {
     }
   }
 
-  bool isSetting = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -79,7 +82,6 @@ class _ChartState extends State<Chart> {
             actions: [
               InkWell(
                 onTap: () {
-                  print('tapppppppppppppp');
                   setState(() {
                     if (isSetting) {
                       isSetting = false;
@@ -88,103 +90,117 @@ class _ChartState extends State<Chart> {
                       isSetting = true;
                     }
                   });
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => const Setting()),
-                  // );
                 },
-                child: Icon(
-                  isSetting ? Icons.save : Icons.settings,
+                child: RawKeyboardListener(
+                  focusNode: focusNode,
+                  onKey: (value) => handleKey(value),
+                  // handleKey(value),
+                  child: Icon(
+                    isSetting ? Icons.save : Icons.settings,
+                  ),
                 ),
               )
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: SfCartesianChart(
-                legend: Legend(
-                  position: LegendPosition.bottom,
-                  isVisible: true,
-                ), //ten mau
-                // Enable tooltip
-                // tooltipBehavior: TooltipBehavior(enable: true),
-                borderWidth: 2,
-                primaryXAxis: CategoryAxis(labelRotation: 0),
-                primaryYAxis: NumericAxis(
-                  minimum: 0, //maximum: 250,
-                  // interval: 10
-                ),
-                series: <ChartSeries<InspectionChartData, String>>[
-                  StackedColumnSeries<InspectionChartData, String>(
-                      onRendererCreated: (ChartSeriesController controller) {
-                        _chartSeriesController = controller;
-                      },
-                      color: Colors.blue,
-                      name: 'SL kiểm lần 1 đạt',
-                      dataSource: global.inspectionChartData,
-                      xValueMapper: (InspectionChartData data, _) =>
-                          DateFormat('dd-MM').format(
-                            data.getDate,
-                          ),
-                      yValueMapper: (InspectionChartData data, _) =>
-                          data.getQty1stOK,
-                      dataLabelSettings: DataLabelSettings(
-                          isVisible: true,
-                          // Positioning the data label
-                          labelAlignment: ChartDataLabelAlignment.top)),
+          body: buidChart()),
+    );
+  }
 
-                  StackedColumnSeries<InspectionChartData, String>(
-                      onRendererCreated: (ChartSeriesController controller) {
-                        _chartSeriesController = controller;
-                      },
-                      color: Colors.orange[300],
-                      dataSource: global.inspectionChartData,
-                      name: 'SL kiểm lần 1 lỗi',
-                      xValueMapper: (InspectionChartData data, _) =>
-                          DateFormat('dd-MM').format(
-                            data.getDate,
-                          ),
-                      yValueMapper: (InspectionChartData data, _) =>
-                          data.getQty1stNOK,
-                      dataLabelSettings: DataLabelSettings(
-                          isVisible: true,
-                          // Positioning the data label
-                          labelAlignment: ChartDataLabelAlignment.top)),
-                  StackedColumnSeries<InspectionChartData, String>(
-                      onRendererCreated: (ChartSeriesController controller) {
-                        _chartSeriesController = controller;
-                      },
-                      color: Colors.red,
-                      dataSource: global.inspectionChartData,
-                      name: 'SL kiểm sau khi sửa hàng ',
-                      xValueMapper: (InspectionChartData data, _) =>
-                          DateFormat('dd-MM').format(
-                            data.getDate,
-                          ),
-                      yValueMapper: (InspectionChartData data, _) =>
-                          data.getQtyAfterRepaire,
-                      dataLabelSettings: DataLabelSettings(
-                          isVisible: true,
-                          // Positioning the data label
-                          labelAlignment: ChartDataLabelAlignment.top)),
-                  // StackedColumnSeries<InspectionChartData, String>(
-                  //     dataSource: global.inspectionChartData,
-                  //     xValueMapper: (InspectionChartData data, _) =>
-                  //         DateFormat('dd-MM').format(
-                  //           data.getDate,
-                  //         ),
-                  //     yValueMapper: (InspectionChartData data, _) =>
-                  //         data.getRationDefect1st.toStringAsFixed(2)),
-                  // StackedColumnSeries<InspectionChartData, String>(
-                  //     dataSource: global.inspectionChartData,
-                  //     xValueMapper: (InspectionChartData data, _) =>
-                  //         DateFormat('dd-MM').format(
-                  //           data.getDate,
-                  //         ),
-                  //     yValueMapper: (InspectionChartData data, _) =>
-                  //         data.getRationDefectAfterRepaire.toStringAsFixed(2))
-                ]),
-          )),
+  handleKeyEvent1(FocusNode node, RawKeyEvent event) {
+    if (event.physicalKey == PhysicalKeyboardKey.select) {
+      print("000000000000");
+      event.physicalKey == PhysicalKeyboardKey.enter;
+      // ? KeyEventResult.handled
+      // : KeyEventResult.ignored;
+
+    }
+  }
+
+  buidChart() {
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: SfCartesianChart(
+          legend: Legend(
+            position: LegendPosition.bottom,
+            isVisible: true,
+          ), //ten mau
+          // Enable tooltip
+          // tooltipBehavior: TooltipBehavior(enable: true),
+          borderWidth: 2,
+          primaryXAxis: CategoryAxis(labelRotation: 0),
+          primaryYAxis: NumericAxis(
+            minimum: 0, //maximum: 250,
+            // interval: 10
+          ),
+          series: <ChartSeries<InspectionChartData, String>>[
+            StackedColumnSeries<InspectionChartData, String>(
+                onRendererCreated: (ChartSeriesController controller) {
+                  _chartSeriesController = controller;
+                },
+                color: Colors.blue,
+                name: 'SL kiểm lần 1 đạt',
+                dataSource: global.inspectionChartData,
+                xValueMapper: (InspectionChartData data, _) =>
+                    DateFormat('dd-MM').format(
+                      data.getDate,
+                    ),
+                yValueMapper: (InspectionChartData data, _) => data.getQty1stOK,
+                dataLabelSettings: DataLabelSettings(
+                    isVisible: true,
+                    // Positioning the data label
+                    labelAlignment: ChartDataLabelAlignment.top)),
+
+            StackedColumnSeries<InspectionChartData, String>(
+                onRendererCreated: (ChartSeriesController controller) {
+                  _chartSeriesController = controller;
+                },
+                color: Colors.orange[300],
+                dataSource: global.inspectionChartData,
+                name: 'SL kiểm lần 1 lỗi',
+                xValueMapper: (InspectionChartData data, _) =>
+                    DateFormat('dd-MM').format(
+                      data.getDate,
+                    ),
+                yValueMapper: (InspectionChartData data, _) =>
+                    data.getQty1stNOK,
+                dataLabelSettings: DataLabelSettings(
+                    isVisible: true,
+                    // Positioning the data label
+                    labelAlignment: ChartDataLabelAlignment.top)),
+            StackedColumnSeries<InspectionChartData, String>(
+                onRendererCreated: (ChartSeriesController controller) {
+                  _chartSeriesController = controller;
+                },
+                color: Colors.red,
+                dataSource: global.inspectionChartData,
+                name: 'SL kiểm sau khi sửa hàng ',
+                xValueMapper: (InspectionChartData data, _) =>
+                    DateFormat('dd-MM').format(
+                      data.getDate,
+                    ),
+                yValueMapper: (InspectionChartData data, _) =>
+                    data.getQtyAfterRepaire,
+                dataLabelSettings: DataLabelSettings(
+                    isVisible: true,
+                    // Positioning the data label
+                    labelAlignment: ChartDataLabelAlignment.top)),
+            // StackedColumnSeries<InspectionChartData, String>(
+            //     dataSource: global.inspectionChartData,
+            //     xValueMapper: (InspectionChartData data, _) =>
+            //         DateFormat('dd-MM').format(
+            //           data.getDate,
+            //         ),
+            //     yValueMapper: (InspectionChartData data, _) =>
+            //         data.getRationDefect1st.toStringAsFixed(2)),
+            // StackedColumnSeries<InspectionChartData, String>(
+            //     dataSource: global.inspectionChartData,
+            //     xValueMapper: (InspectionChartData data, _) =>
+            //         DateFormat('dd-MM').format(
+            //           data.getDate,
+            //         ),
+            //     yValueMapper: (InspectionChartData data, _) =>
+            //         data.getRationDefectAfterRepaire.toStringAsFixed(2))
+          ]),
     );
   }
 
@@ -247,5 +263,29 @@ class _ChartState extends State<Chart> {
         ),
       ],
     );
+  }
+
+  // KeyEventResult handleKeyEvent (FocusNode node, RawKeyEvent event) {
+  //   if (event.physicalKey == PhysicalKeyboardKey.select) {
+  //     return event.physicalKey == PhysicalKeyboardKey.enter
+  //         ? KeyEventResult.handled
+  //         : KeyEventResult.ignored;
+  //   } else {
+  //     return event.physicalKey == PhysicalKeyboardKey.enter
+  //         ? KeyEventResult.handled
+  //         : KeyEventResult.ignored;
+  //   }
+  // }
+
+  handleKey(RawKeyEvent key) {
+    print(
+        'handleKeySelectLine - key.runtimeType : ${key.runtimeType.toString()}');
+    print('handleKeySelectLine - keyLabel : ${key.logicalKey.keyLabel} ');
+    print('handleKeySelectLine - keyID :  ${key.logicalKey.keyId.toString()}');
+    if (key.logicalKey.keyLabel == 'Select') {
+      print(
+          ' keyLabel ==  Select  =>>>>> SendKeyboardEvent.sendKeyboardEvent(KeyCodes.ENTER);');
+      // SendKeyboardEvent.sendKeyboardEvent(KeyCodes.ENTER);
+    }
   }
 }
