@@ -94,7 +94,6 @@ class _ChartState extends State<Chart> {
                 child: RawKeyboardListener(
                   focusNode: focusNode,
                   onKey: (value) => handleKey(value),
-                  // handleKey(value),
                   child: Icon(
                     isSetting ? Icons.save : Icons.settings,
                   ),
@@ -106,102 +105,37 @@ class _ChartState extends State<Chart> {
     );
   }
 
-  handleKeyEvent1(FocusNode node, RawKeyEvent event) {
-    if (event.physicalKey == PhysicalKeyboardKey.select) {
-      print("000000000000");
-      event.physicalKey == PhysicalKeyboardKey.enter;
-      // ? KeyEventResult.handled
-      // : KeyEventResult.ignored;
-
-    }
-  }
-
   buidChart() {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: SfCartesianChart(
+        padding: const EdgeInsets.all(15.0),
+        child: SfCartesianChart(
           legend: Legend(
             position: LegendPosition.bottom,
             isVisible: true,
           ), //ten mau
-          // Enable tooltip
-          // tooltipBehavior: TooltipBehavior(enable: true),
-          borderWidth: 2,
-          primaryXAxis: CategoryAxis(labelRotation: 0),
+          axes: <ChartAxis>[
+            NumericAxis(
+                opposedPosition: true,
+                name: 'yAxis1',
+                majorGridLines: const MajorGridLines(width: 0),
+                labelFormat: '{value}%',
+                minimum: 0,
+                maximum: 100,
+                interval: 10)
+          ],
+          primaryXAxis:
+              CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
           primaryYAxis: NumericAxis(
-            minimum: 0, //maximum: 250,
-            // interval: 10
+            majorGridLines: const MajorGridLines(width: 0),
+            opposedPosition: false,
+            minimum: 0,
+            // maximum: 50,
+            interval: 10,
+            // labelFormat: '{value}Pcs',
           ),
-          series: <ChartSeries<InspectionChartData, String>>[
-            StackedColumnSeries<InspectionChartData, String>(
-                onRendererCreated: (ChartSeriesController controller) {
-                  _chartSeriesController = controller;
-                },
-                color: Colors.blue,
-                name: 'SL kiểm lần 1 đạt',
-                dataSource: global.inspectionChartData,
-                xValueMapper: (InspectionChartData data, _) =>
-                    DateFormat('dd-MM').format(
-                      data.getDate,
-                    ),
-                yValueMapper: (InspectionChartData data, _) => data.getQty1stOK,
-                dataLabelSettings: DataLabelSettings(
-                    isVisible: true,
-                    // Positioning the data label
-                    labelAlignment: ChartDataLabelAlignment.top)),
-
-            StackedColumnSeries<InspectionChartData, String>(
-                onRendererCreated: (ChartSeriesController controller) {
-                  _chartSeriesController = controller;
-                },
-                color: Colors.orange[300],
-                dataSource: global.inspectionChartData,
-                name: 'SL kiểm lần 1 lỗi',
-                xValueMapper: (InspectionChartData data, _) =>
-                    DateFormat('dd-MM').format(
-                      data.getDate,
-                    ),
-                yValueMapper: (InspectionChartData data, _) =>
-                    data.getQty1stNOK,
-                dataLabelSettings: DataLabelSettings(
-                    isVisible: true,
-                    // Positioning the data label
-                    labelAlignment: ChartDataLabelAlignment.top)),
-            StackedColumnSeries<InspectionChartData, String>(
-                onRendererCreated: (ChartSeriesController controller) {
-                  _chartSeriesController = controller;
-                },
-                color: Colors.red,
-                dataSource: global.inspectionChartData,
-                name: 'SL kiểm sau khi sửa hàng ',
-                xValueMapper: (InspectionChartData data, _) =>
-                    DateFormat('dd-MM').format(
-                      data.getDate,
-                    ),
-                yValueMapper: (InspectionChartData data, _) =>
-                    data.getQtyAfterRepaire,
-                dataLabelSettings: DataLabelSettings(
-                    isVisible: true,
-                    // Positioning the data label
-                    labelAlignment: ChartDataLabelAlignment.top)),
-            // StackedColumnSeries<InspectionChartData, String>(
-            //     dataSource: global.inspectionChartData,
-            //     xValueMapper: (InspectionChartData data, _) =>
-            //         DateFormat('dd-MM').format(
-            //           data.getDate,
-            //         ),
-            //     yValueMapper: (InspectionChartData data, _) =>
-            //         data.getRationDefect1st.toStringAsFixed(2)),
-            // StackedColumnSeries<InspectionChartData, String>(
-            //     dataSource: global.inspectionChartData,
-            //     xValueMapper: (InspectionChartData data, _) =>
-            //         DateFormat('dd-MM').format(
-            //           data.getDate,
-            //         ),
-            //     yValueMapper: (InspectionChartData data, _) =>
-            //         data.getRationDefectAfterRepaire.toStringAsFixed(2))
-          ]),
-    );
+          series: getMultipleAxisLineSeries(),
+          tooltipBehavior: TooltipBehavior(enable: true),
+        ));
   }
 
   buildSetting() {
@@ -265,18 +199,6 @@ class _ChartState extends State<Chart> {
     );
   }
 
-  // KeyEventResult handleKeyEvent (FocusNode node, RawKeyEvent event) {
-  //   if (event.physicalKey == PhysicalKeyboardKey.select) {
-  //     return event.physicalKey == PhysicalKeyboardKey.enter
-  //         ? KeyEventResult.handled
-  //         : KeyEventResult.ignored;
-  //   } else {
-  //     return event.physicalKey == PhysicalKeyboardKey.enter
-  //         ? KeyEventResult.handled
-  //         : KeyEventResult.ignored;
-  //   }
-  // }
-
   handleKey(RawKeyEvent key) {
     print(
         'handleKeySelectLine - key.runtimeType : ${key.runtimeType.toString()}');
@@ -287,5 +209,74 @@ class _ChartState extends State<Chart> {
           ' keyLabel ==  Select  =>>>>> SendKeyboardEvent.sendKeyboardEvent(KeyCodes.ENTER);');
       // SendKeyboardEvent.sendKeyboardEvent(KeyCodes.ENTER);
     }
+  }
+
+  List<ChartSeries<InspectionChartData, String>> getMultipleAxisLineSeries() {
+    return <ChartSeries<InspectionChartData, String>>[
+      StackedColumnSeries<InspectionChartData, String>(
+        dataSource: global.inspectionChartData!,
+        xValueMapper: (InspectionChartData data, _) =>
+            DateFormat('dd-MM').format(
+          data.getDate,
+        ),
+        yValueMapper: (InspectionChartData data, _) => data.getQty1stOK,
+        dataLabelSettings: DataLabelSettings(
+            isVisible: true, labelAlignment: ChartDataLabelAlignment.auto),
+        name: 'SL kiểm lần 1 đạt',
+        color: Colors.blue,
+      ),
+      StackedColumnSeries<InspectionChartData, String>(
+        dataSource: global.inspectionChartData!,
+        xValueMapper: (InspectionChartData data, _) =>
+            DateFormat('dd-MM').format(
+          data.getDate,
+        ),
+        yValueMapper: (InspectionChartData data, _) => data.getQty1stNOK,
+        dataLabelSettings: DataLabelSettings(
+            isVisible: true, labelAlignment: ChartDataLabelAlignment.auto),
+        name: 'SL kiểm lần 1 lỗi',
+        color: Colors.orange[300],
+      ),
+      StackedColumnSeries<InspectionChartData, String>(
+        dataSource: global.inspectionChartData!,
+        xValueMapper: (InspectionChartData data, _) =>
+            DateFormat('dd-MM').format(
+          data.getDate,
+        ),
+        yValueMapper: (InspectionChartData data, _) => data.getQtyAfterRepaire,
+        dataLabelSettings: DataLabelSettings(
+            isVisible: true, labelAlignment: ChartDataLabelAlignment.auto),
+        name: 'SL sửa sau kiểm hàng',
+        color: Colors.red,
+      ),
+      LineSeries<InspectionChartData, String>(
+          dataSource: global.inspectionChartData,
+          yAxisName: 'yAxis1',
+          xValueMapper: (InspectionChartData data, _) =>
+              DateFormat('dd-MM').format(
+                data.getDate,
+              ),
+          yValueMapper: (InspectionChartData data, _) =>
+              data.getRationDefect1st * 100,
+          // dataLabelSettings: DataLabelSettings(
+          //     isVisible: true, labelAlignment: ChartDataLabelAlignment.auto),
+          name: 'Tỉ lệ kiểm lần 1 lỗi',
+          color: Colors.pink,
+          width: 5),
+      LineSeries<InspectionChartData, String>(
+          dataSource: global.inspectionChartData,
+          yAxisName: 'yAxis1',
+          xValueMapper: (InspectionChartData data, _) =>
+              DateFormat('dd-MM').format(
+                data.getDate,
+              ),
+          yValueMapper: (InspectionChartData data, _) =>
+              data.getRationDefectAfterRepaire,
+          // dataLabelSettings: DataLabelSettings(
+          //     isVisible: true, labelAlignment: ChartDataLabelAlignment.top),
+          name: 'Tỉ lệ kiểm lỗi sau sửa',
+          color: Colors.green,
+          width: 7)
+    ];
   }
 }

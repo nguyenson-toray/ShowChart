@@ -28,7 +28,8 @@ class ChartFuntion {
               (t01_element.getX06 - t01_element.getX07) /
                   t01_element.getX06; // ti le loi l1
           dataOneDay.setRationDefectAfterRepaire =
-              ((t01_element.getX08 - t01_element.getX09) / t01_element.getX08);
+              (t01_element.getX08 - t01_element.getX09) / t01_element.getX08;
+
           result.add(dataOneDay);
         }
       } catch (e) {

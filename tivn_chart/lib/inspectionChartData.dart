@@ -1,12 +1,12 @@
 class InspectionChartData {
   DateTime? date;
-  int? qty1st;
-  int? qty1stOK;
-  int? qty1stNOK;
-  int? qtyAfterRepaire;
-  int? qtyOKAfterRepaire;
-  double? rationDefect1st;
-  double? rationDefectAfterRepaire;
+  num? qty1st;
+  num? qty1stOK;
+  num? qty1stNOK;
+  num? qtyAfterRepaire;
+  num? qtyOKAfterRepaire;
+  num? rationDefect1st;
+  num? rationDefectAfterRepaire;
   get getDate => this.date;
 
   set setDate(date) => this.date = date;
