@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tivn_chart/dataBase/MySQLite.dart';
 import 'package:tivn_chart/dataClass/InspectionSummaryDay.dart';
@@ -25,21 +26,14 @@ class MyFuntions {
     return true;
   }
 
-  static removeDuplicateListString(List<String> inputListString) {
-    // remove duplicate item in list String
-    var seen = Set<String>();
-    List<String> listUniqueString =
-        inputListString.where((item) => seen.add(item)).toList();
-
-    return listUniqueString;
-  }
-
-  static removeDuplicateListInt(List<int> inputListInt) {
-    // remove duplicate item in list int
-    var seen = Set<String>();
-    var seenint = Set<String>();
-    List<int> listUniqueInt =
-        inputListInt.where((item) => seen.add(item.toString())).toList();
-    return listUniqueInt;
+  static showToastNoConnection() {
+    Fluttertoast.showToast(
+        msg: "Không có kết nối tới máy chủ",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 }

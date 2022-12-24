@@ -27,7 +27,7 @@ class _ChartState extends State<Chart> {
   var days = new List<int>.generate(30, (i) => i + 1);
   bool isSetting = false;
   final FocusNode focusNode = FocusNode();
-  @override
+
   changeSetting() async {
     // TODO: implement initState
     global.sharedPreferences.setInt('currentLine', global.currentLine);
@@ -39,8 +39,6 @@ class _ChartState extends State<Chart> {
       _chartSeriesController?.updateDataSource(
           updatedDataIndex: global.inspectionChartData.length - 1);
     });
-
-    print('------------changeSetting');
   }
 
   @override
@@ -81,24 +79,26 @@ class _ChartState extends State<Chart> {
             ),
             actions: [
               InkWell(
-                onTap: () {
-                  setState(() {
-                    if (isSetting) {
-                      isSetting = false;
-                      changeSetting();
-                    } else {
-                      isSetting = true;
-                    }
-                  });
-                },
-                child: RawKeyboardListener(
-                  focusNode: focusNode,
-                  onKey: (value) => handleKey(value),
+                  onTap: () {
+                    setState(() {
+                      if (isSetting) {
+                        isSetting = false;
+                        changeSetting();
+                      } else {
+                        isSetting = true;
+                      }
+                    });
+                  },
                   child: Icon(
                     isSetting ? Icons.save : Icons.settings,
-                  ),
-                ),
-              )
+                    // RawKeyboardListener(
+                    //   focusNode: focusNode,
+                    //   onKey: (value) => handleKey(value),
+                    //   child: Icon(
+                    //     isSetting ? Icons.save : Icons.settings,
+                    //   ),
+                    // ),
+                  ))
             ],
           ),
           body: buidChart()),
@@ -199,17 +199,17 @@ class _ChartState extends State<Chart> {
     );
   }
 
-  handleKey(RawKeyEvent key) {
-    print(
-        'handleKeySelectLine - key.runtimeType : ${key.runtimeType.toString()}');
-    print('handleKeySelectLine - keyLabel : ${key.logicalKey.keyLabel} ');
-    print('handleKeySelectLine - keyID :  ${key.logicalKey.keyId.toString()}');
-    if (key.logicalKey.keyLabel == 'Select') {
-      print(
-          ' keyLabel ==  Select  =>>>>> SendKeyboardEvent.sendKeyboardEvent(KeyCodes.ENTER);');
-      // SendKeyboardEvent.sendKeyboardEvent(KeyCodes.ENTER);
-    }
-  }
+  // handleKey(RawKeyEvent key) {
+  //   print(
+  //       'handleKeySelectLine - key.runtimeType : ${key.runtimeType.toString()}');
+  //   print('handleKeySelectLine - keyLabel : ${key.logicalKey.keyLabel} ');
+  //   print('handleKeySelectLine - keyID :  ${key.logicalKey.keyId.toString()}');
+  //   if (key.logicalKey.keyLabel == 'Select') {
+  //     print(
+  //         ' keyLabel ==  Select  =>>>>> SendKeyboardEvent.sendKeyboardEvent(KeyCodes.ENTER);');
+  //     // SendKeyboardEvent.sendKeyboardEvent(KeyCodes.ENTER);
+  //   }
+  // }
 
   List<ChartSeries<InspectionChartData, String>> getMultipleAxisLineSeries() {
     return <ChartSeries<InspectionChartData, String>>[
@@ -250,6 +250,7 @@ class _ChartState extends State<Chart> {
         color: Colors.red,
       ),
       LineSeries<InspectionChartData, String>(
+          markerSettings: MarkerSettings(isVisible: true),
           dataSource: global.inspectionChartData,
           yAxisName: 'yAxis1',
           xValueMapper: (InspectionChartData data, _) =>
@@ -262,8 +263,9 @@ class _ChartState extends State<Chart> {
           //     isVisible: true, labelAlignment: ChartDataLabelAlignment.auto),
           name: 'Tỉ lệ kiểm lần 1 lỗi',
           color: Colors.pink,
-          width: 5),
+          width: 3),
       LineSeries<InspectionChartData, String>(
+          markerSettings: MarkerSettings(isVisible: true),
           dataSource: global.inspectionChartData,
           yAxisName: 'yAxis1',
           xValueMapper: (InspectionChartData data, _) =>
@@ -276,7 +278,7 @@ class _ChartState extends State<Chart> {
           //     isVisible: true, labelAlignment: ChartDataLabelAlignment.top),
           name: 'Tỉ lệ kiểm lỗi sau sửa',
           color: Colors.green,
-          width: 7)
+          width: 4)
     ];
   }
 }

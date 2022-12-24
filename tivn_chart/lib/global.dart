@@ -20,7 +20,7 @@ class global {
   static late List<InspectionChartData> inspectionChartData;
   static ChartFuntion chartFuntion = ChartFuntion();
   static int pageIndex = 0;
-  static String dbNameSQL = 'test';
+  static String dbNameSQL = 'Production';
   static String dbNameSQLite = 'toray.db';
   static late String dbPath;
   static var mySqlServer = MySqlServer();
@@ -30,7 +30,7 @@ class global {
   static var inspectionSummaryDay = InspectionSummaryDay();
   static List<InspectionSummaryDay> inspectionSummaryDays = [];
 
-  static int secondsAutoGetData = 60;
+  static int secondsAutoGetData = 30;
   static var planToday = 9999;
   static var actualToday = 0;
   static var sumDefect = 0;

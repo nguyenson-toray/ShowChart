@@ -16,7 +16,7 @@ class ChartFuntion {
         global.beginDate =
             global.today.subtract(Duration(days: global.rangeDays + 1));
         if (day.isAfter(global.beginDate)) {
-          InspectionChartData dataOneDay = new InspectionChartData();
+          InspectionChartData dataOneDay = new InspectionChartData(date: day);
           dataOneDay.setDate = day;
           dataOneDay.setQty1st = t01_element.getX06; // dat lan 1
           dataOneDay.setQty1stOK = t01_element.getX07; // dat lan 1
@@ -39,30 +39,39 @@ class ChartFuntion {
     print(
         'createChartInspectionData of LINE ${global.currentLine.toString()} - from ${DateFormat(global.dateFormat).format(
       global.beginDate,
-    )} to today !!! ==> ${result.length.toString()}');
+    )} to today !!! ==> ${result.length.toString()} records');
     List<InspectionChartData> input = result;
     List<InspectionChartData> output = [];
-    output.add(input[0]);
-    int j = 0;
-    for (var i = 1; i < input.length; i++) {
-      if (input[i].getDate == output[j].getDate) {
-        output[j].setDate = input[i].getDate;
-        output[j].setQty1st = input[i].getQty1st + output[j].getQty1st;
-        output[j].setQty1stOK = input[i].getQty1stOK + output[j].getQty1stOK;
-        output[j].setQty1stNOK = input[i].getQty1stNOK + output[j].getQty1stNOK;
-        output[j].setQtyAfterRepaire =
-            input[i].getQtyAfterRepaire + output[j].getQtyAfterRepaire;
-        output[j].setQtyOKAfterRepaire =
-            input[i].getQtyOKAfterRepaire + output[j].getQtyOKAfterRepaire;
-        output[j].setRationDefect1st =
-            output[j].getQty1stNOK / output[j].getQty1st;
-        output[j].setRationDefectAfterRepaire =
-            output[j].getQtyOKAfterRepaire / output[j].getQtyAfterRepaire;
-      } else {
-        output.add(input[i]);
-        j++;
-      }
+    List<DateTime> tempDays = [];
+    List<DateTime> days = [];
+    InspectionChartData dataDay = InspectionChartData(date: input[0].getDate);
+
+    for (var k = 0; k < input.length; k++) {
+      tempDays.add(input[k].getDate);
     }
+    days = tempDays.toSet().toList(); // remove duplicate
+
+    print('remove duplicate days =>:  ${days.length.toString()}');
+
+    for (var i = 0; i < days.length; i++) {
+      dataDay = InspectionChartData(date: days[i]);
+      for (var j = 0; j < input.length; j++) {
+        if (days[i] == input[j].getDate) {
+          dataDay.setQty1st = input[j].getQty1st + dataDay.getQty1st;
+          dataDay.setQty1stOK = input[j].getQty1stOK + dataDay.getQty1stOK;
+          dataDay.setQty1stNOK = input[j].getQty1stNOK + dataDay.getQty1stNOK;
+          dataDay.setQtyAfterRepaire =
+              input[j].getQtyAfterRepaire + dataDay.getQtyAfterRepaire;
+          dataDay.setQtyOKAfterRepaire =
+              input[j].getQtyOKAfterRepaire + dataDay.getQtyOKAfterRepaire;
+          dataDay.setRationDefect1st = dataDay.getQty1stNOK / dataDay.getQty1st;
+          dataDay.setRationDefectAfterRepaire =
+              dataDay.getQtyOKAfterRepaire / dataDay.getQtyAfterRepaire;
+        }
+      }
+      output.add(dataDay);
+    }
+
     return output;
   }
 }

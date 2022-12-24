@@ -1,5 +1,8 @@
 import 'package:connect_to_sql_server_directly/connect_to_sql_server_directly.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
+import 'package:tivn_chart/dataFuntion/myFuntions.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:intl/intl.dart';
 
@@ -22,8 +25,10 @@ class MySqlServer {
         pass,
         instance: instanceSql,
       );
+      if (!isConnected) MyFuntions.showToastNoConnection();
     } catch (e) {
       print(e.toString());
+      MyFuntions.showToastNoConnection();
     }
     return isConnected;
   }

@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tivn_chart/global.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
@@ -82,14 +83,17 @@ class _Start extends State<Start> {
           .selectAllTable01InspectionData()
           .then((value) => setState(() {
                 global.t01s = value;
-                if (value.length > 0)
+                if (value.length > 0) {
+                  isLoading = false;
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => const Chart()),
                   );
+                }
               }));
     } else {
       print("SQL Server not available -Load offline data");
+      MyFuntions.showToastNoConnection();
     }
   }
 }

@@ -1,12 +1,14 @@
+import 'package:intl/intl.dart';
+
 class InspectionChartData {
-  DateTime? date;
-  num? qty1st;
-  num? qty1stOK;
-  num? qty1stNOK;
-  num? qtyAfterRepaire;
-  num? qtyOKAfterRepaire;
-  num? rationDefect1st;
-  num? rationDefectAfterRepaire;
+  DateTime date;
+  num qty1st;
+  num qty1stOK;
+  num qty1stNOK;
+  num qtyAfterRepaire;
+  num qtyOKAfterRepaire;
+  num rationDefect1st;
+  num rationDefectAfterRepaire;
   get getDate => this.date;
 
   set setDate(date) => this.date = date;
@@ -42,14 +44,15 @@ class InspectionChartData {
 
   set setRationDefectAfterRepaire(rationDefectAfterRepaire) =>
       this.rationDefectAfterRepaire = rationDefectAfterRepaire;
+
   InspectionChartData({
-    this.date,
-    this.qty1st,
-    this.qty1stOK,
-    this.qty1stNOK,
-    this.qtyAfterRepaire,
-    this.qtyOKAfterRepaire,
-    this.rationDefect1st,
-    this.rationDefectAfterRepaire,
+    required this.date,
+    this.qty1st = 0,
+    this.qty1stOK = 0,
+    this.qty1stNOK = 0,
+    this.qtyAfterRepaire = 0,
+    this.qtyOKAfterRepaire = 0,
+    this.rationDefect1st = 0,
+    this.rationDefectAfterRepaire = 0,
   });
 }
