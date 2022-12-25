@@ -1,24 +1,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tivn.chart">
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- Enable Leanback UI required for Android TV. If the app is designed to run on both mobile devices as well as Android TV, we need to set the required attribute value to false. -->
-    <uses-feature android:name="android.software.leanback" android:required="false"/>
-    <!-- Identify the app as not requiring a touchscreen which is needed for the app to be considered as an Android TV app. -->
-    <uses-feature android:name="android.hardware.touchscreen"  android:required="false" />
-    <uses-feature android:name="android.hardware.touchscreen"    android:required="false"/>
+      <uses-feature android:name="android.hardware.touchscreen"
+             android:required="false" />
     <uses-feature android:name="android.hardware.faketouch"    android:required="false"/>    
     <uses-feature android:name="android.hardware.telephony"    android:required="false"/>
     <uses-feature android:name="android.hardware.camera"    android:required="false"/>
     <uses-feature android:name="android.hardware.nfc"    android:required="false"/>
     <uses-feature android:name="android.hardware.location.gps"    android:required="false"/>
     <uses-feature android:name="android.hardware.microphone"    android:required="false"/>
-    <uses-feature android:name="android.hardware.sensor"    android:required="false"/>
-    <!-- <! — Some TV devices have an ethernet connection only → -->
-    <uses-feature android:name="android.hardware.wifi"
- android:required="false"/>
+    <uses-feature android:name="android.hardware.sensor"    android:required="false"/> 
+    <uses-feature android:name="android.hardware.wifi"  android:required="false"/>
+    <uses-feature android:name="android.software.leanback"   android:required="false" />
    <application
         android:label="Biểu đồ SX"
-        android:name="${applicationName}"
+        android:name="${applicationName}" 
+        android:banner="@drawable/banner"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -36,11 +33,10 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
-            <intent-filter>
+            <intent-filter> 
                 <action android:name="android.intent.action.MAIN"/>
-                <!-- Identify the main TV activity with the category LEANBACK_LAUNCHER filter in the manifest (android/app/src/main/AndroidManifest.xml). This enables the app for Android TV and lets the Google identify it as a TV application. -->
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER" android:required="false" />   <!-- TV -->
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category  android:name="android.intent.category.LEANBACK_LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER"/> 
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

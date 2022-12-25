@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:intl/intl.dart';
@@ -42,13 +43,18 @@ class _MyApp extends State<MyApp> {
   Widget build(BuildContext context) {
     // SystemChrome.setPreferredOrientations(
     //     [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
-    return MaterialApp(
-      title: 'TIVN-QN',
-      // onGenerateRoute: initialSlideRoutes,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return Shortcuts(
+      shortcuts: <LogicalKeySet, Intent>{
+        LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent(),
+      },
+      child: MaterialApp(
+        title: 'TIVN-QN',
+        // onGenerateRoute: initialSlideRoutes,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: Start(), //Display splash screen when Start app
       ),
-      home: Start(), //Display splash screen when Start app
     );
   }
 }
