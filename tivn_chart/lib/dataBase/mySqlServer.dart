@@ -10,7 +10,7 @@ class MySqlServer {
   bool isLoading = false;
   var connection = ConnectToSqlServerDirectly();
   final String ip = '192.168.1.11';
-  final String db = 'test';
+  final String db = 'Production';
   final user = 'production';
   final pass = 'Toray@123';
   final String instanceSql = 'MSSQLSERVER';
@@ -75,8 +75,8 @@ class MySqlServer {
                     {
                       rowData = T011stInspectionData.fromMap(element),
                       day = DateTime.parse(rowData.getX02.toString()),
-                      if (day.isAfter(beginDate) &&
-                          rowData.getX01 == global.currentLine)
+                      if (day.isAfter(beginDate))
+                        // &&  rowData.getX01 == global.currentLine)
                         {
                           print(
                               'Get data of LINE ${global.currentLine.toString()} - from ${DateFormat(global.dateFormat).format(

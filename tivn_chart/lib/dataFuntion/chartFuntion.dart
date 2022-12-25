@@ -15,7 +15,8 @@ class ChartFuntion {
       try {
         global.beginDate =
             global.today.subtract(Duration(days: global.rangeDays + 1));
-        if (day.isAfter(global.beginDate)) {
+        if (day.isAfter(global.beginDate) &&
+            t01_element.getX01 == global.currentLine) {
           InspectionChartData dataOneDay = new InspectionChartData(date: day);
           dataOneDay.setDate = day;
           dataOneDay.setQty1st = t01_element.getX06; // dat lan 1

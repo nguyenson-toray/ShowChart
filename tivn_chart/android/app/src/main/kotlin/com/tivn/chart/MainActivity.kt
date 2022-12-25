@@ -6,11 +6,11 @@ import android.view.KeyEvent // Son add
 class MainActivity: FlutterActivity() {
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean { 
         Log.d("KeyEvent","******************************KeyEvent = ${event?.keyCode}")
-        if (event?.keyCode  == KeyEvent.KEYCODE_BUTTON_SELECT || event?.keyCode  == KeyEvent. KEYCODE_DPAD_CENTER)       
-            return super.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
-        else 
-            return  super.dispatchKeyEvent(event)
+        // if (event?.keyCode  == KeyEvent.KEYCODE_BUTTON_SELECT || event?.keyCode  == KeyEvent. KEYCODE_DPAD_CENTER)       
+        //     return super.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
+        // else 
+            return  super.dispatchKeyEvent(event)  
         }
-   
+    
 }
  

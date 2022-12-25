@@ -37,7 +37,8 @@ class _ChartState extends State<Chart> {
       global.inspectionChartData = global.chartFuntion
           .createChartInspectionData(global.t01s, global.currentLine);
       _chartSeriesController?.updateDataSource(
-          updatedDataIndex: global.inspectionChartData.length - 1);
+          updatedDataIndexes: List<int>.generate(
+              global.inspectionChartData.length, (i) => i + 1));
     });
   }
 
@@ -61,7 +62,8 @@ class _ChartState extends State<Chart> {
         global.inspectionChartData = global.chartFuntion
             .createChartInspectionData(listDataT01, global.currentLine);
         _chartSeriesController?.updateDataSource(
-            updatedDataIndex: global.inspectionChartData.length - 1);
+            updatedDataIndexes: List<int>.generate(
+                global.inspectionChartData.length, (i) => i + 1));
       });
     }
   }
@@ -91,13 +93,6 @@ class _ChartState extends State<Chart> {
                   },
                   child: Icon(
                     isSetting ? Icons.save : Icons.settings,
-                    // RawKeyboardListener(
-                    //   focusNode: focusNode,
-                    //   onKey: (value) => handleKey(value),
-                    //   child: Icon(
-                    //     isSetting ? Icons.save : Icons.settings,
-                    //   ),
-                    // ),
                   ))
             ],
           ),
@@ -151,7 +146,6 @@ class _ChartState extends State<Chart> {
           width: 50,
         ),
         DropdownButton<String>(
-          // icon: Icon(Icons.arrow_circle_down),
           value: global.currentLine.toString(),
           items: lines.map<DropdownMenuItem<String>>((int value) {
             return DropdownMenuItem<String>(
@@ -165,6 +159,7 @@ class _ChartState extends State<Chart> {
           onChanged: (String? newValue) {
             setState(() {
               global.currentLine = int.parse(newValue!);
+              changeSetting();
             });
           },
         ),
@@ -175,7 +170,6 @@ class _ChartState extends State<Chart> {
           children: [
             Text('Khoảng thời gian hiển thị dữ liệu : '),
             DropdownButton<String>(
-              // icon: Icon(Icons.arrow_circle_down),
               value: global.rangeDays.toString(),
               items: days.map<DropdownMenuItem<String>>((int value) {
                 return DropdownMenuItem<String>(
@@ -189,6 +183,7 @@ class _ChartState extends State<Chart> {
               onChanged: (String? newValue) {
                 setState(() {
                   global.rangeDays = int.parse(newValue!);
+                  changeSetting();
                 });
               },
             ),
