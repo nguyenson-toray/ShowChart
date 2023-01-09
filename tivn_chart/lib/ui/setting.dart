@@ -10,7 +10,7 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-  final lines = [1, 2, 3, 4, 5, 6, 7, 8];
+  final lines = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   var days = new List<int>.generate(30, (i) => i + 1);
 
   DateTime selectedDate = DateTime.now();

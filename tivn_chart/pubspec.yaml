@@ -63,9 +63,9 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
   intl: ^0.17.0 
-#   flutter_launcher_name: ^0.0.1
-# flutter_launcher_name:
-#   name: "Biểu đồ SX"
+  flutter_launcher_name: ^0.0.1
+flutter_launcher_name:
+  name: "TIVN-Quang Ngai"
   # ----> flutter pub run flutter_launcher_name:main
   icons_launcher: ^2.0.6
 icons_launcher:

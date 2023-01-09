@@ -12,9 +12,9 @@
             "args": [
                 "-d",
                 "emulator-5554",
+                "chrome",
                 "192.168.1.143:5555", // TV
                 "SM T225",
-                "chrome",
                 // "--no-sound-null-safety"
             ]
         },

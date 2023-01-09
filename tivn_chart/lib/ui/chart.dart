@@ -23,7 +23,7 @@ class Chart extends StatefulWidget {
 
 class _ChartState extends State<Chart> {
   ChartSeriesController? _chartSeriesController;
-  final lines = [1, 2, 3, 4, 5, 6, 7, 8];
+  final lines = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   var days = new List<int>.generate(30, (i) => i + 1);
   bool isSetting = false;
   final FocusNode focusNode = FocusNode();
@@ -74,11 +74,18 @@ class _ChartState extends State<Chart> {
       child: Scaffold(
           appBar: AppBar(
             title: Center(
-              child: isSetting
-                  ? buildSetting()
-                  : Text(
-                      'Sản lượng sản xuất & tỉ lệ lỗi - LINE ${global.currentLine.toString()}'),
-            ),
+                child: isSetting
+                    ? buildSetting()
+                    : CircleAvatar(
+                        maxRadius: 25,
+                        child: Text(
+                          global.currentLine.toString(),
+                          style: TextStyle(
+                              fontSize: 45, fontWeight: FontWeight.bold),
+                        ))
+                // : Text(
+                //     'Sản lượng sản xuất & tỉ lệ lỗi - LINE ${global.currentLine.toString()}'),
+                ),
             actions: [
               InkWell(
                   onTap: () {
@@ -102,9 +109,10 @@ class _ChartState extends State<Chart> {
 
   buidChart() {
     return Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(10.0),
         child: SfCartesianChart(
           legend: Legend(
+            textStyle: TextStyle(fontSize: 16),
             position: LegendPosition.bottom,
             isVisible: true,
           ), //ten mau
@@ -116,7 +124,7 @@ class _ChartState extends State<Chart> {
                 labelFormat: '{value}%',
                 minimum: 0,
                 maximum: 100,
-                interval: 10)
+                interval: 20)
           ],
           primaryXAxis:
               CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
@@ -125,7 +133,7 @@ class _ChartState extends State<Chart> {
             opposedPosition: false,
             minimum: 0,
             // maximum: 50,
-            interval: 10,
+            interval: 20,
             // labelFormat: '{value}Pcs',
           ),
           series: getMultipleAxisLineSeries(),
@@ -140,10 +148,7 @@ class _ChartState extends State<Chart> {
       children: [
         const Text(
           "Line : ",
-          style: TextStyle(fontSize: 14),
-        ),
-        SizedBox(
-          width: 50,
+          // style: TextStyle(fontSize: 14),
         ),
         DropdownButton<String>(
           value: global.currentLine.toString(),
@@ -152,7 +157,7 @@ class _ChartState extends State<Chart> {
               value: value.toString(),
               child: Text(
                 value.toString(),
-                style: TextStyle(fontSize: 14),
+                // style: TextStyle(fontSize: 18),
               ),
             );
           }).toList(),
@@ -168,7 +173,7 @@ class _ChartState extends State<Chart> {
         ),
         Row(
           children: [
-            Text('Khoảng thời gian hiển thị dữ liệu : '),
+            Text('Thời gian hiển thị dữ liệu : '),
             DropdownButton<String>(
               value: global.rangeDays.toString(),
               items: days.map<DropdownMenuItem<String>>((int value) {
@@ -256,9 +261,9 @@ class _ChartState extends State<Chart> {
               data.getRationDefect1st * 100,
           // dataLabelSettings: DataLabelSettings(
           //     isVisible: true, labelAlignment: ChartDataLabelAlignment.auto),
-          name: 'Tỉ lệ kiểm lần 1 lỗi',
+          name: 'TL kiểm lần 1 lỗi',
           color: Colors.pink,
-          width: 3),
+          width: 4),
       LineSeries<InspectionChartData, String>(
           markerSettings: MarkerSettings(isVisible: true),
           dataSource: global.inspectionChartData,
@@ -271,7 +276,7 @@ class _ChartState extends State<Chart> {
               data.getRationDefectAfterRepaire,
           // dataLabelSettings: DataLabelSettings(
           //     isVisible: true, labelAlignment: ChartDataLabelAlignment.top),
-          name: 'Tỉ lệ kiểm lỗi sau sửa',
+          name: 'TL kiểm lỗi sau sửa',
           color: Colors.green,
           width: 4)
     ];
