@@ -3,6 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:tivn_chart/global.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
@@ -74,6 +75,8 @@ class _Start extends State<Start> {
   }
 
   Future<void> initData() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    global.version = packageInfo.version;
     global.todayString = DateFormat(global.dateFormat).format(
       global.today,
     );

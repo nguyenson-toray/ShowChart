@@ -36,6 +36,7 @@ class _MyApp extends State<MyApp> {
   @override
   initState() {
     //do some thing
+    WidgetsFlutterBinding.ensureInitialized();
     super.initState();
   }
 

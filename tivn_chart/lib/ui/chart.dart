@@ -12,7 +12,6 @@ import 'package:tivn_chart/inspectionChartData.dart';
 import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:intl/intl.dart';
-import 'package:tivn_chart/ui/Setting.dart';
 
 class Chart extends StatefulWidget {
   const Chart({super.key});
@@ -27,7 +26,6 @@ class _ChartState extends State<Chart> {
   var days = new List<int>.generate(30, (i) => i + 1);
   bool isSetting = false;
   final FocusNode focusNode = FocusNode();
-
   changeSetting() async {
     // TODO: implement initState
     global.sharedPreferences.setInt('currentLine', global.currentLine);
@@ -50,6 +48,7 @@ class _ChartState extends State<Chart> {
     Timer.periodic(new Duration(seconds: global.secondsAutoGetData), (timer) {
       intervalGetData();
     });
+
     super.initState();
   }
 
@@ -72,73 +71,94 @@ class _ChartState extends State<Chart> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          appBar: AppBar(
-            title: Center(
-                child: isSetting
-                    ? buildSetting()
-                    : CircleAvatar(
-                        maxRadius: 25,
-                        child: Text(
-                          global.currentLine.toString(),
-                          style: TextStyle(
-                              fontSize: 45, fontWeight: FontWeight.bold),
-                        ))
-                // : Text(
-                //     'Sản lượng sản xuất & tỉ lệ lỗi - LINE ${global.currentLine.toString()}'),
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          // elevation: 5,
+          title: Center(
+              child: isSetting
+                  ? buildSetting()
+                  : CircleAvatar(
+                      backgroundColor: Colors.white,
+                      maxRadius: 26,
+                      child: Text(
+                        global.currentLine.toString(),
+                        style: TextStyle(
+                            fontSize: 50, fontWeight: FontWeight.bold),
+                      ))
+              // : Text(
+              //     'Sản lượng sản xuất & tỉ lệ lỗi - LINE ${global.currentLine.toString()}'),
+              ),
+          actions: [
+            InkWell(
+                onTap: () {
+                  setState(() {
+                    if (isSetting) {
+                      isSetting = false;
+                      changeSetting();
+                    } else {
+                      isSetting = true;
+                    }
+                  });
+                },
+                child: Icon(
+                  isSetting ? Icons.save : Icons.settings,
+                ))
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: buidChart(),
+              ),
+              Container(
+                child: Text(
+                  '''Developed by Nguyen Thai Son , Version : ${global.version}''',
+                  style: TextStyle(fontSize: 5),
                 ),
-            actions: [
-              InkWell(
-                  onTap: () {
-                    setState(() {
-                      if (isSetting) {
-                        isSetting = false;
-                        changeSetting();
-                      } else {
-                        isSetting = true;
-                      }
-                    });
-                  },
-                  child: Icon(
-                    isSetting ? Icons.save : Icons.settings,
-                  ))
+              ),
             ],
           ),
-          body: buidChart()),
+        ),
+      ),
     );
   }
 
   buidChart() {
-    return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: SfCartesianChart(
-          legend: Legend(
-            textStyle: TextStyle(fontSize: 16),
-            position: LegendPosition.bottom,
-            isVisible: true,
-          ), //ten mau
-          axes: <ChartAxis>[
-            NumericAxis(
-                opposedPosition: true,
-                name: 'yAxis1',
-                majorGridLines: const MajorGridLines(width: 0),
-                labelFormat: '{value}%',
-                minimum: 0,
-                maximum: 100,
-                interval: 20)
-          ],
-          primaryXAxis:
-              CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
-          primaryYAxis: NumericAxis(
+    return SfCartesianChart(
+      backgroundColor: Colors.white,
+      legend: Legend(
+        textStyle: TextStyle(
+            fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+        position: LegendPosition.bottom,
+        isVisible: true,
+      ), //ten mau
+      axes: <ChartAxis>[
+        NumericAxis(
+            opposedPosition: true,
+            name: 'yAxis1',
             majorGridLines: const MajorGridLines(width: 0),
-            opposedPosition: false,
+            labelFormat: '{value}%',
             minimum: 0,
-            // maximum: 50,
-            interval: 20,
-            // labelFormat: '{value}Pcs',
-          ),
-          series: getMultipleAxisLineSeries(),
-          tooltipBehavior: TooltipBehavior(enable: true),
-        ));
+            maximum: 100,
+            interval: 10)
+      ],
+      primaryXAxis:
+          CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
+      primaryYAxis: NumericAxis(
+        majorGridLines: const MajorGridLines(width: 0),
+        opposedPosition: false,
+        minimum: 0,
+        // maximum: 50,
+        interval: 20,
+        // labelFormat: '{value}Pcs',
+      ),
+      series: getMultipleAxisLineSeries(),
+      tooltipBehavior: TooltipBehavior(enable: true),
+    );
   }
 
   buildSetting() {
@@ -199,18 +219,6 @@ class _ChartState extends State<Chart> {
     );
   }
 
-  // handleKey(RawKeyEvent key) {
-  //   print(
-  //       'handleKeySelectLine - key.runtimeType : ${key.runtimeType.toString()}');
-  //   print('handleKeySelectLine - keyLabel : ${key.logicalKey.keyLabel} ');
-  //   print('handleKeySelectLine - keyID :  ${key.logicalKey.keyId.toString()}');
-  //   if (key.logicalKey.keyLabel == 'Select') {
-  //     print(
-  //         ' keyLabel ==  Select  =>>>>> SendKeyboardEvent.sendKeyboardEvent(KeyCodes.ENTER);');
-  //     // SendKeyboardEvent.sendKeyboardEvent(KeyCodes.ENTER);
-  //   }
-  // }
-
   List<ChartSeries<InspectionChartData, String>> getMultipleAxisLineSeries() {
     return <ChartSeries<InspectionChartData, String>>[
       StackedColumnSeries<InspectionChartData, String>(
@@ -221,7 +229,9 @@ class _ChartState extends State<Chart> {
         ),
         yValueMapper: (InspectionChartData data, _) => data.getQty1stOK,
         dataLabelSettings: DataLabelSettings(
-            isVisible: true, labelAlignment: ChartDataLabelAlignment.auto),
+            textStyle: TextStyle(fontSize: 15),
+            isVisible: true,
+            labelAlignment: ChartDataLabelAlignment.auto),
         name: 'SL kiểm lần 1 đạt',
         color: Colors.blue,
       ),
@@ -233,7 +243,9 @@ class _ChartState extends State<Chart> {
         ),
         yValueMapper: (InspectionChartData data, _) => data.getQty1stNOK,
         dataLabelSettings: DataLabelSettings(
-            isVisible: true, labelAlignment: ChartDataLabelAlignment.auto),
+            textStyle: TextStyle(fontSize: 15),
+            isVisible: true,
+            labelAlignment: ChartDataLabelAlignment.auto),
         name: 'SL kiểm lần 1 lỗi',
         color: Colors.orange[300],
       ),
@@ -245,7 +257,9 @@ class _ChartState extends State<Chart> {
         ),
         yValueMapper: (InspectionChartData data, _) => data.getQtyAfterRepaire,
         dataLabelSettings: DataLabelSettings(
-            isVisible: true, labelAlignment: ChartDataLabelAlignment.auto),
+            textStyle: TextStyle(fontSize: 15),
+            isVisible: true,
+            labelAlignment: ChartDataLabelAlignment.auto),
         name: 'SL sửa sau kiểm hàng',
         color: Colors.red,
       ),

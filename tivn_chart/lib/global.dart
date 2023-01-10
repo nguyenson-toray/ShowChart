@@ -12,6 +12,7 @@ import 'package:tivn_chart/dataFuntion/chartFuntion.dart';
 import 'package:tivn_chart/ui/chart.dart';
 
 class global {
+  static String version = '';
   static bool isLoading = true;
   static int rangeDays = 14;
   static late DateTime beginDate;
