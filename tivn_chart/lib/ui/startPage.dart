@@ -27,6 +27,7 @@ class _Start extends State<Start> {
   void initState() {
     // TODO: implement initState
     initData();
+
     super.initState();
   }
 
@@ -54,7 +55,7 @@ class _Start extends State<Start> {
                 SizedBox(
                   height: 50,
                 ),
-                SizedBox(height: 100, child: Image.asset('asset/logo.png')),
+                SizedBox(height: 100, child: Image.asset('assets/logo.png')),
                 Container(
                   height: 100,
                   alignment: Alignment.center,

@@ -53,7 +53,10 @@ class ChartFuntion {
     days = tempDays.toSet().toList(); // remove duplicate
 
     print('remove duplicate days =>:  ${days.length.toString()}');
-
+    days.sort((a, b) {
+      //sorting in descending order
+      return a.compareTo(b);
+    });
     for (var i = 0; i < days.length; i++) {
       dataDay = InspectionChartData(date: days[i]);
       for (var j = 0; j < input.length; j++) {

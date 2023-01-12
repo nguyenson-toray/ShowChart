@@ -75,11 +75,12 @@ class MySqlServer {
                     {
                       rowData = T011stInspectionData.fromMap(element),
                       day = DateTime.parse(rowData.getX02.toString()),
-                      if (day.isAfter(beginDate))
+                      if (day.isAfter(beginDate) &&
+                          rowData.getSecondary == false)
                         // &&  rowData.getX01 == global.currentLine)
                         {
                           print(
-                              'Get data of LINE ${global.currentLine.toString()} - from ${DateFormat(global.dateFormat).format(
+                              'Get 1st Inspection data of LINE ${global.currentLine.toString()} - from ${DateFormat(global.dateFormat).format(
                             beginDate,
                           )} to today !!!'),
                           result.add(rowData),

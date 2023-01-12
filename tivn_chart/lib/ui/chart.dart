@@ -8,10 +8,12 @@ import 'package:flutter/src/widgets/framework.dart';
 // import 'package:sendkeyboardevent/sendkeyboardevent.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+import 'package:tivn_chart/dataFuntion/myFuntions.dart';
 import 'package:tivn_chart/inspectionChartData.dart';
 import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:intl/intl.dart';
+import 'package:cron/cron.dart';
 
 class Chart extends StatefulWidget {
   const Chart({super.key});
@@ -49,6 +51,17 @@ class _ChartState extends State<Chart> {
       intervalGetData();
     });
 
+    final cron = Cron();
+    cron.schedule(Schedule.parse('00 10 * * *'), () async {
+      MyFuntions.playMedia('hdvsmm.mp3');
+    });
+    cron.schedule(Schedule.parse('00 13 * * *'), () async {
+      MyFuntions.playMedia('hdvsmm.mp3');
+    });
+    cron.schedule(Schedule.parse('00 15 * * *'), () async {
+      MyFuntions.playMedia('hdvsmm.mp3');
+    });
+
     super.initState();
   }
 
@@ -73,17 +86,29 @@ class _ChartState extends State<Chart> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          // elevation: 5,
-          title: Center(
+          titleTextStyle: TextStyle(color: Colors.black),
+          // toolbarHeight: 65,
+          leading: Padding(
+            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+            child: Image.asset('assets/logo.png'),
+          ),
+
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: Container(
               child: isSetting
                   ? buildSetting()
                   : CircleAvatar(
-                      backgroundColor: Colors.white,
-                      maxRadius: 26,
+                      backgroundColor: Colors.blueAccent,
+                      maxRadius: 27,
                       child: Text(
+                        textAlign: TextAlign.center,
                         global.currentLine.toString(),
                         style: TextStyle(
-                            fontSize: 50, fontWeight: FontWeight.bold),
+                            fontSize: 50,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ))
               // : Text(
               //     'Sản lượng sản xuất & tỉ lệ lỗi - LINE ${global.currentLine.toString()}'),
@@ -101,6 +126,7 @@ class _ChartState extends State<Chart> {
                   });
                 },
                 child: Icon(
+                  color: Colors.teal,
                   isSetting ? Icons.save : Icons.settings,
                 ))
           ],
@@ -117,7 +143,7 @@ class _ChartState extends State<Chart> {
               Container(
                 child: Text(
                   '''Developed by Nguyen Thai Son , Version : ${global.version}''',
-                  style: TextStyle(fontSize: 5),
+                  style: TextStyle(fontSize: 4),
                 ),
               ),
             ],
@@ -168,7 +194,9 @@ class _ChartState extends State<Chart> {
       children: [
         const Text(
           "Line : ",
-          // style: TextStyle(fontSize: 14),
+          style: TextStyle(
+              // fontSize: 14,
+              color: Colors.black),
         ),
         DropdownButton<String>(
           value: global.currentLine.toString(),
@@ -193,7 +221,9 @@ class _ChartState extends State<Chart> {
         ),
         Row(
           children: [
-            Text('Thời gian hiển thị dữ liệu : '),
+            Text(
+              'Thời gian hiển thị dữ liệu : ',
+            ),
             DropdownButton<String>(
               value: global.rangeDays.toString(),
               items: days.map<DropdownMenuItem<String>>((int value) {
@@ -201,7 +231,6 @@ class _ChartState extends State<Chart> {
                   value: value.toString(),
                   child: Text(
                     value.toString(),
-                    style: TextStyle(fontSize: 14),
                   ),
                 );
               }).toList(),
@@ -212,7 +241,9 @@ class _ChartState extends State<Chart> {
                 });
               },
             ),
-            Text(' ngày')
+            Text(
+              ' ngày',
+            )
           ],
         ),
       ],

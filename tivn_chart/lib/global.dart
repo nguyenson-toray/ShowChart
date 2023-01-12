@@ -31,7 +31,7 @@ class global {
   static var inspectionSummaryDay = InspectionSummaryDay();
   static List<InspectionSummaryDay> inspectionSummaryDays = [];
 
-  static int secondsAutoGetData = 30;
+  static int secondsAutoGetData = 60;
   static var planToday = 9999;
   static var actualToday = 0;
   static var sumDefect = 0;
