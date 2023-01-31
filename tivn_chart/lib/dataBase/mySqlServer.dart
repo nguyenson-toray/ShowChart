@@ -75,8 +75,7 @@ class MySqlServer {
                     {
                       rowData = T011stInspectionData.fromMap(element),
                       day = DateTime.parse(rowData.getX02.toString()),
-                      if (day.isAfter(beginDate) &&
-                          rowData.getSecondary == false)
+                      if (day.isAfter(beginDate) && rowData.getSecondary == 1)
                         // &&  rowData.getX01 == global.currentLine)
                         {
                           print(

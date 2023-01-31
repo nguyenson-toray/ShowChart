@@ -27,7 +27,6 @@ class _ChartState extends State<Chart> {
   final lines = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   var days = new List<int>.generate(30, (i) => i + 1);
   bool isSetting = false;
-  final FocusNode focusNode = FocusNode();
   changeSetting() async {
     // TODO: implement initState
     global.sharedPreferences.setInt('currentLine', global.currentLine);
@@ -50,7 +49,7 @@ class _ChartState extends State<Chart> {
     Timer.periodic(new Duration(seconds: global.secondsAutoGetData), (timer) {
       intervalGetData();
     });
-
+    /*
     final cron = Cron();
     cron.schedule(Schedule.parse('00 10 * * *'), () async {
       MyFuntions.playMedia('hdvsmm.mp3');
@@ -61,7 +60,7 @@ class _ChartState extends State<Chart> {
     cron.schedule(Schedule.parse('00 15 * * *'), () async {
       MyFuntions.playMedia('hdvsmm.mp3');
     });
-
+  */
     super.initState();
   }
 

@@ -2,8 +2,7 @@ import 'dart:convert';
 
 class T011stInspectionData {
   int? id;
-  bool? secondary;
-
+  int? secondary;
   int? x01;
   String? x02;
   int? x03;
@@ -64,10 +63,10 @@ class T011stInspectionData {
   int? tF;
   int? get getId => this.id;
 
-  set setId(int? id) => this.id = id;
-  bool? get getSecondary => this.secondary;
+  set setId(id) => this.id = id;
+  get getSecondary => this.secondary;
 
-  set setSecondary(bool? secondary) => this.secondary = secondary;
+  set setSecondary(secondary) => this.secondary = secondary;
 
   get getX01 => this.x01;
 
@@ -431,7 +430,7 @@ class T011stInspectionData {
   factory T011stInspectionData.fromMap(Map<String, dynamic> map) {
     var result = T011stInspectionData(
       id: map['ID']?.toInt(),
-      secondary: map['2nd'], //.bool(),
+      secondary: map['2nd']?.toInt(), //.bool(),
       x01: map['X01']?.toInt(),
       x02: map['X02'],
       x03: map['X03']?.toInt(),
