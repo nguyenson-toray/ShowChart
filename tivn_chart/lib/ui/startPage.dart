@@ -8,9 +8,10 @@ import 'package:tivn_chart/global.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:tivn_chart/dataBase/mySqlServer.dart';
-import 'package:tivn_chart/ui/chart.dart';
+import 'package:tivn_chart/ui/lineChart.dart';
 import 'package:tivn_chart/dataBase/mySQLite.dart';
 import 'package:flutter/foundation.dart';
+import 'package:tivn_chart/ui/dashboard.dart';
 
 import '../dataFuntion/myFuntions.dart';
 
@@ -26,6 +27,7 @@ class _Start extends State<Start> {
   @override
   void initState() {
     // TODO: implement initState
+
     initData();
 
     super.initState();
@@ -84,14 +86,16 @@ class _Start extends State<Start> {
     var isConnected = await global.mySqlServer.checkConnection();
     if (isConnected) {
       await global.mySqlServer
-          .selectAllTable01InspectionData()
+          .getInspectionData(global.rangeDays, global.inspection12)
           .then((value) => setState(() {
                 global.t01s = value;
                 if (value.length > 0) {
                   isLoading = false;
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const Chart()),
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            global.showDashboard ? Dashboard() : LineChart()),
                   );
                 }
               }));

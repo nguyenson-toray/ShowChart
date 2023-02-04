@@ -33,26 +33,16 @@ class MySqlServer {
     return isConnected;
   }
 
-  Future<List<T011stInspectionData>> getTable01InspectionData() async {
-    print('==========getDataFromServer=============');
+  Future<List<T011stInspectionData>> getInspectionData(
+      int rangeDays, int inspectionType) async {
+    print('getInspectionData : ' + "- rangeDays : " + rangeDays.toString());
     List<T011stInspectionData> data = [];
-    try {
-      data = await global.mySqlServer.selectAllTable01InspectionData();
-    } catch (e) {
-      print(e.toString());
-    }
-    return data;
-  }
-
-  Future<List<T011stInspectionData>> selectAllTable01InspectionData() async {
     List<T011stInspectionData> result = [];
     List<Map<String, dynamic>> tempResult = [];
-    int rangeDays = 40;
     late DateTime beginDate;
     beginDate = global.today.subtract(Duration(days: rangeDays));
     late DateTime day;
     final String query = '''select * from $tableT011stInspectionData''';
-    print('selectAllTable01InspectionData : ' + query);
     var isConnected = false;
     try {
       isConnected = await connection.initializeConnection(
@@ -64,7 +54,7 @@ class MySqlServer {
       );
       if (isConnected) {
         var rowData;
-        var date;
+
         await connection.getRowsOfQueryResult(query).then((value) => {
               if (value.runtimeType == String)
                 {print('Query : $query => ERROR ')}
@@ -75,11 +65,10 @@ class MySqlServer {
                     {
                       rowData = T011stInspectionData.fromMap(element),
                       day = DateTime.parse(rowData.getX02.toString()),
-                      if (day.isAfter(beginDate) && rowData.getSecondary == 1)
-                        // &&  rowData.getX01 == global.currentLine)
+                      if (day.isAfter(beginDate))
                         {
                           print(
-                              'Get 1st Inspection data of LINE ${global.currentLine.toString()} - from ${DateFormat(global.dateFormat).format(
+                              'Get Inspection data of LINE ${global.currentLine.toString()} - from ${DateFormat(global.dateFormat).format(
                             beginDate,
                           )} to today !!!'),
                           result.add(rowData),
@@ -89,10 +78,8 @@ class MySqlServer {
             });
       }
     } catch (e) {
-      e.toString();
+      print('getInspectionData --> Exception : ' + e.toString());
     }
-    print('selectAllTable01InspectionData -> result-> lenght = ' +
-        result.length.toString());
     return result;
   }
 }
