@@ -12,21 +12,40 @@ Future<void> main() async {
   Wakelock.enable();
   global.sharedPreferences = await SharedPreferences.getInstance();
   if (global.sharedPreferences.getInt("currentLine") == null) {
-    global.sharedPreferences.setInt('currentLine', 1);
-    global.currentLine = 1;
+    global.sharedPreferences.setInt('currentLine', 0);
+    global.currentLine = 0;
   } else
     global.currentLine = global.sharedPreferences.getInt("currentLine")!;
-  if (global.sharedPreferences.getBool("showDashboard") == null) {
-    global.sharedPreferences.setBool('showDashboard', false);
-    global.showDashboard = false;
+
+  if (global.sharedPreferences.getString("dashboardType") == null) {
+    global.sharedPreferences.setString('dashboardType', 'sewing');
+    global.dashboardType = 'sewing';
   } else
-    global.showDashboard = global.sharedPreferences.getBool("showDashboard")!;
+    global.dashboardType = global.sharedPreferences.getString("dashboardType")!;
 
   if (global.sharedPreferences.getBool("autoChangeLine") == null) {
     global.sharedPreferences.setBool('autoChangeLine', false);
     global.autoChangeLine = false;
   } else
     global.autoChangeLine = global.sharedPreferences.getBool("autoChangeLine")!;
+
+  if (global.sharedPreferences.getString("catalogue") == null) {
+    global.sharedPreferences.setString('catalogue', 'daily');
+    global.catalogue = 'daily';
+  } else
+    global.catalogue = global.sharedPreferences.getString("catalogue")!;
+
+  if (global.sharedPreferences.getInt("rangeTime") == null) {
+    global.sharedPreferences.setInt('rangeTime', 6);
+    global.rangeTime = 6;
+  } else
+    global.rangeTime = global.sharedPreferences.getInt("rangeTime")!;
+
+  if (global.sharedPreferences.getInt("inspection12") == null) {
+    global.sharedPreferences.setInt('inspection12', 1);
+    global.inspection12 = 1;
+  } else
+    global.inspection12 = global.sharedPreferences.getInt("inspection12")!;
 
   var pixelRatio = window.devicePixelRatio;
 
@@ -38,10 +57,6 @@ Future<void> main() async {
   var logicalScreenSize = window.physicalSize / pixelRatio;
   global.screenWPixel = logicalScreenSize.width;
   global.screenHPixel = logicalScreenSize.height;
-  print('screenW : ' + global.screenW.toString());
-  print('screenH : ' + global.screenH.toString());
-  print('screenWPixel : ' + global.screenWPixel.toString());
-  print('screenHPixel : ' + global.screenHPixel.toString());
 
   runApp(const MyApp());
 }

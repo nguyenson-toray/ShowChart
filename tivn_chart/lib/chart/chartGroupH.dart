@@ -26,11 +26,15 @@ class ChartGroupH {
   set setH(h) => this.h = h;
   Widget createChartUI(List<ChartGroupH> dataInput) {
     return SfCartesianChart(
-      title: ChartTitle(text: 'Lỗi khác'),
+      title: ChartTitle(
+        text: global.listGroupDefectJP[7] + '-' + global.listGroupDefect[7],
+        textStyle: TextStyle(
+            fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
+      ),
       backgroundColor: Colors.white,
       legend: Legend(
           textStyle: TextStyle(
-              fontSize: 8, fontWeight: FontWeight.normal, color: Colors.black),
+              fontSize: 7, fontWeight: FontWeight.normal, color: Colors.black),
           position: LegendPosition.bottom,
           isVisible: true,
           overflowMode: LegendItemOverflowMode.wrap),
@@ -63,9 +67,11 @@ class ChartGroupH {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: 'Lỗi khác',
+          name: global.defectNamesJP['Lỗi khác']![0] +
+              '-' +
+              global.defectNames['Lỗi khác']![0],
           color: Colors.blue[400],
-          width: 4),
+          width: 2),
     ];
   }
 

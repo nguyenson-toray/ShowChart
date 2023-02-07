@@ -52,8 +52,10 @@ dependencies:
   cron: ^0.5.1
   audioplayers: ^3.0.1
   flutter_volume_controller: ^1.2.3
-  sound_mode: ^2.0.2 
-  crea_radio_button: ^0.6.0
+  sound_mode: ^2.0.2  
+  iso_calendar: ^1.0.0
+  const_date_time: ^1.0.2 
+  radio_group_v2: ^1.0.2
   
 
 dev_dependencies:

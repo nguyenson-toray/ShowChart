@@ -64,11 +64,15 @@ class ChartGroupE {
 
   Widget createChartUI(List<ChartGroupE> dataInput) {
     return SfCartesianChart(
-      title: ChartTitle(text: global.listGroupDefect[4]),
+      title: ChartTitle(
+        text: global.listGroupDefectJP[4] + '-' + global.listGroupDefect[4],
+        textStyle: TextStyle(
+            fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
+      ),
       backgroundColor: Colors.white,
       legend: Legend(
           textStyle: TextStyle(
-              fontSize: 8, fontWeight: FontWeight.normal, color: Colors.black),
+              fontSize: 7, fontWeight: FontWeight.normal, color: Colors.black),
           position: LegendPosition.bottom,
           isVisible: true,
           overflowMode: LegendItemOverflowMode.wrap),
@@ -101,9 +105,11 @@ class ChartGroupE {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Lỗi may đan']![0],
+          name: global.defectNamesJP['Lỗi may đan']![0] +
+              '-' +
+              global.defectNames['Lỗi may đan']![0],
           color: Colors.blue[400],
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupE, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.diamond),
@@ -116,9 +122,11 @@ class ChartGroupE {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Lỗi may đan']![1],
+          name: global.defectNamesJP['Lỗi may đan']![1] +
+              '-' +
+              global.defectNames['Lỗi may đan']![1],
           color: Colors.red,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupE, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.diamond),
@@ -131,9 +139,11 @@ class ChartGroupE {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Lỗi may đan']![2],
+          name: global.defectNamesJP['Lỗi may đan']![2] +
+              '-' +
+              global.defectNames['Lỗi may đan']![2],
           color: Colors.grey,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupE, String>(
           markerSettings: MarkerSettings(
               isVisible: true, shape: DataMarkerType.invertedTriangle),
@@ -146,9 +156,11 @@ class ChartGroupE {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Lỗi may đan']![3],
+          name: global.defectNamesJP['Lỗi may đan']![3] +
+              '-' +
+              global.defectNames['Lỗi may đan']![3],
           color: Colors.yellow,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupE, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.pentagon),
@@ -161,9 +173,11 @@ class ChartGroupE {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Lỗi may đan']![4],
+          name: global.defectNamesJP['Lỗi may đan']![4] +
+              '-' +
+              global.defectNames['Lỗi may đan']![4],
           color: Colors.blue[900],
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupE, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.rectangle),
@@ -176,9 +190,11 @@ class ChartGroupE {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Lỗi may đan']![5],
+          name: global.defectNamesJP['Lỗi may đan']![5] +
+              '-' +
+              global.defectNames['Lỗi may đan']![5],
           color: Colors.green,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupE, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.triangle),
@@ -191,9 +207,11 @@ class ChartGroupE {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Lỗi may đan']![6],
+          name: global.defectNamesJP['Lỗi may đan']![6] +
+              '-' +
+              global.defectNames['Lỗi may đan']![6],
           color: Colors.teal,
-          width: 4),
+          width: 2),
     ];
   }
 

@@ -86,7 +86,7 @@ class _Start extends State<Start> {
     var isConnected = await global.mySqlServer.checkConnection();
     if (isConnected) {
       await global.mySqlServer
-          .getInspectionData(global.rangeDays, global.inspection12)
+          .getInspectionData(global.rangeDaySQL)
           .then((value) => setState(() {
                 global.t01s = value;
                 if (value.length > 0) {
@@ -94,8 +94,9 @@ class _Start extends State<Start> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            global.showDashboard ? Dashboard() : LineChart()),
+                        builder: (context) => global.dashboardType == 'sewing'
+                            ? LineChart()
+                            : Dashboard()),
                   );
                 }
               }));

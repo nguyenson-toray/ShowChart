@@ -33,12 +33,16 @@ class _LineChartState extends State<LineChart> {
     // TODO: implement initState
     global.sharedPreferences.setInt('currentLine', global.currentLine);
     global.sharedPreferences.setBool('autoChangeLine', global.autoChangeLine);
-    global.sharedPreferences.setBool('showDashboard', global.showDashboard);
+    global.sharedPreferences.setString('dashboardType', global.dashboardType);
 
     setState(() {
       global.chartQtyRateData.clear();
-      global.chartQtyRateData = global.chartQtyRate.createChartData(global.t01s,
-          global.currentLine, global.rangeDays, global.inspection12);
+      global.chartQtyRateData = global.chartQtyRate.createChartData(
+          global.t01s,
+          global.currentLine,
+          global.rangeTime,
+          global.inspection12,
+          global.catalogue);
       _chartSeriesController?.updateDataSource(
           updatedDataIndexes:
               List<int>.generate(global.chartQtyRateData.length, (i) => i + 1));
@@ -50,7 +54,11 @@ class _LineChartState extends State<LineChart> {
     // TODO: implement initState
     global.chartQtyRate = ChartQtyRate(date: global.today);
     global.chartQtyRateData = global.chartQtyRate.createChartData(
-        global.t01s, global.currentLine, global.rangeDays, global.inspection12);
+        global.t01s,
+        global.currentLine,
+        global.rangeTime,
+        global.inspection12,
+        global.catalogue);
     Timer.periodic(new Duration(seconds: global.secondsAutoGetData), (timer) {
       intervalRefresh();
     });
@@ -73,8 +81,8 @@ class _LineChartState extends State<LineChart> {
   }
 
   intervalRefresh() async {
-    final listDataT01 = await global.mySqlServer
-        .getInspectionData(global.rangeDays, global.inspection12);
+    final listDataT01 =
+        await global.mySqlServer.getInspectionData(global.rangeDaySQL);
     if (listDataT01.length != 0) {
       if (!mounted) return;
       setState(() {
@@ -82,8 +90,9 @@ class _LineChartState extends State<LineChart> {
         global.chartQtyRateData = global.chartQtyRate.createChartData(
             global.t01s,
             global.currentLine,
-            global.rangeDays,
-            global.inspection12);
+            global.rangeDaySQL,
+            global.inspection12,
+            global.catalogue);
         _chartSeriesController?.updateDataSource(
             updatedDataIndexes: List<int>.generate(
                 global.chartQtyRateData.length, (i) => i + 1));
@@ -141,9 +150,9 @@ class _LineChartState extends State<LineChart> {
             ),
             InkWell(
                 onTap: () {
-                  global.showDashboard = true;
+                  global.dashboardType = 'control1';
                   global.sharedPreferences
-                      .setBool('showDashboard', global.showDashboard);
+                      .setString('dashboardType', global.dashboardType);
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => Dashboard()),
@@ -165,7 +174,7 @@ class _LineChartState extends State<LineChart> {
                 child: Container(
                   width: global.screenWPixel,
                   child: global.chartQtyRate
-                      .createChartUI(global.chartQtyRateData),
+                      .createChartUI(global.chartQtyRateData, '', 'daily'),
                 ),
               ),
               Container(
@@ -231,7 +240,7 @@ class _LineChartState extends State<LineChart> {
               'Thời gian hiển thị dữ liệu : ',
             ),
             DropdownButton<String>(
-              value: global.rangeDays.toString(),
+              value: global.rangeTime.toString(),
               items: days.map<DropdownMenuItem<String>>((int value) {
                 return DropdownMenuItem<String>(
                   value: value.toString(),
@@ -242,7 +251,7 @@ class _LineChartState extends State<LineChart> {
               }).toList(),
               onChanged: (String? newValue) {
                 setState(() {
-                  global.rangeDays = int.parse(newValue!);
+                  global.rangeTime = int.parse(newValue!);
                   changeSetting();
                 });
               },

@@ -13,6 +13,8 @@ import 'package:tivn_chart/dataBase/mySQLite.dart';
 class global {
   static late ChartQtyRate chartQtyRate;
   static late List<ChartQtyRate> chartQtyRateData = [];
+  static late ChartQtyRate chartLine;
+  static late List<ChartQtyRate> chartLineData = [];
 
   static late ChartGroupAll chartGroupAll;
   static late List<ChartGroupAll> chartGroupAllData = [];
@@ -26,20 +28,23 @@ class global {
   static late ChartGroupH chartGroupH;
   static late List<ChartGroupH> chartGroupHData = [];
 
-  static String periodType = 'daily';
-  static bool showDashboard = false;
+  static String catalogue = 'daily';
+  // static bool showDashboard = false;
   static bool autoChangeLine = false;
-  static int currentLine = 1;
+  static String dashboardType = 'sewing';
+  static bool showSetting = false;
+
+  static int currentLine = 0;
   static double screenW = 0;
   static double screenH = 0;
   static double screenWPixel = 0;
   static double screenHPixel = 0;
   static String version = '';
   static bool isLoading = true;
-  static int rangeDays = 14;
+  static int rangeTime = 6;
+  static int rangeDaySQL = 365;
   static late DateTime beginDate;
   static late SharedPreferences sharedPreferences;
-  // static late List<InspectionChartData> inspectionChartData;
   static int pageIndex = 0;
   static String dbNameSQL = 'Production';
   static String dbNameSQLite = 'toray.db';
@@ -48,11 +53,8 @@ class global {
   static var mySqlife = MySqLite();
   static T011stInspectionData t01 = T011stInspectionData();
   static List<T011stInspectionData> t01s = [];
-  // static var inspectionSummaryDay = InspectionSummaryDay();
-  // static List<InspectionSummaryDay> inspectionSummaryDays = [];
-
-  static int secondsAutoGetData = 60;
-  static int secondsAutoChangeLine = 60;
+  static int secondsAutoGetData = 6000;
+  static int secondsAutoChangeLine = 15;
   static var planToday = 9999;
   static var actualToday = 0;
   static var sumDefect = 0;
@@ -73,6 +75,16 @@ class global {
     'Ngoại quan, thành phẩm',
     'Vật liệu',
     'Lỗi khác'
+  ];
+  static var listGroupDefectJP = <String>[
+    '寸　法',
+    '付　属',
+    '危険性',
+    '生　地',
+    '縫製・編立',
+    '外観・仕上',
+    '資材/そ',
+    'の他'
   ];
   static Map<String, List<String>> defectNames = {
     "Thông số": ["Lỗi thông số", "Lệch trái phải", "Thông số  kéo căng"],
@@ -101,5 +113,25 @@ class global {
     ],
     "Vật liệu": ["Thẻ bài", "Nhãn giặt", "Nhãn khác"],
     "Lỗi khác": ["Lỗi khác"]
+  };
+  static Map<String, List<String>> defectNamesJP = {
+    "Thông số": ["寸法不良", "左右違い", "機能寸法"],
+    "Phụ liệu": ["ファスナー", "ボタン", "その他1"],
+    "Nguy hiểm": ["バリ", "異物"],
+    "Vải": ["色差染色", "異原糸混入", "異原糸混入", "その他2"],
+    "Lỗi may đan": ["縫い", "ほつれ", "針孔", "目飛び目落ち", "つれ", "糸引き", "カン止"],
+    "Ngoại quan, thành phẩm": [
+      "糸始末",
+      "汚れ",
+      "チャコ跡",
+      "プリント接着",
+      "形状不良",
+      "シワ",
+      "アタリ",
+      "吹き出し",
+      "シームテープ"
+    ],
+    "Vật liệu": ["下げ札", "洗濯ネーム", "ネーム"],
+    "Lỗi khác": ["その他3"]
   };
 }

@@ -68,14 +68,18 @@ class ChartGroupAll {
   });
   Widget createChartUI(List<ChartGroupAll> dataInput) {
     return SfCartesianChart(
-      title: ChartTitle(text: 'Nhóm lỗi'),
+      title: ChartTitle(
+        text: 'エラーグループ-Nhóm lỗi',
+        textStyle: TextStyle(
+            fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
+      ),
       backgroundColor: Colors.white,
       legend: Legend(
           textStyle: TextStyle(
-              fontSize: 8, fontWeight: FontWeight.normal, color: Colors.black),
+              fontSize: 7, fontWeight: FontWeight.normal, color: Colors.black),
           position: LegendPosition.bottom,
           isVisible: true,
-          overflowMode: LegendItemOverflowMode.wrap), //ten m
+          overflowMode: LegendItemOverflowMode.wrap),
       primaryXAxis:
           CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
@@ -84,7 +88,6 @@ class ChartGroupAll {
           minimum: 0,
           // maximum: 100,
           interval: 10),
-
       series: getSeries(dataInput),
       tooltipBehavior: TooltipBehavior(enable: true),
     );
@@ -104,7 +107,7 @@ class ChartGroupAll {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.listGroupDefect[0],
+          name: global.listGroupDefectJP[0] + '-' + global.listGroupDefect[0],
           color: Colors.blue[400],
           width: 4),
       LineSeries<ChartGroupAll, String>(
@@ -119,9 +122,9 @@ class ChartGroupAll {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.listGroupDefect[1],
+          name: global.listGroupDefectJP[1] + '-' + global.listGroupDefect[1],
           color: Colors.red,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupAll, String>(
           markerSettings: MarkerSettings(
               isVisible: true, shape: DataMarkerType.invertedTriangle),
@@ -134,9 +137,9 @@ class ChartGroupAll {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.listGroupDefect[2],
+          name: global.listGroupDefectJP[2] + '-' + global.listGroupDefect[2],
           color: Colors.grey,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupAll, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.pentagon),
@@ -149,9 +152,9 @@ class ChartGroupAll {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.listGroupDefect[3],
+          name: global.listGroupDefectJP[3] + '-' + global.listGroupDefect[3],
           color: Colors.yellow,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupAll, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.rectangle),
@@ -164,9 +167,9 @@ class ChartGroupAll {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.listGroupDefect[4],
+          name: global.listGroupDefectJP[4] + '-' + global.listGroupDefect[4],
           color: Colors.blue[900],
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupAll, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.triangle),
@@ -179,9 +182,9 @@ class ChartGroupAll {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.listGroupDefect[5],
+          name: global.listGroupDefectJP[5] + '-' + global.listGroupDefect[5],
           color: Colors.green,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupAll, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.rectangle),
@@ -194,9 +197,9 @@ class ChartGroupAll {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.listGroupDefect[6],
+          name: global.listGroupDefectJP[6] + '-' + global.listGroupDefect[6],
           color: Colors.teal,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupAll, String>(
           markerSettings: MarkerSettings(isVisible: true),
           dataSource: dataInput,
@@ -208,9 +211,9 @@ class ChartGroupAll {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.listGroupDefect[7],
+          name: global.listGroupDefectJP[7] + '-' + global.listGroupDefect[7],
           color: Colors.orange,
-          width: 4),
+          width: 2),
     ];
   }
 

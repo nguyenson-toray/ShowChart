@@ -33,8 +33,7 @@ class MySqlServer {
     return isConnected;
   }
 
-  Future<List<T011stInspectionData>> getInspectionData(
-      int rangeDays, int inspectionType) async {
+  Future<List<T011stInspectionData>> getInspectionData(int rangeDays) async {
     print('getInspectionData : ' + "- rangeDays : " + rangeDays.toString());
     List<T011stInspectionData> data = [];
     List<T011stInspectionData> result = [];
@@ -68,7 +67,7 @@ class MySqlServer {
                       if (day.isAfter(beginDate))
                         {
                           print(
-                              'Get Inspection data of LINE ${global.currentLine.toString()} - from ${DateFormat(global.dateFormat).format(
+                              'Get Inspection data  from ${DateFormat(global.dateFormat).format(
                             beginDate,
                           )} to today !!!'),
                           result.add(rowData),

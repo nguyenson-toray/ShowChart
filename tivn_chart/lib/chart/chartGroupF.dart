@@ -75,11 +75,15 @@ class ChartGroupF {
 
   Widget createChartUI(List<ChartGroupF> dataInput) {
     return SfCartesianChart(
-      title: ChartTitle(text: global.listGroupDefect[5]),
+      title: ChartTitle(
+        text: global.listGroupDefectJP[5] + '-' + global.listGroupDefect[5],
+        textStyle: TextStyle(
+            fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
+      ),
       backgroundColor: Colors.white,
       legend: Legend(
           textStyle: TextStyle(
-              fontSize: 8, fontWeight: FontWeight.normal, color: Colors.black),
+              fontSize: 7, fontWeight: FontWeight.normal, color: Colors.black),
           position: LegendPosition.bottom,
           isVisible: true,
           overflowMode: LegendItemOverflowMode.wrap),
@@ -112,9 +116,11 @@ class ChartGroupF {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Ngoại quan, thành phẩm']![0],
+          name: global.defectNamesJP['Ngoại quan, thành phẩm']![0] +
+              '-' +
+              global.defectNames['Ngoại quan, thành phẩm']![0],
           color: Colors.blue[400],
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupF, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.diamond),
@@ -127,9 +133,11 @@ class ChartGroupF {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Ngoại quan, thành phẩm']![1],
+          name: global.defectNamesJP['Ngoại quan, thành phẩm']![1] +
+              '-' +
+              global.defectNames['Ngoại quan, thành phẩm']![1],
           color: Colors.red,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupF, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.diamond),
@@ -142,9 +150,11 @@ class ChartGroupF {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Ngoại quan, thành phẩm']![2],
+          name: global.defectNamesJP['Ngoại quan, thành phẩm']![2] +
+              '-' +
+              global.defectNames['Ngoại quan, thành phẩm']![2],
           color: Colors.grey,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupF, String>(
           markerSettings: MarkerSettings(
               isVisible: true, shape: DataMarkerType.invertedTriangle),
@@ -157,9 +167,11 @@ class ChartGroupF {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Ngoại quan, thành phẩm']![3],
+          name: global.defectNamesJP['Ngoại quan, thành phẩm']![3] +
+              '-' +
+              global.defectNames['Ngoại quan, thành phẩm']![3],
           color: Colors.yellow,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupF, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.pentagon),
@@ -172,9 +184,11 @@ class ChartGroupF {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Ngoại quan, thành phẩm']![4],
+          name: global.defectNamesJP['Ngoại quan, thành phẩm']![4] +
+              '-' +
+              global.defectNames['Ngoại quan, thành phẩm']![4],
           color: Colors.blue[900],
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupF, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.rectangle),
@@ -187,9 +201,11 @@ class ChartGroupF {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Ngoại quan, thành phẩm']![5],
+          name: global.defectNamesJP['Ngoại quan, thành phẩm']![5] +
+              '-' +
+              global.defectNames['Ngoại quan, thành phẩm']![5],
           color: Colors.green,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupF, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.triangle),
@@ -202,9 +218,11 @@ class ChartGroupF {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Ngoại quan, thành phẩm']![6],
+          name: global.defectNamesJP['Ngoại quan, thành phẩm']![6] +
+              '-' +
+              global.defectNames['Ngoại quan, thành phẩm']![6],
           color: Colors.teal,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupF, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.diamond),
@@ -217,9 +235,11 @@ class ChartGroupF {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Ngoại quan, thành phẩm']![7],
+          name: global.defectNamesJP['Ngoại quan, thành phẩm']![7] +
+              '-' +
+              global.defectNames['Ngoại quan, thành phẩm']![7],
           color: Colors.orange,
-          width: 4),
+          width: 2),
       LineSeries<ChartGroupF, String>(
           markerSettings:
               MarkerSettings(isVisible: true, shape: DataMarkerType.circle),
@@ -232,9 +252,11 @@ class ChartGroupF {
               textStyle: TextStyle(fontSize: 15),
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.auto),
-          name: global.defectNames['Ngoại quan, thành phẩm']![8],
+          name: global.defectNamesJP['Ngoại quan, thành phẩm']![8] +
+              '-' +
+              global.defectNames['Ngoại quan, thành phẩm']![8],
           color: Colors.amber,
-          width: 4),
+          width: 2),
     ];
   }
 
