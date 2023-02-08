@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:iso_calendar/iso_calendar.dart';
 import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
 import 'package:tivn_chart/global.dart';
 import 'dart:convert';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:intl/intl.dart';
 
 class MyFuntions {
@@ -20,22 +19,22 @@ class MyFuntions {
         fontSize: 16.0);
   }
 
-  static Future<void> setVolume(double level) async {
-    try {
-      await FlutterVolumeController.setMute(false);
-      await FlutterVolumeController.setVolume(level);
-    } on PlatformException {
-      print('setVolume - FlutterVolumeController ERROR');
-    }
-  }
+  // static Future<void> setVolume(double level) async {
+  //   try {
+  //     await FlutterVolumeController.setMute(false);
+  //     await FlutterVolumeController.setVolume(level);
+  //   } on PlatformException {
+  //     print('setVolume - FlutterVolumeController ERROR');
+  //   }
+  // }
 
-  static playMedia(String fileName) async {
-    String audioAsset = "${fileName}";
-    AudioPlayer player = AudioPlayer();
-    await setVolume(0.8);
-    player.setVolume(1);
-    await player.play(AssetSource(audioAsset));
-  }
+  // static playMedia(String fileName) async {
+  //   String audioAsset = "${fileName}";
+  //   AudioPlayer player = AudioPlayer();
+  //   await setVolume(0.8);
+  //   player.setVolume(1);
+  //   await player.play(AssetSource(audioAsset));
+  // }
 
   static List<T011stInspectionData> filterInspectionRangeTimeLine(
       List<T011stInspectionData> input,
@@ -64,5 +63,33 @@ class MyFuntions {
       beginDate,
     )} to today => Result lenght = ${result.length.toString()} !!!');
     return result;
+  }
+
+  static DateTime weekTofirstDate(int week, int year) {
+    DateTime startDate;
+    DateTime newDateTime;
+    int totaldays = week * 7;
+    final extraDuration = Duration(days: totaldays);
+    startDate = DateTime(year);
+    newDateTime = startDate.add(extraDuration);
+    print(
+        'weekTofirstDate week : $week - year : $year =>first day : ${newDateTime.toString()}');
+    return newDateTime;
+  }
+
+  static String dateTimeToWeek(String date) {
+    var weekNumber = IsoCalendar.fromDateTime(DateTime.parse(date)).weekNumber;
+    var weekString =
+        weekNumber > 9 ? weekNumber.toString() : '0' + weekNumber.toString();
+    var weekName = DateTime.parse(date).year.toString() + '-' + weekString;
+    return weekName;
+  }
+
+  static String dateTimeToMonth(String date) {
+    final monthNumber = DateTime.parse(date).month;
+    var monthString =
+        monthNumber > 9 ? monthNumber.toString() : '0' + monthNumber.toString();
+    final monthName = DateTime.parse(date).year.toString() + '-' + monthString;
+    return monthName;
   }
 }

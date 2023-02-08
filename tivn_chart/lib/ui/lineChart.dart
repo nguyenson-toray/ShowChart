@@ -1,20 +1,11 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-// import 'package:sendkeyboardevent/sendkeyboardevent.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
-import 'package:tivn_chart/chart/chartQtyRate.dart';
-import 'package:tivn_chart/dataFuntion/myFuntions.dart';
-import 'package:tivn_chart/inspectionChartData.dart';
-import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
+import 'package:tivn_chart/chart/chartFuntionData.dart';
+import 'package:tivn_chart/chart/chartProduction.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:intl/intl.dart';
-import 'package:cron/cron.dart';
 import 'package:tivn_chart/ui/dashboard.dart';
 
 class LineChart extends StatefulWidget {
@@ -37,12 +28,8 @@ class _LineChartState extends State<LineChart> {
 
     setState(() {
       global.chartQtyRateData.clear();
-      global.chartQtyRateData = global.chartQtyRate.createChartData(
-          global.t01s,
-          global.currentLine,
-          global.rangeTime,
-          global.inspection12,
-          global.catalogue);
+      global.chartQtyRateData = ChartFuntionData.createChartData(global.t01s,
+          global.currentLine, global.inspection12, global.rangeTime, 'day');
       _chartSeriesController?.updateDataSource(
           updatedDataIndexes:
               List<int>.generate(global.chartQtyRateData.length, (i) => i + 1));
@@ -52,13 +39,13 @@ class _LineChartState extends State<LineChart> {
   @override
   void initState() {
     // TODO: implement initState
-    global.chartQtyRate = ChartQtyRate(date: global.today);
-    global.chartQtyRateData = global.chartQtyRate.createChartData(
-        global.t01s,
-        global.currentLine,
-        global.rangeTime,
-        global.inspection12,
-        global.catalogue);
+    global.chartQtyRate = ChartProduction();
+    global.chartQtyRateData.clear();
+    global.chartQtyRateData = ChartFuntionData.createChartData(global.t01s,
+        global.currentLine, global.inspection12, global.rangeTime, 'day');
+    _chartSeriesController?.updateDataSource(
+        updatedDataIndexes:
+            List<int>.generate(global.chartQtyRateData.length, (i) => i + 1));
     Timer.periodic(new Duration(seconds: global.secondsAutoGetData), (timer) {
       intervalRefresh();
     });
@@ -87,12 +74,8 @@ class _LineChartState extends State<LineChart> {
       if (!mounted) return;
       setState(() {
         global.chartQtyRateData.clear();
-        global.chartQtyRateData = global.chartQtyRate.createChartData(
-            global.t01s,
-            global.currentLine,
-            global.rangeDaySQL,
-            global.inspection12,
-            global.catalogue);
+        global.chartQtyRateData = ChartFuntionData.createChartData(global.t01s,
+            global.currentLine, global.inspection12, global.rangeTime, 'day');
         _chartSeriesController?.updateDataSource(
             updatedDataIndexes: List<int>.generate(
                 global.chartQtyRateData.length, (i) => i + 1));
@@ -172,10 +155,11 @@ class _LineChartState extends State<LineChart> {
             children: [
               Expanded(
                 child: Container(
-                  width: global.screenWPixel,
-                  child: global.chartQtyRate
-                      .createChartUI(global.chartQtyRateData, '', 'daily'),
-                ),
+                    width: global.screenWPixel,
+                    child: global.chartQtyRate.createChartQtyRateUI(
+                        global.chartQtyRateData,
+                        '---------------------工場の全ラインの生産性・不良率-Sản lượng & tỉ lệ lỗi của toàn nhà máy',
+                        global.catalogue)),
               ),
               Container(
                 child: Text(

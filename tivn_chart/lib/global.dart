@@ -1,32 +1,25 @@
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tivn_chart/chart/chartGroupAll.dart';
-import 'package:tivn_chart/chart/chartGroupE.dart';
-import 'package:tivn_chart/chart/chartGroupF.dart';
-import 'package:tivn_chart/chart/chartGroupH.dart';
-import 'package:tivn_chart/chart/chartQtyRate.dart';
+import 'package:tivn_chart/chart/chartProduction.dart';
 import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
 import 'package:tivn_chart/dataBase/mySqlServer.dart';
 import 'package:tivn_chart/dataBase/mySQLite.dart';
 
 class global {
-  static late ChartQtyRate chartQtyRate;
-  static late List<ChartQtyRate> chartQtyRateData = [];
-  static late ChartQtyRate chartLine;
-  static late List<ChartQtyRate> chartLineData = [];
+  static ChartProduction chartQtyRate = ChartProduction();
+  static ChartProduction chartLine = ChartProduction();
+  static ChartProduction chartGroupAll = ChartProduction();
+  static ChartProduction chartGroupE = ChartProduction();
+  static ChartProduction chartGroupF = ChartProduction();
+  static ChartProduction chartGroupH = ChartProduction();
 
-  static late ChartGroupAll chartGroupAll;
-  static late List<ChartGroupAll> chartGroupAllData = [];
-
-  static late ChartGroupF chartGroupF;
-  static late List<ChartGroupF> chartGroupFData = [];
-
-  static late ChartGroupE chartGroupE;
-  static late List<ChartGroupE> chartGroupEData = [];
-
-  static late ChartGroupH chartGroupH;
-  static late List<ChartGroupH> chartGroupHData = [];
+  static List<ChartProduction> chartQtyRateData = [];
+  static List<ChartProduction> chartLineData = [];
+  static List<ChartProduction> chartGroupAllData = [];
+  static List<ChartProduction> chartGroupEData = [];
+  static List<ChartProduction> chartGroupFData = [];
+  static List<ChartProduction> chartGroupHData = [];
 
   static String catalogue = 'daily';
   // static bool showDashboard = false;
@@ -46,21 +39,21 @@ class global {
   static late DateTime beginDate;
   static late SharedPreferences sharedPreferences;
   static int pageIndex = 0;
-  static String dbNameSQL = 'Production';
-  static String dbNameSQLite = 'toray.db';
   static late String dbPath;
   static var mySqlServer = MySqlServer();
   static var mySqlife = MySqLite();
   static T011stInspectionData t01 = T011stInspectionData();
   static List<T011stInspectionData> t01s = [];
-  static int secondsAutoGetData = 6000;
-  static int secondsAutoChangeLine = 15;
+  static int secondsAutoGetData = 600;
+  static int secondsAutoChangeLine = 120;
   static var planToday = 9999;
   static var actualToday = 0;
   static var sumDefect = 0;
 
   static double ratioDefect = 0;
   static DateTime today = DateTime.now();
+  static DateTime dayFilerBegin = DateTime.now();
+  static DateTime dayFilerEnd = DateTime.now();
   static late String todayString;
   static final String dateFormat = 'yyyy-MM-dd';
   static int inspection12 = 1;

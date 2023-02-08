@@ -6,15 +6,9 @@
 
 #include "generated_plugin_registrant.h"
 
-#include <audioplayers_windows/audioplayers_windows_plugin.h>
-#include <flutter_volume_controller/flutter_volume_controller_plugin_c_api.h>
 #include <radio_group_v2/radio_group_v2_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
-  AudioplayersWindowsPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("AudioplayersWindowsPlugin"));
-  FlutterVolumeControllerPluginCApiRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("FlutterVolumeControllerPluginCApi"));
   RadioGroupV2PluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("RadioGroupV2Plugin"));
 }

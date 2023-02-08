@@ -10,7 +10,7 @@ class MySqlServer {
   bool isLoading = false;
   var connection = ConnectToSqlServerDirectly();
   final String ip = '192.168.1.11';
-  final String db = 'Production';
+  final String dbNameSQL = 'Production';
   final user = 'production';
   final pass = 'Toray@123';
   final String instanceSql = 'MSSQLSERVER';
@@ -20,7 +20,7 @@ class MySqlServer {
     try {
       isConnected = await connection.initializeConnection(
         ip,
-        global.dbNameSQL,
+        dbNameSQL,
         user,
         pass,
         instance: instanceSql,
@@ -44,14 +44,14 @@ class MySqlServer {
     final String query = '''select * from $tableT011stInspectionData''';
     var isConnected = false;
     try {
-      isConnected = await connection.initializeConnection(
-        ip,
-        global.dbNameSQL,
-        user,
-        pass,
-        instance: instanceSql,
-      );
-      if (isConnected) {
+      // isConnected = await connection.initializeConnection(
+      //   ip,
+      //   dbNameSQL,
+      //   user,
+      //   pass,
+      //   instance: instanceSql,
+      // );
+      if (true) {
         var rowData;
 
         await connection.getRowsOfQueryResult(query).then((value) => {
@@ -67,7 +67,7 @@ class MySqlServer {
                       if (day.isAfter(beginDate))
                         {
                           print(
-                              'Get Inspection data  from ${DateFormat(global.dateFormat).format(
+                              'Get Inspection data from ${DateFormat(global.dateFormat).format(
                             beginDate,
                           )} to today !!!'),
                           result.add(rowData),

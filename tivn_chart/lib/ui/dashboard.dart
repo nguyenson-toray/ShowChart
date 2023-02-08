@@ -2,13 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:radio_group_v2/radio_group_v2.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:tivn_chart/chart/chartGroupAll.dart';
-import 'package:tivn_chart/chart/chartGroupE.dart';
-import 'package:tivn_chart/chart/chartGroupF.dart';
-import 'package:tivn_chart/chart/chartGroupH.dart';
-import 'package:tivn_chart/chart/chartQtyRate.dart';
+import 'package:tivn_chart/chart/chartFuntionData.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:tivn_chart/ui/lineChart.dart';
+import 'package:intl/intl.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({super.key});
@@ -41,151 +38,81 @@ class _Dashboard extends State<Dashboard> {
     // TODO: implement initState
     hSetting = global.screenHPixel - 50;
     wSetting = global.screenWPixel * 0.1;
-    hChart = (global.screenHPixel - 70) / 2 - 5;
-    wChart = global.screenWPixel * 0.32;
-    initChartDatas();
+    hChart = (global.screenHPixel - 60) / 2 - 6;
+    wChart = global.screenWPixel * 0.325;
+    refreshChartData();
     Timer.periodic(new Duration(seconds: global.secondsAutoGetData), (timer) {
-      refreshData();
+      getDataT01();
     });
     Timer.periodic(new Duration(seconds: global.secondsAutoChangeLine),
         (timer) {
       autoChangeLine();
     });
+
     super.initState();
   }
 
-  refreshData() async {
+  getDataT01() async {
     if (!mounted) return;
-    final listDataT01 =
-        await global.mySqlServer.getInspectionData(global.rangeDaySQL);
-    if (listDataT01.length != 0) {
-      print('refreshData');
-      setState(() {
-        global.t01s = listDataT01;
-      });
-      refreshChartData();
-    }
+
+    await global.mySqlServer
+        .getInspectionData(global.rangeDaySQL)
+        .then((value) => setState(() {
+              global.t01s = value;
+            }));
+    refreshChartData();
   }
 
   refreshChartData() async {
     if (!mounted) return;
-    // final listDataT01 =
-    //     await global.mySqlServer.getInspectionData(global.rangeDaySQL);
-    // if (listDataT01.length != 0)
-    {
-      print('refreshData');
-      setState(() {
-        // global.t01s = listDataT01;
-        print('global.t01s-lenght = ' + global.t01s.length.toString());
-
-        global.chartQtyRateData.clear();
-        global.chartQtyRateData = global.chartQtyRate.createChartData(
-            global.t01s,
-            global.currentLine,
-            global.inspection12,
-            global.rangeTime,
-            global.catalogue);
-        chartSeriesController?.updateDataSource(
-            updatedDataIndexes: List<int>.generate(
-                global.chartQtyRateData.length, (i) => i + 1));
-        //-
-        global.chartLineData.clear();
-        global.chartLineData = global.chartLine.createChartData(global.t01s,
-            global.currentLine, global.inspection12, global.rangeTime, 'line');
-        chartSeriesController?.updateDataSource(
-            updatedDataIndexes:
-                List<int>.generate(global.chartLineData.length, (i) => i + 1));
-        //-
-/*
-        global.chartGroupAllData.clear();
-        global.chartGroupAllData = global.chartGroupAll.createChartData(
-            global.t01s,
-            global.currentLine,
-            global.rangeTime,
-            global.inspection12);
-        chartSeriesController?.updateDataSource(
-            updatedDataIndexes: List<int>.generate(
-                global.chartGroupAllData.length, (i) => i + 1));
-        //-
-        global.chartGroupEData.clear();
-        global.chartGroupEData = global.chartGroupE.createChartData(global.t01s,
-            global.currentLine, global.rangeTime, global.inspection12);
-        chartSeriesController?.updateDataSource(
-            updatedDataIndexes: List<int>.generate(
-                global.chartGroupEData.length, (i) => i + 1));
-        //-
-        global.chartGroupFData.clear();
-        global.chartGroupFData = global.chartGroupF.createChartData(global.t01s,
-            global.currentLine, global.rangeTime, global.inspection12);
-        chartSeriesController?.updateDataSource(
-            updatedDataIndexes: List<int>.generate(
-                global.chartGroupFData.length, (i) => i + 1));
-        //-
-        global.chartGroupFData.clear();
-        global.chartGroupFData = global.chartGroupF.createChartData(global.t01s,
-            global.currentLine, global.rangeTime, global.inspection12);
-        chartSeriesController?.updateDataSource(
-            updatedDataIndexes: List<int>.generate(
-                global.chartGroupFData.length, (i) => i + 1));
-        //-
-        global.chartGroupHData.clear();
-        global.chartGroupHData = global.chartGroupH.createChartData(global.t01s,
-            global.currentLine, global.rangeTime, global.inspection12);
-        chartSeriesController?.updateDataSource(
-            updatedDataIndexes: List<int>.generate(
-                global.chartGroupHData.length, (i) => i + 1));
-                */
-      });
-    }
+    print('refreshChartData');
+    var dataInput = [...global.t01s];
+    setState(() {
+      global.chartQtyRateData = ChartFuntionData.createChartData(
+          dataInput,
+          global.currentLine,
+          global.inspection12,
+          global.rangeTime,
+          global.catalogue);
+      global.chartLineData = ChartFuntionData.createChartData([...global.t01s],
+          global.currentLine, global.inspection12, global.rangeTime, 'line');
+      global.chartGroupAllData = ChartFuntionData.createChartData(
+          dataInput,
+          global.currentLine,
+          global.inspection12,
+          global.rangeTime,
+          global.catalogue);
+      global.chartGroupEData = ChartFuntionData.createChartData(
+          dataInput,
+          global.currentLine,
+          global.inspection12,
+          global.rangeTime,
+          global.catalogue);
+      global.chartGroupFData = ChartFuntionData.createChartData(
+          dataInput,
+          global.currentLine,
+          global.inspection12,
+          global.rangeTime,
+          global.catalogue);
+    });
   }
 
   autoChangeLine() {
     if (!mounted || !global.autoChangeLine) return;
     if (global.autoChangeLine && global.dashboardType == 'control2') {
       setState(() {
-        print('autoChangeLine');
         if (global.currentLine < 7)
           global.currentLine++;
         else
           global.currentLine = 1;
+        print('autoChangeLine -> ' + global.currentLine.toString());
       });
+      refreshChartData();
     }
-  }
-
-  initChartDatas() {
-    global.chartQtyRate = ChartQtyRate(date: global.today);
-    global.chartQtyRateData = global.chartQtyRate.createChartData(
-      global.t01s,
-      global.currentLine,
-      global.inspection12,
-      global.rangeTime,
-      global.catalogue,
-    );
-    //-
-    global.chartLine = ChartQtyRate(date: global.today);
-    global.chartLineData = global.chartLine.createChartData(global.t01s,
-        global.currentLine, global.inspection12, global.rangeTime, 'line');
-
-    global.chartGroupAll = ChartGroupAll(date: global.today);
-    global.chartGroupAllData = global.chartGroupAll.createChartData(
-        global.t01s, global.currentLine, global.rangeTime, global.inspection12);
-
-    global.chartGroupF = ChartGroupF(date: global.today);
-    global.chartGroupFData = global.chartGroupF.createChartData(
-        global.t01s, global.currentLine, global.rangeTime, global.inspection12);
-
-    global.chartGroupE = ChartGroupE(date: global.today);
-    global.chartGroupEData = global.chartGroupE.createChartData(
-        global.t01s, global.currentLine, global.rangeTime, global.inspection12);
-
-    global.chartGroupH = ChartGroupH(date: global.today);
-    global.chartGroupHData = global.chartGroupH.createChartData(
-        global.t01s, global.currentLine, global.rangeTime, global.inspection12);
   }
 
   @override
   Widget build(BuildContext context) {
-    print('  global.dashboardType = ' + global.dashboardType);
     return SafeArea(
       child: Scaffold(
         appBar: buildAppBar(),
@@ -193,85 +120,115 @@ class _Dashboard extends State<Dashboard> {
             color: Colors.grey[200],
             // padding: EdgeInsets.all(10),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 option(),
                 global.dashboardType == 'control1'
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                            Container(
-                              height: hChart,
-                              width: global.screenWPixel / 2 - 5,
-                              child: global.chartQtyRate.createChartUI(
-                                  global.chartQtyRateData,
-                                  '工場の全ラインの生産性・不良率-Sản lượng & tỉ lệ lỗi của toàn nhà máy',
-                                  global.catalogue),
-                            ),
-                            Container(
-                              height: hChart,
-                              width: global.screenWPixel / 2 - 5,
-                              child: global.chartLine.createChartUI(
-                                  global.chartLineData,
-                                  'ライン別の生産性・不良率 - Sản lượng & tỉ lệ lỗi của các chuyền ',
-                                  'line'),
-                            ),
-                          ])
-                    : Row(
-                        children: [
-                          Container(
-                            height: hChart,
-                            width: global.screenWPixel - 5,
-                            child: global.chartQtyRate.createChartUI(
-                                global.chartQtyRateData,
-                                '',
-                                // 'ライン別の生産性・不良率 - Sản lượng & tỉ lệ lỗi của chuyền ',
-                                'day'),
-                          )
-                        ],
-                      ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: hChart,
-                      width: wChart,
-                      child: global.chartGroupAll
-                          .createChartUI(global.chartGroupAllData),
-                    ),
-                    Container(
-                      height: hChart,
-                      width: wChart,
-                      child: global.chartGroupF
-                          .createChartUI(global.chartGroupFData),
-                    ),
-                    Container(
-                      height: hChart,
-                      width: wChart,
-                      child: global.chartGroupE
-                          .createChartUI(global.chartGroupEData),
-                    ),
-                    // Container(
-                    //   height: hChart,
-                    //   width: wChart,
-                    //   child: global.chartGroupH
-                    //       .createChartUI(global.chartGroupHData),
-                    // ),
-                  ],
-                ),
-                Container(
-                  height: 4,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '''         Developed by Nguyen Thai Son , Version : ${global.version}''',
-                    style: TextStyle(fontSize: 4),
-                  ),
-                ),
+                    ? buildScreen1()
+                    : buildScreen2()
               ],
             )),
+      ),
+    );
+  }
+
+  Widget buildScreen1() {
+    return Container(
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  height: hChart,
+                  width: global.screenWPixel / 2 - 5,
+                  child: global.chartQtyRate.createChartQtyRateUI(
+                      global.chartQtyRateData,
+                      '工場の全ラインの生産性・不良率-Sản lượng & tỉ lệ lỗi của toàn nhà máy',
+                      global.catalogue),
+                ),
+                Container(
+                  height: hChart,
+                  width: global.screenWPixel / 2 - 5,
+                  child: global.chartLine.createChartQtyRateUI(
+                      global.chartLineData,
+                      'ライン別の生産性・不良率 - Sản lượng & tỉ lệ lỗi của các chuyền ',
+                      'line'),
+                ),
+              ],
+            ),
+            Divider(height: 4),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    height: hChart,
+                    width: wChart,
+                    child: global.chartGroupAll
+                        .createChartGroupAllUI(global.chartGroupAllData),
+                  ),
+                  Container(
+                    height: hChart,
+                    width: wChart,
+                    child: global.chartGroupF
+                        .createChartGroupFUI(global.chartGroupFData),
+                  ),
+                  Container(
+                    height: hChart,
+                    width: wChart,
+                    child: global.chartGroupE
+                        .createChartGroupEUI(global.chartGroupEData),
+                  ),
+                ],
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildScreen2() {
+    return Container(
+      child: Column(
+        children: [
+          Container(
+            height: hChart,
+            child: global.chartQtyRate.createChartQtyRateUI(
+                global.chartQtyRateData, '', global.catalogue),
+          ),
+          Divider(height: 4),
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  height: hChart,
+                  width: wChart,
+                  child: global.chartGroupAll
+                      .createChartGroupAllUI(global.chartGroupAllData),
+                ),
+                Container(
+                  height: hChart,
+                  width: wChart,
+                  child: global.chartGroupF
+                      .createChartGroupFUI(global.chartGroupFData),
+                ),
+                Container(
+                  height: hChart,
+                  width: wChart,
+                  child: global.chartGroupE
+                      .createChartGroupEUI(global.chartGroupEData),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
@@ -284,16 +241,21 @@ class _Dashboard extends State<Dashboard> {
       leading: InkWell(
           onTap: () {
             global.dashboardType = 'sewing';
-
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => LineChart()),
             );
           },
           child: Icon(Icons.close_rounded)),
-      title: Text(global.dashboardType == 'control1'
-          ? "Production Management System".toUpperCase()
-          : ('LINE ' + global.currentLine.toString())),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(global.dashboardType == 'control1'
+              ? "Production Management System".toUpperCase()
+              : ('LINE ' + global.currentLine.toString())),
+        ],
+      ),
       centerTitle: true,
       actions: global.dashboardType == 'control2'
           ? [
@@ -346,7 +308,7 @@ class _Dashboard extends State<Dashboard> {
       color: Colors.blue[50],
       alignment: Alignment.center,
       padding: EdgeInsets.fromLTRB(5, 1, 5, 1),
-      height: 28,
+      height: 30,
       width: global.screenWPixel,
       // color: Colors.blueAccent,
       child: Row(children: [
@@ -405,7 +367,7 @@ class _Dashboard extends State<Dashboard> {
           },
           controller: myController,
           values: ["day", "week", "month"],
-          indexOfDefault: 0,
+          indexOfDefault: ["day", "week", "month"].indexOf(global.catalogue),
           orientation: RadioGroupOrientation.Horizontal,
           decoration: RadioGroupDecoration(
             spacing: 2.0,
@@ -430,8 +392,8 @@ class _Dashboard extends State<Dashboard> {
             });
           },
           controller: myController,
-          values: ["1st", "2nd"],
-          indexOfDefault: 0,
+          values: ['1st', '2nd'],
+          indexOfDefault: global.inspection12 == 1 ? 0 : 1,
           orientation: RadioGroupOrientation.Horizontal,
           decoration: RadioGroupDecoration(
             spacing: 2.0,
