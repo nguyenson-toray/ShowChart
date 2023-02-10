@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:connect_to_sql_server_directly/connect_to_sql_server_directly.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,7 +11,10 @@ import 'package:intl/intl.dart';
 class MySqlServer {
   bool isLoading = false;
   var connection = ConnectToSqlServerDirectly();
-  final String ip = '192.168.1.11';
+  final String ipLAN = '192.168.1.11';
+  final String ipWAN = '103.17.90.89';
+  int port = 1433;
+  bool lanConnectionAvailable = false;
   final String dbNameSQL = 'Production';
   final user = 'production';
   final pass = 'Toray@123';
@@ -17,9 +22,23 @@ class MySqlServer {
   final String tableT011stInspectionData = '[T01_1st inspection data]';
   Future<bool> checkConnection() async {
     var isConnected = false;
+    Socket.connect('$ipLAN', port, timeout: Duration(seconds: 3))
+        .then((socket) {
+      // do what need to be done
+      print('Connection to IP LAN : $ipLAN:$port OK');
+      lanConnectionAvailable = true;
+      print('socket : ' + socket.toString());
+      // Don't forget to close socket
+      socket.destroy();
+    }).catchError((error) {
+      lanConnectionAvailable = false;
+      print(
+          'Connection to IP LAN : $ipLAN NOT OK . Try to connect ip WAN : $ipWAN');
+      print(error.toString());
+    });
     try {
       isConnected = await connection.initializeConnection(
-        ip,
+        lanConnectionAvailable ? ipLAN : ipWAN,
         dbNameSQL,
         user,
         pass,
