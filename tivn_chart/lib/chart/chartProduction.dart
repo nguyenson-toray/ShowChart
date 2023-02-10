@@ -314,18 +314,6 @@ class ChartProduction {
     this.g2 = 0,
     this.g3 = 0,
   });
-  calculate() {
-    rationDefect1st = qty1stNOK / qty1st;
-    rationDefectAfterRepaire =
-        (qtyAfterRepaire - qtyOKAfterRepaire) / qtyAfterRepaire;
-    a = a1 + a2 + a3;
-    b = b1 + b2 + b3;
-    c = c1 + c2;
-    d = d1 + d2 + d3 + d4;
-    e = e1 + e2 + e3 + e4 + e5 + e6 + e7;
-    f = f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8 + f9;
-    g = g1 + g2 + g3;
-  }
 
   ChartProduction convertFromT01s(List<T011stInspectionData> dataInput) {
     List<T011stInspectionData> input = [...dataInput];
@@ -385,17 +373,20 @@ class ChartProduction {
       result.setH = result.getH + element.getH;
     });
     result.setQty1stNOK = result.getQty1st - result.getQty1stOK;
-    result.setRationDefect1st = result.getQty1stNOK / result.getQty1st;
+    result.setRationDefect1st = double.parse(
+        (result.getQty1stNOK / result.getQty1st).toStringAsFixed(2));
     //
-    result.setRationDefectAfterRepaire =
-        (result.getQtyAfterRepaire - result.getQtyOKAfterRepaire) /
-            result.getQtyAfterRepaire;
+
+    result.setRationDefectAfterRepaire = double.parse(
+        ((result.getQtyAfterRepaire - result.getQtyOKAfterRepaire) /
+                result.getQtyAfterRepaire)
+            .toStringAsFixed(2));
 
     return result;
   }
 
-  Widget createChartQtyRateUI(
-      List<ChartProduction> dataInput, String title, String catalogue) {
+  Widget createChartQtyRateUI(List<ChartProduction> dataInput, String title,
+      String catalogue, int currentLine) {
     return SfCartesianChart(
       backgroundColor: Colors.white,
       title: ChartTitle(
@@ -405,7 +396,9 @@ class ChartProduction {
       ),
       legend: Legend(
         textStyle: TextStyle(
-            fontSize: 7, fontWeight: FontWeight.normal, color: Colors.black),
+            fontSize: global.screenTypeInt == 0 ? 15 : 7,
+            fontWeight: FontWeight.normal,
+            color: Colors.black),
         position: LegendPosition.bottom,
         isVisible: true,
         overflowMode: LegendItemOverflowMode.wrap,
@@ -436,16 +429,16 @@ class ChartProduction {
   }
 
   getSeriesQtyRate(List<ChartProduction> dataInput) {
+    var myDataLabelSettings = DataLabelSettings(
+        textStyle: TextStyle(fontSize: global.screenTypeInt == 0 ? 15 : 8),
+        isVisible: true,
+        labelAlignment: ChartDataLabelAlignment.auto);
     return <ChartSeries<ChartProduction, String>>[
       StackedColumnSeries<ChartProduction, String>(
         dataSource: dataInput!,
         xValueMapper: (ChartProduction data, _) => data.getCatalogue,
         yValueMapper: (ChartProduction data, _) => data.getQty1stOK,
-        dataLabelSettings: DataLabelSettings(
-            textStyle:
-                TextStyle(fontSize: global.dashboardType == 'sewing' ? 15 : 8),
-            isVisible: true,
-            labelAlignment: ChartDataLabelAlignment.auto),
+        dataLabelSettings: myDataLabelSettings,
         name: '''初回検品合格数-SL kiểm lần 1 đạt''',
         color: Colors.blueAccent,
       ),
@@ -453,11 +446,7 @@ class ChartProduction {
         dataSource: dataInput!,
         xValueMapper: (ChartProduction data, _) => data.getCatalogue,
         yValueMapper: (ChartProduction data, _) => data.getQty1stNOK,
-        dataLabelSettings: DataLabelSettings(
-            textStyle:
-                TextStyle(fontSize: global.dashboardType == 'sewing' ? 15 : 8),
-            isVisible: true,
-            labelAlignment: ChartDataLabelAlignment.auto),
+        dataLabelSettings: myDataLabelSettings,
         name: '補修後検品合格数-SL kiểm lần 1 lỗi',
         color: Colors.orangeAccent,
       ),
@@ -465,11 +454,7 @@ class ChartProduction {
         dataSource: dataInput!,
         xValueMapper: (ChartProduction data, _) => data.getCatalogue,
         yValueMapper: (ChartProduction data, _) => data.getQtyAfterRepaire,
-        dataLabelSettings: DataLabelSettings(
-            textStyle:
-                TextStyle(fontSize: global.dashboardType == 'sewing' ? 15 : 8),
-            isVisible: true,
-            labelAlignment: ChartDataLabelAlignment.auto),
+        dataLabelSettings: myDataLabelSettings,
         name: '補修後検品数-SL sửa sau kiểm hàng',
         color: Colors.redAccent,
       ),
@@ -481,8 +466,7 @@ class ChartProduction {
           xValueMapper: (ChartProduction data, _) => data.getCatalogue,
           yValueMapper: (ChartProduction data, _) =>
               data.getRationDefect1st * 100,
-          // dataLabelSettings: DataLabelSettings(
-          //     isVisible: true, labelAlignment: ChartDataLabelAlignment.auto),
+          dataLabelSettings: myDataLabelSettings,
           name: '初回不良率-TL lần 1 lỗi',
           color: Colors.pink,
           width: 2),
@@ -493,8 +477,7 @@ class ChartProduction {
           xValueMapper: (ChartProduction data, _) => data.getCatalogue,
           yValueMapper: (ChartProduction data, _) =>
               data.getRationDefectAfterRepaire,
-          // dataLabelSettings: DataLabelSettings(
-          //     isVisible: true, labelAlignment: ChartDataLabelAlignment.top),
+          dataLabelSettings: myDataLabelSettings,
           name: '補修後不良率-TL lỗi sau sửa',
           color: Colors.green,
           width: 2)
@@ -511,6 +494,7 @@ class ChartProduction {
       ),
       backgroundColor: Colors.white,
       legend: Legend(
+          height: '40%',
           textStyle: TextStyle(
               fontSize: 7, fontWeight: FontWeight.normal, color: Colors.black),
           position: LegendPosition.bottom,
@@ -629,6 +613,8 @@ class ChartProduction {
       ),
       backgroundColor: Colors.white,
       legend: Legend(
+          height: '40%',
+          shouldAlwaysShowScrollbar: false,
           textStyle: TextStyle(
               fontSize: 7, fontWeight: FontWeight.normal, color: Colors.black),
           position: LegendPosition.bottom,
@@ -751,6 +737,7 @@ class ChartProduction {
       ),
       backgroundColor: Colors.white,
       legend: Legend(
+          height: '40%',
           textStyle: TextStyle(
               fontSize: 7, fontWeight: FontWeight.normal, color: Colors.black),
           position: LegendPosition.bottom,

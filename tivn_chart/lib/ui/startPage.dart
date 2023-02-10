@@ -93,10 +93,7 @@ class _Start extends State<Start> {
                   isLoading = false;
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => global.dashboardType == 'sewing'
-                            ? LineChart()
-                            : Dashboard()),
+                    MaterialPageRoute(builder: (context) => Dashboard()),
                   );
                 }
               }));

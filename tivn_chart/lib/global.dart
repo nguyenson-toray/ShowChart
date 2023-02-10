@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tivn_chart/chart/chartProduction.dart';
@@ -7,25 +8,19 @@ import 'package:tivn_chart/dataBase/mySqlServer.dart';
 import 'package:tivn_chart/dataBase/mySQLite.dart';
 
 class global {
-  static ChartProduction chartQtyRate = ChartProduction();
-  static ChartProduction chartLine = ChartProduction();
-  static ChartProduction chartGroupAll = ChartProduction();
-  static ChartProduction chartGroupE = ChartProduction();
-  static ChartProduction chartGroupF = ChartProduction();
-  static ChartProduction chartGroupH = ChartProduction();
-
-  static List<ChartProduction> chartQtyRateData = [];
-  static List<ChartProduction> chartLineData = [];
-  static List<ChartProduction> chartGroupAllData = [];
-  static List<ChartProduction> chartGroupEData = [];
-  static List<ChartProduction> chartGroupFData = [];
-  static List<ChartProduction> chartGroupHData = [];
-
-  static String catalogue = 'daily';
+  static ChartProduction chart = ChartProduction();
+  static List<ChartProduction> chartData = [];
+  static List<ChartProduction> chartDataCompareLine = [];
+  static String catalogue = 'day';
   // static bool showDashboard = false;
   static bool autoChangeLine = false;
-  static String dashboardType = 'sewing';
+  // static String dashboardType = 'sewing';
+  static String screenName = 'Sewing Line';
+  static int screenTypeInt = 0;
   static bool showSetting = false;
+  static bool isSetting = false;
+  static bool isTV = true;
+  static Widget currentScreen = Container();
 
   static int currentLine = 0;
   static double screenW = 0;
@@ -45,7 +40,7 @@ class global {
   static T011stInspectionData t01 = T011stInspectionData();
   static List<T011stInspectionData> t01s = [];
   static int secondsAutoGetData = 600;
-  static int secondsAutoChangeLine = 120;
+  static int secondsAutoChangeLine = 60;
   static var planToday = 9999;
   static var actualToday = 0;
   static var sumDefect = 0;
@@ -59,6 +54,23 @@ class global {
   static int inspection12 = 1;
   static int selectedIndex = 0;
   static late Directory documentsDirectory;
+  static BoxDecoration myBoxDecoration = BoxDecoration(
+    borderRadius: BorderRadius.all(
+      Radius.circular(5),
+    ),
+    color: Colors.blueGrey,
+    gradient: LinearGradient(
+        colors: [Colors.amber, Color.fromARGB(255, 171, 218, 241)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight),
+    boxShadow: [
+      BoxShadow(
+        color: Color.fromARGB(255, 176, 250, 233),
+        offset: Offset(10, 20),
+        blurRadius: 30,
+      )
+    ],
+  );
   static var listGroupDefect = <String>[
     'Thông số',
     'Phụ liệu',

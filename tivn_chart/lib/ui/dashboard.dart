@@ -4,7 +4,6 @@ import 'package:radio_group_v2/radio_group_v2.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:tivn_chart/chart/chartFuntionData.dart';
 import 'package:tivn_chart/global.dart';
-import 'package:tivn_chart/ui/lineChart.dart';
 import 'package:intl/intl.dart';
 
 class Dashboard extends StatefulWidget {
@@ -20,6 +19,8 @@ class _Dashboard extends State<Dashboard> {
   double wSetting = 0;
   double hChart = 0;
   double wChart = 0;
+  double hChartPhone = 0;
+  double wChartPhone = 0;
   int padding = 10;
   List<String> lines = [
     'All',
@@ -38,8 +39,11 @@ class _Dashboard extends State<Dashboard> {
     // TODO: implement initState
     hSetting = global.screenHPixel - 50;
     wSetting = global.screenWPixel * 0.1;
-    hChart = (global.screenHPixel - 60) / 2 - 6;
+    hChart = ((global.screenHPixel - 60) * 0.5) - 6;
     wChart = global.screenWPixel * 0.325;
+    hChartPhone = global.screenHPixel * 0.6;
+    wChartPhone = global.screenWPixel;
+    getCurrentScreenName();
     refreshChartData();
     Timer.periodic(new Duration(seconds: global.secondsAutoGetData), (timer) {
       getDataT01();
@@ -65,41 +69,42 @@ class _Dashboard extends State<Dashboard> {
 
   refreshChartData() async {
     if (!mounted) return;
-    print('refreshChartData');
+
     var dataInput = [...global.t01s];
     setState(() {
-      global.chartQtyRateData = ChartFuntionData.createChartData(
-          dataInput,
-          global.currentLine,
-          global.inspection12,
-          global.rangeTime,
-          global.catalogue);
-      global.chartLineData = ChartFuntionData.createChartData([...global.t01s],
-          global.currentLine, global.inspection12, global.rangeTime, 'line');
-      global.chartGroupAllData = ChartFuntionData.createChartData(
-          dataInput,
-          global.currentLine,
-          global.inspection12,
-          global.rangeTime,
-          global.catalogue);
-      global.chartGroupEData = ChartFuntionData.createChartData(
-          dataInput,
-          global.currentLine,
-          global.inspection12,
-          global.rangeTime,
-          global.catalogue);
-      global.chartGroupFData = ChartFuntionData.createChartData(
-          dataInput,
-          global.currentLine,
-          global.inspection12,
-          global.rangeTime,
-          global.catalogue);
+      print(
+          'refreshChartData : screenTypeInt = ${global.screenTypeInt.toString()}     currentLine = ${global.currentLine.toString()}');
+      global.chartData.clear();
+      global.chartData = ChartFuntionData.createChartData(
+        dataInput,
+        global.currentLine,
+        global.inspection12,
+        global.rangeTime,
+        global.catalogue,
+      );
+      chartSeriesController?.updateDataSource(
+          updatedDataIndexes:
+              List<int>.generate(global.chartData.length, (i) => i + 1));
+      //global.chartData.clear();
+      global.chartDataCompareLine = ChartFuntionData.createChartData(
+        dataInput,
+        global.currentLine,
+        global.inspection12,
+        global.rangeTime,
+        'line',
+      );
+      chartSeriesController?.updateDataSource(
+          updatedDataIndexes: List<int>.generate(
+              global.chartDataCompareLine.length, (i) => i + 1));
     });
   }
 
   autoChangeLine() {
-    if (!mounted || !global.autoChangeLine) return;
-    if (global.autoChangeLine && global.dashboardType == 'control2') {
+    if (!mounted ||
+        !global.autoChangeLine ||
+        global.screenTypeInt == 0 ||
+        !global.isTV) return;
+    if (global.autoChangeLine && global.screenTypeInt == 2) {
       setState(() {
         if (global.currentLine < 7)
           global.currentLine++;
@@ -115,25 +120,49 @@ class _Dashboard extends State<Dashboard> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.grey[300],
         appBar: buildAppBar(),
-        body: Container(
-            color: Colors.grey[200],
-            // padding: EdgeInsets.all(10),
+        body: SingleChildScrollView(
+            padding: EdgeInsets.all(5),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                option(),
-                global.dashboardType == 'control1'
-                    ? buildScreen1()
-                    : buildScreen2()
+                global.screenTypeInt != 0 ? option() : Container(),
+                buildScreen(global.screenTypeInt)
               ],
             )),
       ),
     );
   }
 
+  Widget buildScreen(int screenTypeInt) {
+    var screen;
+    switch (screenTypeInt) {
+      case 1:
+        {
+          global.screenName = 'General';
+          screen = global.isTV ? buildScreen1() : buildScreen1_Phone();
+        }
+        break;
+      case 2:
+        {
+          global.screenName = 'Detail';
+          screen = global.isTV ? buildScreen2() : buildScreen2_Phone();
+        }
+        break;
+      case 0:
+        {
+          global.screenName = 'Sewing Line';
+          screen = buildScreen0_sewingLine();
+        }
+        break;
+    }
+    return screen;
+  }
+
   Widget buildScreen1() {
+    print('*********buildScreen 1 ');
     return Container(
       child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -144,20 +173,22 @@ class _Dashboard extends State<Dashboard> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  height: hChart,
+                  height: hChart - 40,
                   width: global.screenWPixel / 2 - 5,
-                  child: global.chartQtyRate.createChartQtyRateUI(
-                      global.chartQtyRateData,
+                  child: global.chart.createChartQtyRateUI(
+                      global.chartData,
                       '工場の全ラインの生産性・不良率-Sản lượng & tỉ lệ lỗi của toàn nhà máy',
-                      global.catalogue),
+                      global.catalogue,
+                      global.currentLine),
                 ),
                 Container(
-                  height: hChart,
+                  height: hChart - 40,
                   width: global.screenWPixel / 2 - 5,
-                  child: global.chartLine.createChartQtyRateUI(
-                      global.chartLineData,
+                  child: global.chart.createChartQtyRateUI(
+                      global.chartDataCompareLine,
                       'ライン別の生産性・不良率 - Sản lượng & tỉ lệ lỗi của các chuyền ',
-                      'line'),
+                      global.catalogue,
+                      global.currentLine),
                 ),
               ],
             ),
@@ -168,22 +199,19 @@ class _Dashboard extends State<Dashboard> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    height: hChart,
+                    height: hChart + 40,
                     width: wChart,
-                    child: global.chartGroupAll
-                        .createChartGroupAllUI(global.chartGroupAllData),
+                    child: global.chart.createChartGroupAllUI(global.chartData),
                   ),
                   Container(
-                    height: hChart,
+                    height: hChart + 40,
                     width: wChart,
-                    child: global.chartGroupF
-                        .createChartGroupFUI(global.chartGroupFData),
+                    child: global.chart.createChartGroupFUI(global.chartData),
                   ),
                   Container(
-                    height: hChart,
+                    height: hChart + 40,
                     width: wChart,
-                    child: global.chartGroupE
-                        .createChartGroupEUI(global.chartGroupEData),
+                    child: global.chart.createChartGroupEUI(global.chartData),
                   ),
                 ],
               ),
@@ -193,13 +221,14 @@ class _Dashboard extends State<Dashboard> {
   }
 
   Widget buildScreen2() {
+    print('*********buildScreen 2 ');
     return Container(
       child: Column(
         children: [
           Container(
-            height: hChart,
-            child: global.chartQtyRate.createChartQtyRateUI(
-                global.chartQtyRateData, '', global.catalogue),
+            height: hChart - 80,
+            child: global.chart.createChartQtyRateUI(
+                global.chartData, '', global.catalogue, global.currentLine),
           ),
           Divider(height: 4),
           Container(
@@ -208,26 +237,163 @@ class _Dashboard extends State<Dashboard> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  height: hChart,
+                  height: hChart + 80,
                   width: wChart,
-                  child: global.chartGroupAll
-                      .createChartGroupAllUI(global.chartGroupAllData),
+                  child: global.chart.createChartGroupAllUI(global.chartData),
                 ),
                 Container(
-                  height: hChart,
+                  height: hChart + 80,
                   width: wChart,
-                  child: global.chartGroupF
-                      .createChartGroupFUI(global.chartGroupFData),
+                  child: global.chart.createChartGroupFUI(global.chartData),
                 ),
                 Container(
-                  height: hChart,
+                  height: hChart + 80,
                   width: wChart,
-                  child: global.chartGroupE
-                      .createChartGroupEUI(global.chartGroupEData),
+                  child: global.chart.createChartGroupEUI(global.chartData),
                 ),
               ],
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  Widget buildScreen0_sewingLine() {
+    print('*********  buildScreen 3  sewingLine   ');
+    return Container(
+      height: global.screenHPixel - 30,
+      width: global.screenWPixel,
+      child: global.chart.createChartQtyRateUI(
+          global.chartData, '', global.catalogue, global.currentLine),
+    );
+  }
+
+  Widget buildScreen1_Phone() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Column(
+        children: [
+          Container(
+            decoration: global.myBoxDecoration,
+            height: hChartPhone,
+            width: wChartPhone,
+            child: global.chart.createChartQtyRateUI(
+                global.chartData,
+                '工場の全ラインの生産性・不良率-Sản lượng & tỉ lệ lỗi của toàn nhà máy',
+                global.catalogue,
+                global.currentLine),
+          ),
+          Divider(height: 4),
+          Container(
+            decoration: global.myBoxDecoration,
+            height: hChartPhone,
+            width: wChartPhone,
+            child: global.chart.createChartQtyRateUI(
+                global.chartDataCompareLine,
+                'ライン別の生産性・不良率 - Sản lượng & tỉ lệ lỗi của các chuyền ',
+                global.catalogue,
+                global.currentLine),
+          ),
+          Divider(height: 4),
+          Container(
+            decoration: global.myBoxDecoration,
+            height: hChartPhone,
+            width: wChartPhone,
+            child: global.chart.createChartGroupAllUI(global.chartData),
+          ),
+          Divider(height: 4),
+          Container(
+            decoration: global.myBoxDecoration,
+            height: hChartPhone,
+            width: wChartPhone,
+            child: global.chart.createChartGroupFUI(global.chartData),
+          ),
+          Divider(height: 4),
+          Container(
+            decoration: global.myBoxDecoration,
+            height: hChartPhone,
+            width: wChartPhone,
+            child: global.chart.createChartGroupEUI(global.chartData),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildScreen2_Phone() {
+    return SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(children: [
+          Container(
+            height: hChartPhone,
+            width: wChartPhone,
+            child: global.chart.createChartQtyRateUI(
+                global.chartData, '', global.catalogue, global.currentLine),
+          ),
+          Divider(height: 4),
+          Container(
+            height: hChartPhone,
+            width: wChartPhone,
+            child: global.chart.createChartGroupAllUI(global.chartData),
+          ),
+          Divider(height: 4),
+          Container(
+            height: hChartPhone,
+            width: wChartPhone,
+            child: global.chart.createChartGroupFUI(global.chartData),
+          ),
+          Divider(height: 4),
+          Container(
+            height: hChartPhone,
+            width: wChartPhone,
+            child: global.chart.createChartGroupEUI(global.chartData),
+          ),
+        ]));
+  }
+
+  // Widget bbuildScreen3_sewingLinePhone() {}
+  changescreenTypeInt() {
+    setState(() {
+      global.screenTypeInt++;
+
+      if (global.screenTypeInt > 2 && !global.isTV)
+        global.screenTypeInt = 1;
+      else if (global.screenTypeInt > 2 && global.isTV)
+        global.screenTypeInt = 0;
+      print('global.screenTypeInt = ' + global.screenTypeInt.toString());
+      print('global.global.isTV = ' + global.isTV.toString());
+    });
+  }
+
+  getCurrentScreenName() {
+    switch (global.screenTypeInt) {
+      case 1:
+        {
+          global.screenName = 'General';
+        }
+        break;
+      case 2:
+        {
+          global.screenName = 'Detail';
+        }
+        break;
+      case 0:
+        {
+          global.screenName = 'Sewing Line';
+        }
+        break;
+    }
+  }
+
+  Widget setting() {
+    return Container(
+      child: Row(
+        children: [
+          rangeDay(),
+          //-------
+
+          playPauseChange()
         ],
       ),
     );
@@ -240,104 +406,135 @@ class _Dashboard extends State<Dashboard> {
       backgroundColor: Colors.blue[700],
       leading: InkWell(
           onTap: () {
-            global.dashboardType = 'sewing';
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => LineChart()),
-            );
+            setState(() {
+              changescreenTypeInt();
+              global.sharedPreferences
+                  .setInt('screenTypeInt', global.screenTypeInt);
+              buildScreen(global.screenTypeInt);
+            });
           },
-          child: Icon(Icons.close_rounded)),
+          child: Row(
+            children: [Icon(Icons.dashboard), Text(global.screenName)],
+          )),
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(global.dashboardType == 'control1'
-              ? "Production Management System".toUpperCase()
-              : ('LINE ' + global.currentLine.toString())),
+          global.screenTypeInt != 1
+              ? Text(('LINE ' + global.currentLine.toString()))
+              : SizedBox(height: 20, child: Image.asset('assets/logo.png')),
         ],
       ),
       centerTitle: true,
-      actions: global.dashboardType == 'control2'
-          ? [
-              InkWell(
-                child: Icon(
-                    global.autoChangeLine ? Icons.pause : Icons.play_circle),
-                onTap: () {
-                  setState(() {
-                    global.autoChangeLine = !global.autoChangeLine;
-                  });
-                  global.sharedPreferences
-                      .setBool('autoChangeLine', global.autoChangeLine);
-                },
-              ),
-              InkWell(
-                child: Icon(Icons.arrow_back_sharp),
-                onTap: () {
-                  setState(() {
-                    if (global.currentLine > 1)
-                      global.currentLine--;
-                    else
-                      global.currentLine = 8;
-                  });
-                  global.sharedPreferences
-                      .setInt('currentLine', global.currentLine);
-                  refreshChartData();
-                },
-              ),
-              InkWell(
-                child: Icon(Icons.arrow_forward_sharp),
-                onTap: () {
-                  setState(() {
-                    if (global.currentLine < 8)
-                      global.currentLine++;
-                    else
-                      global.currentLine = 1;
-                  });
-                  global.sharedPreferences
-                      .setInt('currentLine', global.currentLine);
-                  refreshChartData();
-                },
-              ),
-            ]
-          : [],
+      actions: [getAppBarActionWidget()],
+    );
+  }
+
+  Widget getAppBarActionWidget() {
+    Widget result = Row();
+    switch (global.screenTypeInt) {
+      case 1:
+        {
+          result = SizedBox(width: 45);
+        }
+        break;
+      case 2:
+        {
+          result = Row(
+            children: [
+              // rangeDay(),
+              playPauseChange()
+            ],
+          );
+        }
+        break;
+      case 3:
+        {}
+        break;
+    }
+    return result;
+  }
+
+  Widget playPauseChange() {
+    return Container(
+      child: Row(
+        children: [
+          global.autoChangeLine
+              ? InkWell(
+                  child: Icon(
+                    global.autoChangeLine ? Icons.pause : Icons.play_circle,
+                  ),
+                  onTap: () {
+                    setState(() {
+                      global.autoChangeLine = !global.autoChangeLine;
+                      global.sharedPreferences
+                          .setBool('autoChangeLine', global.autoChangeLine);
+                      refreshChartData();
+                    });
+                  },
+                )
+              : Container(),
+          InkWell(
+            child: Icon(Icons.arrow_back_sharp),
+            onTap: () {
+              setState(() {
+                if (global.currentLine > 1)
+                  global.currentLine--;
+                else
+                  global.currentLine = 8;
+                global.sharedPreferences
+                    .setInt('currentLine', global.currentLine);
+                refreshChartData();
+              });
+            },
+          ),
+          InkWell(
+            child: Icon(Icons.arrow_forward_sharp),
+            onTap: () {
+              setState(() {
+                if (global.currentLine < 8)
+                  global.currentLine++;
+                else
+                  global.currentLine = 1;
+                global.sharedPreferences
+                    .setInt('currentLine', global.currentLine);
+                refreshChartData();
+              });
+            },
+          ),
+          //
+        ],
+      ),
+    );
+  }
+
+  Widget rangeDay() {
+    return Container(
+      child: Text(
+          style: TextStyle(fontSize: 12),
+          DateFormat('dd/MM/yyyy').format(global.dayFilerBegin) +
+              ' - ' +
+              DateFormat('dd/MM/yyyy').format(
+                global.dayFilerEnd,
+              )),
     );
   }
 
   Widget option() {
-    return Container(
-      color: Colors.blue[50],
-      alignment: Alignment.center,
-      padding: EdgeInsets.fromLTRB(5, 1, 5, 1),
-      height: 30,
-      width: global.screenWPixel,
-      // color: Colors.blueAccent,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      // color: Colors.blue[50],
+      // alignment: Alignment.center,
+      // padding: EdgeInsets.fromLTRB(5, 1, 5, 1),
+      // height: 30,
+      // width: global.screenWPixel,
       child: Row(children: [
-        RadioGroup(
-          onChanged: (value) {
-            setState(() {
-              if (value.toString() == 'Screen 1') {
-                global.dashboardType = 'control1';
-              } else {
-                global.dashboardType = 'control2';
-              }
-              global.sharedPreferences
-                  .setString('dashboardType', global.dashboardType);
-            });
-            refreshChartData();
-          },
-          controller: myController,
-          values: ["Screen 1", "Screen 2"],
-          indexOfDefault: global.dashboardType == 'control1' ? 0 : 1,
-          orientation: RadioGroupOrientation.Horizontal,
-          decoration: RadioGroupDecoration(
-            spacing: 2.0,
-            labelStyle: TextStyle(color: Colors.black, fontSize: 8),
-            activeColor: Colors.amber,
-          ),
+        rangeDay(),
+        SizedBox(
+          width: 25,
         ),
         RadioGroup(
           onChanged: (value) {
-            print('value = ' + value.toString());
             setState(() {
               global.rangeTime = int.parse(value.toString());
               global.sharedPreferences.setInt('rangeTime', global.rangeTime);
@@ -345,8 +542,8 @@ class _Dashboard extends State<Dashboard> {
             });
           },
           controller: myController,
-          values: [1, 2, 4, 6, 8, 10, 15, 20],
-          indexOfDefault: [1, 2, 4, 6, 8, 10, 15, 20].indexOf(global.rangeTime),
+          values: [1, 2, 4, 6, 10, 14],
+          indexOfDefault: [1, 2, 4, 6, 10, 14].indexOf(global.rangeTime),
           orientation: RadioGroupOrientation.Horizontal,
           decoration: RadioGroupDecoration(
             spacing: 2.0,
@@ -355,7 +552,7 @@ class _Dashboard extends State<Dashboard> {
           ),
         ),
         SizedBox(
-          width: 10,
+          width: 25,
         ),
         RadioGroup(
           onChanged: (value) {
@@ -376,9 +573,9 @@ class _Dashboard extends State<Dashboard> {
           ),
         ),
         SizedBox(
-          width: 10,
+          width: 25,
         ),
-        Text('Data', style: TextStyle(color: Colors.black, fontSize: 8)),
+        // Text('Data', style: TextStyle(color: Colors.black, fontSize: 8)),
         RadioGroup(
           onChanged: (value) {
             setState(() {
@@ -403,15 +600,5 @@ class _Dashboard extends State<Dashboard> {
         ),
       ]),
     );
-  }
-
-  Widget alarm() {
-    return Container(
-        alignment: Alignment.center,
-        color: Colors.redAccent,
-        padding: EdgeInsets.all(10),
-        height: hChart,
-        width: wChart,
-        child: Text('alarm'));
   }
 }

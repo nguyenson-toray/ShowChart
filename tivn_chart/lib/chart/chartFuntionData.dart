@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 class ChartFuntionData {
   //create data for chart
+
   static List<ChartProduction> createChartData(
     List<T011stInspectionData> t01s,
     int line,
@@ -14,8 +15,9 @@ class ChartFuntionData {
     int range,
     String catalogue,
   ) {
-    print('createChartQtyRateUI-t01s : ' + t01s.length.toString());
-    print('catalogue : ' + catalogue.toString());
+    print(
+        '=============== createChartData   t01s.length :  ${t01s.length.toString()}  range: ${range.toString()}   catalogue : ${catalogue}  line : ${line.toString()}');
+
     var t01Filtered = [...t01s]; //clone list data
     List<ChartProduction> resultDataChart = <ChartProduction>[];
 
@@ -26,12 +28,10 @@ class ChartFuntionData {
       case 'day':
         {
           var data = [...t01Filtered];
-          if (global.dashboardType != 'control1')
+          if (global.screenTypeInt != 1) {
             data.removeWhere((element) => element.getX01 != line);
-
+          }
           resultDataChart = summaryDaily(data, range);
-
-          resultDataChart.forEach((element) {});
         }
         break;
       case 'week':
@@ -96,8 +96,8 @@ class ChartFuntionData {
       List<T011stInspectionData> dataInput, int range) {
     print('summaryWeekly -range: ${range.toString()}');
     List<ChartProduction> result = [];
-    var allWeek = [];
-    var filterWeek = [];
+    List<String> allWeek = [];
+    List<String> filterWeek = [];
     dataInput.forEach((element) {
       allWeek.add(MyFuntions.dateTimeToWeek(element.getX02));
     });
@@ -107,12 +107,51 @@ class ChartFuntionData {
       return a.compareTo(b); //sorting in descending order
     });
     var indexBegin = 0;
+    //
+    List<DateTime> days = [];
+    List<dynamic> daysString = [];
     if (filterWeek.length - range > 0) indexBegin = filterWeek.length - range;
+    var firstWeek =
+        int.parse((filterWeek[indexBegin].split('-'))[1]); //week number
+
+    var lastWeek = int.parse(filterWeek.last.split('-')[1]); //week number
+    daysString = dataInput
+        .where((element) =>
+            IsoCalendar.fromDateTime(DateTime.parse(element.getX02))
+                .weekNumber ==
+            firstWeek)
+        .toSet()
+        .toList();
+    daysString.forEach((element) {
+      days.add(DateTime.parse(element.getX02));
+    });
+    days.toSet().toList();
+    days.sort((a, b) {
+      return a.compareTo(b); //sorting in descending order
+    });
+    global.dayFilerBegin = days.first;
+    //-
+    daysString = dataInput
+        .where((element) =>
+            IsoCalendar.fromDateTime(DateTime.parse(element.getX02))
+                .weekNumber ==
+            lastWeek)
+        .toSet()
+        .toList();
+    daysString.forEach((element) {
+      days.add(DateTime.parse(element.getX02));
+    });
+    days.toSet().toList();
+    days.sort((a, b) {
+      return a.compareTo(b); //sorting in descending order
+    });
+    global.dayFilerEnd = days.last;
+    //
     for (var index = indexBegin; index < filterWeek.length; index++) {
       var chartData = ChartProduction();
       var t01sOneWeekData = dataInput.where((element) =>
           MyFuntions.dateTimeToWeek(element.getX02) == filterWeek[index]);
-      chartData = chartData.convertFromT01s(t01sOneWeekData.toList());
+      chartData = chartData.convertFromT01s([...t01sOneWeekData.toList()]);
       chartData.setCatalogue = filterWeek[index];
       result.add(chartData);
     }
@@ -136,7 +175,9 @@ class ChartFuntionData {
     });
     var indexBegin = 0;
     if (filterMonth.length - range > 0) indexBegin = filterMonth.length - range;
-    print('filterMonth = ' + filterMonth.toString());
+    //-
+    global.dayFilerBegin = DateTime.parse(filterMonth[indexBegin] + '-01');
+    //-
     for (var index = indexBegin; index < filterMonth.length; index++) {
       var chartData = ChartProduction();
       var t01sOneMonthData = dataInput.where((element) =>

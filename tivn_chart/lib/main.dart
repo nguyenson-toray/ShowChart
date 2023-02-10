@@ -6,22 +6,23 @@ import 'package:intl/intl.dart';
 import 'package:tivn_chart/ui/startPage.dart';
 import 'package:wakelock/wakelock.dart';
 import 'dart:ui';
+import 'package:device_info_plus/device_info_plus.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Wakelock.enable();
   global.sharedPreferences = await SharedPreferences.getInstance();
   if (global.sharedPreferences.getInt("currentLine") == null) {
-    global.sharedPreferences.setInt('currentLine', 0);
+    global.sharedPreferences.setInt('currentLine', 1);
     global.currentLine = 0;
   } else
     global.currentLine = global.sharedPreferences.getInt("currentLine")!;
 
-  if (global.sharedPreferences.getString("dashboardType") == null) {
-    global.sharedPreferences.setString('dashboardType', 'sewing');
-    global.dashboardType = 'sewing';
+  if (global.sharedPreferences.getInt("screenTypeInt") == null) {
+    global.sharedPreferences.setInt('screenTypeInt', 1);
+    global.screenTypeInt = 0;
   } else
-    global.dashboardType = global.sharedPreferences.getString("dashboardType")!;
+    global.screenTypeInt = global.sharedPreferences.getInt("screenTypeInt")!;
 
   if (global.sharedPreferences.getBool("autoChangeLine") == null) {
     global.sharedPreferences.setBool('autoChangeLine', false);
@@ -29,11 +30,11 @@ Future<void> main() async {
   } else
     global.autoChangeLine = global.sharedPreferences.getBool("autoChangeLine")!;
 
-  if (global.sharedPreferences.getString("catalogue") == null) {
-    global.sharedPreferences.setString('catalogue', 'daily');
-    global.catalogue = 'daily';
+  if (global.sharedPreferences.getString('catalogue') == null) {
+    global.sharedPreferences.setString('catalogue', 'day');
+    global.catalogue = 'day';
   } else
-    global.catalogue = global.sharedPreferences.getString("catalogue")!;
+    global.catalogue = global.sharedPreferences.getString('catalogue')!;
 
   if (global.sharedPreferences.getInt("rangeTime") == null) {
     global.sharedPreferences.setInt('rangeTime', 6);
@@ -58,7 +59,27 @@ Future<void> main() async {
   global.screenWPixel = logicalScreenSize.width;
   global.screenHPixel = logicalScreenSize.height;
 
-  runApp(const MyApp());
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+  print('screenW : ' + global.screenW.toString());
+  print('screenH : ' + global.screenH.toString());
+  print('screenWPixel : ' + global.screenWPixel.toString());
+  print('screscreenHPixelenW : ' + global.screenHPixel.toString());
+  print('manufacturer   ${androidInfo.manufacturer}');
+  print('model  ${androidInfo.model}');
+  print('product   ${androidInfo.product}');
+  print('display   ${androidInfo.display}');
+  print('brand   ${androidInfo.brand}');
+  print('device   ${androidInfo.device}');
+  print('supportedAbis   ${androidInfo.supportedAbis.toString()}');
+  global.isTV = androidInfo.manufacturer.contains('tcl') ||
+      androidInfo.manufacturer.contains('TCL');
+
+  SystemChrome.setPreferredOrientations([
+    global.isTV ? DeviceOrientation.landscapeLeft : DeviceOrientation.portraitUp
+  ]).then((_) {
+    runApp(new MyApp());
+  });
 }
 
 class MyApp extends StatefulWidget {

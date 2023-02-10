@@ -24,28 +24,38 @@ class _LineChartState extends State<LineChart> {
     // TODO: implement initState
     global.sharedPreferences.setInt('currentLine', global.currentLine);
     global.sharedPreferences.setBool('autoChangeLine', global.autoChangeLine);
-    global.sharedPreferences.setString('dashboardType', global.dashboardType);
+    global.sharedPreferences.setInt('dashboardType', global.screenTypeInt);
 
     setState(() {
-      global.chartQtyRateData.clear();
-      global.chartQtyRateData = ChartFuntionData.createChartData(global.t01s,
-          global.currentLine, global.inspection12, global.rangeTime, 'day');
+      global.chartData.clear();
+      global.chartData = ChartFuntionData.createChartData(
+        global.t01s,
+        global.currentLine,
+        global.inspection12,
+        global.rangeTime,
+        'day',
+      );
       _chartSeriesController?.updateDataSource(
           updatedDataIndexes:
-              List<int>.generate(global.chartQtyRateData.length, (i) => i + 1));
+              List<int>.generate(global.chartData.length, (i) => i + 1));
     });
   }
 
   @override
   void initState() {
     // TODO: implement initState
-    global.chartQtyRate = ChartProduction();
-    global.chartQtyRateData.clear();
-    global.chartQtyRateData = ChartFuntionData.createChartData(global.t01s,
-        global.currentLine, global.inspection12, global.rangeTime, 'day');
+    global.chart = ChartProduction();
+    global.chartData.clear();
+    global.chartData = ChartFuntionData.createChartData(
+      global.t01s,
+      global.currentLine,
+      global.inspection12,
+      global.rangeTime,
+      global.catalogue,
+    );
     _chartSeriesController?.updateDataSource(
         updatedDataIndexes:
-            List<int>.generate(global.chartQtyRateData.length, (i) => i + 1));
+            List<int>.generate(global.chartData.length, (i) => i + 1));
     Timer.periodic(new Duration(seconds: global.secondsAutoGetData), (timer) {
       intervalRefresh();
     });
@@ -73,12 +83,17 @@ class _LineChartState extends State<LineChart> {
     if (listDataT01.length != 0) {
       if (!mounted) return;
       setState(() {
-        global.chartQtyRateData.clear();
-        global.chartQtyRateData = ChartFuntionData.createChartData(global.t01s,
-            global.currentLine, global.inspection12, global.rangeTime, 'day');
+        global.chartData.clear();
+        global.chartData = ChartFuntionData.createChartData(
+          global.t01s,
+          global.currentLine,
+          global.inspection12,
+          global.rangeTime,
+          'day',
+        );
         _chartSeriesController?.updateDataSource(
-            updatedDataIndexes: List<int>.generate(
-                global.chartQtyRateData.length, (i) => i + 1));
+            updatedDataIndexes:
+                List<int>.generate(global.chartData.length, (i) => i + 1));
       });
     }
   }
@@ -133,9 +148,9 @@ class _LineChartState extends State<LineChart> {
             ),
             InkWell(
                 onTap: () {
-                  global.dashboardType = 'control1';
+                  global.screenTypeInt = 1;
                   global.sharedPreferences
-                      .setString('dashboardType', global.dashboardType);
+                      .setInt('dashboardType', global.screenTypeInt);
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => Dashboard()),
@@ -156,10 +171,11 @@ class _LineChartState extends State<LineChart> {
               Expanded(
                 child: Container(
                     width: global.screenWPixel,
-                    child: global.chartQtyRate.createChartQtyRateUI(
-                        global.chartQtyRateData,
-                        '---------------------工場の全ラインの生産性・不良率-Sản lượng & tỉ lệ lỗi của toàn nhà máy',
-                        global.catalogue)),
+                    child: global.chart.createChartQtyRateUI(
+                        global.chartData,
+                        '',
+                        global.catalogue,
+                        global.currentLine)),
               ),
               Container(
                 child: Text(

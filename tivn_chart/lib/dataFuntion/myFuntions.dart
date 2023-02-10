@@ -65,15 +65,31 @@ class MyFuntions {
     return result;
   }
 
-  static DateTime weekTofirstDate(int week, int year) {
+  static DateTime firstDateOfWeek(String weekYear) {
     DateTime startDate;
     DateTime newDateTime;
-    int totaldays = week * 7;
+    int year = int.parse(weekYear.split('-')[0]);
+    int week = int.parse(weekYear.split('-')[1]);
+    int totaldays = (week - 1) * 7;
     final extraDuration = Duration(days: totaldays);
     startDate = DateTime(year);
     newDateTime = startDate.add(extraDuration);
     print(
-        'weekTofirstDate week : $week - year : $year =>first day : ${newDateTime.toString()}');
+        'firstDateOfWeekNumber week : $week - year : $year =>first day : ${newDateTime.toString()}');
+    return newDateTime;
+  }
+
+  static DateTime lastDateOfWeek(String weekYear) {
+    DateTime startDate;
+    DateTime newDateTime;
+    int year = int.parse(weekYear.split('-')[0]);
+    int week = int.parse(weekYear.split('-')[1]);
+    int totaldays = (week - 1) * 7 + 6;
+    final extraDuration = Duration(days: totaldays);
+    startDate = DateTime(year);
+    newDateTime = startDate.add(extraDuration);
+    print(
+        'firstDateOfWeekNumber week : $week - year : $year =>first day : ${newDateTime.toString()}');
     return newDateTime;
   }
 

@@ -37,6 +37,7 @@ dependencies:
   iso_calendar: ^1.0.0
   const_date_time: ^1.0.2 
   radio_group_v2: ^1.0.2
+  device_info_plus: ^8.1.0
   
 
 dev_dependencies:
