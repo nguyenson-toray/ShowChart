@@ -192,7 +192,7 @@ class _Dashboard extends State<Dashboard> {
                 ),
               ],
             ),
-            Divider(height: 4),
+            SizedBox(height: 5),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -230,7 +230,7 @@ class _Dashboard extends State<Dashboard> {
             child: global.chart.createChartQtyRateUI(
                 global.chartData, '', global.catalogue, global.currentLine),
           ),
-          Divider(height: 4),
+          SizedBox(height: 5),
           Container(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -274,47 +274,62 @@ class _Dashboard extends State<Dashboard> {
       scrollDirection: Axis.vertical,
       child: Column(
         children: [
-          Container(
-            decoration: global.myBoxDecoration,
-            height: hChartPhone,
-            width: wChartPhone,
-            child: global.chart.createChartQtyRateUI(
-                global.chartData,
-                '工場の全ラインの生産性・不良率-Sản lượng & tỉ lệ lỗi của toàn nhà máy',
-                global.catalogue,
-                global.currentLine),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(7.0),
+            child: Container(
+              decoration: global.myBoxDecoration,
+              height: hChartPhone,
+              width: wChartPhone,
+              child: global.chart.createChartQtyRateUI(
+                  global.chartData,
+                  '工場の全ラインの生産性・不良率-Sản lượng & tỉ lệ lỗi của toàn nhà máy',
+                  global.catalogue,
+                  global.currentLine),
+            ),
           ),
-          Divider(height: 4),
-          Container(
-            decoration: global.myBoxDecoration,
-            height: hChartPhone,
-            width: wChartPhone,
-            child: global.chart.createChartQtyRateUI(
-                global.chartDataCompareLine,
-                'ライン別の生産性・不良率 - Sản lượng & tỉ lệ lỗi của các chuyền ',
-                global.catalogue,
-                global.currentLine),
+          SizedBox(height: 5),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(7.0),
+            child: Container(
+              decoration: global.myBoxDecoration,
+              height: hChartPhone,
+              width: wChartPhone,
+              child: global.chart.createChartQtyRateUI(
+                  global.chartDataCompareLine,
+                  'ライン別の生産性・不良率 - Sản lượng & tỉ lệ lỗi của các chuyền ',
+                  global.catalogue,
+                  global.currentLine),
+            ),
           ),
-          Divider(height: 4),
-          Container(
-            decoration: global.myBoxDecoration,
-            height: hChartPhone,
-            width: wChartPhone,
-            child: global.chart.createChartGroupAllUI(global.chartData),
+          SizedBox(height: 5),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(7.0),
+            child: Container(
+              decoration: global.myBoxDecoration,
+              height: hChartPhone,
+              width: wChartPhone,
+              child: global.chart.createChartGroupAllUI(global.chartData),
+            ),
           ),
-          Divider(height: 4),
-          Container(
-            decoration: global.myBoxDecoration,
-            height: hChartPhone,
-            width: wChartPhone,
-            child: global.chart.createChartGroupFUI(global.chartData),
+          SizedBox(height: 5),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(7.0),
+            child: Container(
+              decoration: global.myBoxDecoration,
+              height: hChartPhone,
+              width: wChartPhone,
+              child: global.chart.createChartGroupFUI(global.chartData),
+            ),
           ),
-          Divider(height: 4),
-          Container(
-            decoration: global.myBoxDecoration,
-            height: hChartPhone,
-            width: wChartPhone,
-            child: global.chart.createChartGroupEUI(global.chartData),
+          SizedBox(height: 5),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(7.0),
+            child: Container(
+              decoration: global.myBoxDecoration,
+              height: hChartPhone,
+              width: wChartPhone,
+              child: global.chart.createChartGroupEUI(global.chartData),
+            ),
           ),
         ],
       ),
@@ -325,30 +340,42 @@ class _Dashboard extends State<Dashboard> {
     return SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(children: [
-          Container(
-            height: hChartPhone,
-            width: wChartPhone,
-            child: global.chart.createChartQtyRateUI(
-                global.chartData, '', global.catalogue, global.currentLine),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(7.0),
+            child: Container(
+              height: hChartPhone,
+              width: wChartPhone,
+              child: global.chart.createChartQtyRateUI(
+                  global.chartData, '', global.catalogue, global.currentLine),
+            ),
           ),
-          Divider(height: 4),
-          Container(
-            height: hChartPhone,
-            width: wChartPhone,
-            child: global.chart.createChartGroupAllUI(global.chartData),
+          SizedBox(height: 5),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(7.0),
+            child: Container(
+              height: hChartPhone,
+              width: wChartPhone,
+              child: global.chart.createChartGroupAllUI(global.chartData),
+            ),
           ),
-          Divider(height: 4),
-          Container(
-            height: hChartPhone,
-            width: wChartPhone,
-            child: global.chart.createChartGroupFUI(global.chartData),
+          SizedBox(height: 5),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(7.0),
+            child: Container(
+              height: hChartPhone,
+              width: wChartPhone,
+              child: global.chart.createChartGroupFUI(global.chartData),
+            ),
           ),
-          Divider(height: 4),
-          Container(
-            height: hChartPhone,
-            width: wChartPhone,
-            child: global.chart.createChartGroupEUI(global.chartData),
-          ),
+          SizedBox(height: 5),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(7.0),
+            child: Container(
+              height: hChartPhone,
+              width: wChartPhone,
+              child: global.chart.createChartGroupEUI(global.chartData),
+            ),
+          )
         ]));
   }
 
