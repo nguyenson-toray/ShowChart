@@ -14,13 +14,13 @@ Future<void> main() async {
   global.sharedPreferences = await SharedPreferences.getInstance();
   if (global.sharedPreferences.getInt("currentLine") == null) {
     global.sharedPreferences.setInt('currentLine', 1);
-    global.currentLine = 0;
+    global.currentLine = 1;
   } else
     global.currentLine = global.sharedPreferences.getInt("currentLine")!;
 
   if (global.sharedPreferences.getInt("screenTypeInt") == null) {
     global.sharedPreferences.setInt('screenTypeInt', 1);
-    global.screenTypeInt = 0;
+    global.screenTypeInt = 1;
   } else
     global.screenTypeInt = global.sharedPreferences.getInt("screenTypeInt")!;
 

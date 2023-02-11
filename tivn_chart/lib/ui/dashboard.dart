@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:radio_group_v2/radio_group_v2.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:tivn_chart/chart/chartFuntionData.dart';
@@ -119,19 +122,24 @@ class _Dashboard extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.grey[300],
-        appBar: buildAppBar(),
-        body: SingleChildScrollView(
-            padding: EdgeInsets.all(5),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                global.screenTypeInt != 0 ? option() : Container(),
-                buildScreen(global.screenTypeInt)
-              ],
-            )),
+      child: WillPopScope(
+        onWillPop: () async {
+          return await showExitAppAlert();
+        },
+        child: Scaffold(
+          backgroundColor: Colors.grey[300],
+          appBar: buildAppBar(),
+          body: SingleChildScrollView(
+              padding: EdgeInsets.all(5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  global.screenTypeInt != 0 ? option() : Container(),
+                  buildScreen(global.screenTypeInt)
+                ],
+              )),
+        ),
       ),
     );
   }
@@ -388,8 +396,6 @@ class _Dashboard extends State<Dashboard> {
         global.screenTypeInt = 1;
       else if (global.screenTypeInt > 2 && global.isTV)
         global.screenTypeInt = 0;
-      print('global.screenTypeInt = ' + global.screenTypeInt.toString());
-      print('global.global.isTV = ' + global.isTV.toString());
     });
   }
 
@@ -627,5 +633,16 @@ class _Dashboard extends State<Dashboard> {
         ),
       ]),
     );
+  }
+
+  showExitAppAlert() async {
+    await QuickAlert.show(
+        context: context,
+        type: QuickAlertType.confirm,
+        title: 'Exit application ?',
+        confirmBtnText: 'YES',
+        cancelBtnText: 'NO',
+        confirmBtnColor: Colors.indigo,
+        onConfirmBtnTap: () => SystemNavigator.pop());
   }
 }

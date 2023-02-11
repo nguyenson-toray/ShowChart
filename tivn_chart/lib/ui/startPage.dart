@@ -1,16 +1,12 @@
 // import 'package:connect_to_sql_server_directly/connect_to_sql_server_directly.dart';
 
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:tivn_chart/global.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
-import 'package:tivn_chart/dataBase/mySqlServer.dart';
-import 'package:tivn_chart/ui/lineChart.dart';
-import 'package:tivn_chart/dataBase/mySQLite.dart';
-import 'package:flutter/foundation.dart';
 import 'package:tivn_chart/ui/dashboard.dart';
 
 import '../dataFuntion/myFuntions.dart';
@@ -28,7 +24,10 @@ class _Start extends State<Start> {
   void initState() {
     // TODO: implement initState
 
-    initData();
+    Timer(Duration(milliseconds: 500), () {
+      print("initData after 500 milliseconds");
+      initData();
+    });
 
     super.initState();
   }
@@ -57,7 +56,9 @@ class _Start extends State<Start> {
                 SizedBox(
                   height: 50,
                 ),
-                SizedBox(height: 100, child: Image.asset('assets/logo.png')),
+                SizedBox(
+                    height: global.isTV ? 100 : 60,
+                    child: Image.asset('assets/logo.png')),
                 Container(
                   height: 100,
                   alignment: Alignment.center,

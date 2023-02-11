@@ -12,17 +12,15 @@ class global {
   static List<ChartProduction> chartData = [];
   static List<ChartProduction> chartDataCompareLine = [];
   static String catalogue = 'day';
-  // static bool showDashboard = false;
   static bool autoChangeLine = false;
-  // static String dashboardType = 'sewing';
   static String screenName = 'Sewing Line';
-  static int screenTypeInt = 0;
+  static int screenTypeInt = 1;
   static bool showSetting = false;
   static bool isSetting = false;
   static bool isTV = true;
   static Widget currentScreen = Container();
 
-  static int currentLine = 0;
+  static int currentLine = 1;
   static double screenW = 0;
   static double screenH = 0;
   static double screenWPixel = 0;

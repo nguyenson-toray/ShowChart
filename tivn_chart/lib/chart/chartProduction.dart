@@ -392,11 +392,13 @@ class ChartProduction {
       title: ChartTitle(
         text: title,
         textStyle: TextStyle(
-            fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
+            fontSize: !global.isTV ? 12 : 10,
+            fontWeight: FontWeight.bold,
+            color: Colors.orange),
       ),
       legend: Legend(
         textStyle: TextStyle(
-            fontSize: global.screenTypeInt == 0 ? 15 : 7,
+            fontSize: !global.isTV ? 11 : (global.screenTypeInt == 0 ? 15 : 7),
             fontWeight: FontWeight.normal,
             color: Colors.black),
         position: LegendPosition.bottom,
@@ -430,7 +432,8 @@ class ChartProduction {
 
   getSeriesQtyRate(List<ChartProduction> dataInput) {
     var myDataLabelSettings = DataLabelSettings(
-        textStyle: TextStyle(fontSize: global.screenTypeInt == 0 ? 15 : 8),
+        textStyle: TextStyle(
+            fontSize: !global.isTV ? 12 : (global.screenTypeInt == 0 ? 15 : 8)),
         isVisible: true,
         labelAlignment: ChartDataLabelAlignment.auto);
     return <ChartSeries<ChartProduction, String>>[
@@ -490,13 +493,17 @@ class ChartProduction {
       title: ChartTitle(
         text: 'エラーグループ-Nhóm lỗi',
         textStyle: TextStyle(
-            fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
+            fontSize: !global.isTV ? 12 : 10,
+            fontWeight: FontWeight.bold,
+            color: Colors.orange),
       ),
       backgroundColor: Colors.white,
       legend: Legend(
           height: '40%',
           textStyle: TextStyle(
-              fontSize: 7, fontWeight: FontWeight.normal, color: Colors.black),
+              fontSize: !global.isTV ? 12 : 7,
+              fontWeight: FontWeight.normal,
+              color: Colors.black),
           position: LegendPosition.bottom,
           isVisible: true,
           overflowMode: LegendItemOverflowMode.wrap),
@@ -515,7 +522,7 @@ class ChartProduction {
 
   getSeriesChartGroupAll(List<ChartProduction> dataInput) {
     var myDataLabelSettings = DataLabelSettings(
-        textStyle: TextStyle(fontSize: 10),
+        textStyle: TextStyle(fontSize: !global.isTV ? 12 : 10),
         isVisible: true,
         labelAlignment: ChartDataLabelAlignment.auto);
     return <ChartSeries<ChartProduction, String>>[
@@ -609,14 +616,18 @@ class ChartProduction {
       title: ChartTitle(
         text: global.listGroupDefectJP[4] + '-' + global.listGroupDefect[4],
         textStyle: TextStyle(
-            fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
+            fontSize: !global.isTV ? 12 : 10,
+            fontWeight: FontWeight.bold,
+            color: Colors.orange),
       ),
       backgroundColor: Colors.white,
       legend: Legend(
           height: '40%',
           shouldAlwaysShowScrollbar: false,
           textStyle: TextStyle(
-              fontSize: 7, fontWeight: FontWeight.normal, color: Colors.black),
+              fontSize: !global.isTV ? 12 : 7,
+              fontWeight: FontWeight.normal,
+              color: Colors.black),
           position: LegendPosition.bottom,
           isVisible: true,
           overflowMode: LegendItemOverflowMode.wrap),
@@ -637,7 +648,7 @@ class ChartProduction {
 
   getSeriesChartGroupE(List<ChartProduction> dataInput) {
     var myDataLabelSettings = DataLabelSettings(
-        textStyle: TextStyle(fontSize: 10),
+        textStyle: TextStyle(fontSize: !global.isTV ? 12 : 10),
         isVisible: true,
         labelAlignment: ChartDataLabelAlignment.auto);
     return <ChartSeries<ChartProduction, String>>[
@@ -733,13 +744,17 @@ class ChartProduction {
       title: ChartTitle(
         text: global.listGroupDefectJP[5] + '-' + global.listGroupDefect[5],
         textStyle: TextStyle(
-            fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
+            fontSize: !global.isTV ? 12 : 10,
+            fontWeight: FontWeight.bold,
+            color: Colors.orange),
       ),
       backgroundColor: Colors.white,
       legend: Legend(
           height: '40%',
           textStyle: TextStyle(
-              fontSize: 7, fontWeight: FontWeight.normal, color: Colors.black),
+              fontSize: !global.isTV ? 12 : 7,
+              fontWeight: FontWeight.normal,
+              color: Colors.black),
           position: LegendPosition.bottom,
           isVisible: true,
           overflowMode: LegendItemOverflowMode.wrap),
@@ -760,7 +775,7 @@ class ChartProduction {
 
   getSeriesChartGroupF(List<ChartProduction> dataInput) {
     var myDataLabelSettings = DataLabelSettings(
-        textStyle: TextStyle(fontSize: 10),
+        textStyle: TextStyle(fontSize: !global.isTV ? 12 : 10),
         isVisible: true,
         labelAlignment: ChartDataLabelAlignment.auto);
     return <ChartSeries<ChartProduction, String>>[
