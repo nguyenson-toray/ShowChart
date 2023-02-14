@@ -374,13 +374,12 @@ class ChartProduction {
     });
     result.setQty1stNOK = result.getQty1st - result.getQty1stOK;
     result.setRationDefect1st = double.parse(
-        (result.getQty1stNOK / result.getQty1st).toStringAsFixed(2));
+        (result.getQty1stNOK / result.getQty1st).toStringAsFixed(4));
     //
-
     result.setRationDefectAfterRepaire = double.parse(
         ((result.getQtyAfterRepaire - result.getQtyOKAfterRepaire) /
                 result.getQtyAfterRepaire)
-            .toStringAsFixed(2));
+            .toStringAsFixed(4));
 
     return result;
   }
@@ -398,7 +397,7 @@ class ChartProduction {
       ),
       legend: Legend(
         textStyle: TextStyle(
-            fontSize: !global.isTV ? 11 : (global.screenTypeInt == 0 ? 15 : 7),
+            fontSize: !global.isTV ? 11 : (global.device == 'TVLine' ? 15 : 7),
             fontWeight: FontWeight.normal,
             color: Colors.black),
         position: LegendPosition.bottom,
