@@ -25,6 +25,7 @@ class _Dashboard extends State<Dashboard> {
   double hChartPhone = 0;
   double wChartPhone = 0;
   int padding = 10;
+  bool fullScreen = false;
   List<String> lines = [
     'All',
     '1',
@@ -63,7 +64,7 @@ class _Dashboard extends State<Dashboard> {
     if (!mounted) return;
 
     await global.mySqlServer
-        .getInspectionData(global.rangeDaySQL)
+        .selectTable01InspectionData(global.rangeDaySQL)
         .then((value) => setState(() {
               global.t01s = value;
             }));
@@ -181,7 +182,7 @@ class _Dashboard extends State<Dashboard> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  height: hChart - 40,
+                  height: fullScreen ? global.screenHPixel - 70 : hChart - 40,
                   width: global.screenWPixel / 2 - 5,
                   child: global.chart.createChartQtyRateUI(
                       global.chartData,
@@ -190,7 +191,7 @@ class _Dashboard extends State<Dashboard> {
                       global.currentLine),
                 ),
                 Container(
-                  height: hChart - 40,
+                  height: fullScreen ? global.screenHPixel - 70 : hChart - 40,
                   width: global.screenWPixel / 2 - 5,
                   child: global.chart.createChartQtyRateUI(
                       global.chartDataCompareLine,
@@ -234,7 +235,7 @@ class _Dashboard extends State<Dashboard> {
       child: Column(
         children: [
           Container(
-            height: hChart - 80,
+            height: fullScreen ? global.screenHPixel - 60 : hChart - 80,
             child: global.chart.createChartQtyRateUI(
                 global.chartData, '', global.catalogue, global.currentLine),
           ),
@@ -390,12 +391,15 @@ class _Dashboard extends State<Dashboard> {
   // Widget bbuildScreen3_sewingLinePhone() {}
   changescreenTypeInt() {
     setState(() {
-      global.screenTypeInt++;
+      global.screenTypeInt == 1
+          ? global.screenTypeInt = 2
+          : global.screenTypeInt = 1;
+      // global.screenTypeInt++;
 
-      if (global.screenTypeInt > 2 && !global.isTV)
-        global.screenTypeInt = 1;
-      else if (global.screenTypeInt > 2 && global.isTV)
-        global.screenTypeInt = 0;
+      // if (global.screenTypeInt > 2 && !global.isTV)
+      //   global.screenTypeInt = 1;
+      // else if (global.screenTypeInt > 2 && global.isTV)
+      //   global.screenTypeInt = 0;
     });
   }
 
@@ -468,7 +472,14 @@ class _Dashboard extends State<Dashboard> {
     switch (global.screenTypeInt) {
       case 1:
         {
-          result = SizedBox(width: 45);
+          result = InkWell(
+              onTap: () {
+                setState(() {
+                  fullScreen = !fullScreen;
+                });
+              },
+              child:
+                  Icon(fullScreen ? Icons.fullscreen_exit : Icons.fullscreen));
         }
         break;
       case 2:
@@ -476,7 +487,15 @@ class _Dashboard extends State<Dashboard> {
           result = Row(
             children: [
               // rangeDay(),
-              playPauseChange()
+              playPauseChange(),
+              InkWell(
+                  onTap: () {
+                    setState(() {
+                      fullScreen = !fullScreen;
+                    });
+                  },
+                  child: Icon(
+                      fullScreen ? Icons.fullscreen_exit : Icons.fullscreen)),
             ],
           );
         }
@@ -492,21 +511,36 @@ class _Dashboard extends State<Dashboard> {
     return Container(
       child: Row(
         children: [
-          global.autoChangeLine
-              ? InkWell(
-                  child: Icon(
-                    global.autoChangeLine ? Icons.pause : Icons.play_circle,
-                  ),
-                  onTap: () {
-                    setState(() {
-                      global.autoChangeLine = !global.autoChangeLine;
-                      global.sharedPreferences
-                          .setBool('autoChangeLine', global.autoChangeLine);
-                      refreshChartData();
-                    });
-                  },
-                )
-              : Container(),
+          InkWell(
+            child: Icon(
+              global.autoChangeLine ? Icons.pause : Icons.play_circle,
+            ),
+            onTap: () {
+              setState(() {
+                global.autoChangeLine = !global.autoChangeLine;
+                global.sharedPreferences
+                    .setBool('autoChangeLine', global.autoChangeLine);
+                refreshChartData();
+              });
+            },
+          ),
+
+          // global.autoChangeLine
+          //     ?
+          //     InkWell(
+          //         child: Icon(
+          //           global.autoChangeLine ? Icons.pause : Icons.play_circle,
+          //         ),
+          //         onTap: () {
+          //           setState(() {
+          //             global.autoChangeLine = !global.autoChangeLine;
+          //             global.sharedPreferences
+          //                 .setBool('autoChangeLine', global.autoChangeLine);
+          //             refreshChartData();
+          //           });
+          //         },
+          //       )
+          //     : Container(),
           InkWell(
             child: Icon(Icons.arrow_back_sharp),
             onTap: () {

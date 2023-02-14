@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +11,7 @@ import 'package:tivn_chart/ui/startPage.dart';
 import 'package:wakelock/wakelock.dart';
 import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +28,7 @@ Future<void> main() async {
     global.screenTypeInt = 1;
   } else
     global.screenTypeInt = global.sharedPreferences.getInt("screenTypeInt")!;
-
+  // global.screenTypeInt = 0;
   if (global.sharedPreferences.getBool("autoChangeLine") == null) {
     global.sharedPreferences.setBool('autoChangeLine', false);
     global.autoChangeLine = false;
@@ -64,17 +69,50 @@ Future<void> main() async {
   print('screenW : ' + global.screenW.toString());
   print('screenH : ' + global.screenH.toString());
   print('screenWPixel : ' + global.screenWPixel.toString());
-  print('screscreenHPixelenW : ' + global.screenHPixel.toString());
+  print('screenHPixel : ' + global.screenHPixel.toString());
   print('manufacturer   ${androidInfo.manufacturer}');
   print('model  ${androidInfo.model}');
   print('product   ${androidInfo.product}');
-  print('display   ${androidInfo.display}');
-  print('brand   ${androidInfo.brand}');
-  print('device   ${androidInfo.device}');
+  print('sizeInches   ${androidInfo.displayMetrics.sizeInches}');
+  print('heightInches   ${androidInfo.displayMetrics.heightInches}');
+  print('widthInches   ${androidInfo.displayMetrics.widthInches}');
   print('supportedAbis   ${androidInfo.supportedAbis.toString()}');
-  global.isTV = androidInfo.manufacturer.contains('tcl') ||
-      androidInfo.manufacturer.contains('TCL');
 
+  final wifiIP = await NetworkInfo().getWifiIP();
+
+  if (androidInfo.displayMetrics.sizeInches > 49) {
+    global.isTV = true;
+    if (global.ipsTVSewingLine.contains(wifiIP)) {
+      global.device = 'TVLine';
+      global.rangeTime = 14;
+      global.sharedPreferences.setInt('rangeTime', global.rangeTime);
+      global.autoChangeLine = false;
+    } else
+      global.device = 'TVControl';
+  } else {
+    global.isTV = false;
+    global.device = 'smartphone';
+  }
+  print('wifiIP : ' + wifiIP!);
+  print('device : ' + global.device);
+
+  // -------------for test in debug mode
+  if (kDebugMode) {
+    if (androidInfo.model == 'AOSP TV on x86') {
+      global.device = 'TVControl';
+      global.isTV = true;
+      // global.rangeTime = 14;
+      // global.sharedPreferences.setInt('rangeTime', global.rangeTime);
+      // global.autoChangeLine = false;
+    }
+  }
+
+  //-----------
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  global.version = packageInfo.version;
+  global.todayString = DateFormat(global.dateFormat).format(
+    global.today,
+  );
   SystemChrome.setPreferredOrientations([
     global.isTV ? DeviceOrientation.landscapeLeft : DeviceOrientation.portraitUp
   ]).then((_) {
@@ -116,7 +154,7 @@ class _MyApp extends State<MyApp> {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: Start(), // Dashboard(),
+        home: StartPage(), // Dashboard(),
       ),
     );
   }

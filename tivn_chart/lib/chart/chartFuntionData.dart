@@ -22,7 +22,7 @@ class ChartFuntionData {
     List<ChartProduction> resultDataChart = <ChartProduction>[];
 
     t01Filtered.removeWhere((element) => element.getX01 == 9);
-    t01Filtered.removeWhere((e) => e.getSecondary != inspectionType);
+    t01Filtered.removeWhere((e) => e.getInspectionType != inspectionType);
 
     switch (catalogue) {
       case 'day':

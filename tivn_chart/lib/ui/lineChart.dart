@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:tivn_chart/chart/chartFuntionData.dart';
 import 'package:tivn_chart/chart/chartProduction.dart';
@@ -44,6 +45,7 @@ class _LineChartState extends State<LineChart> {
   @override
   void initState() {
     // TODO: implement initState
+    global.screenTypeInt == 0;
     global.chart = ChartProduction();
     global.chartData.clear();
     global.chartData = ChartFuntionData.createChartData(
@@ -59,27 +61,13 @@ class _LineChartState extends State<LineChart> {
     Timer.periodic(new Duration(seconds: global.secondsAutoGetData), (timer) {
       intervalRefresh();
     });
-    Timer.periodic(new Duration(seconds: global.secondsAutoChangeLine),
-        (timer) {
-      autoChangeLine();
-    });
 
     super.initState();
   }
 
-  autoChangeLine() {
-    if (!mounted) return;
-    setState(() {
-      if (global.currentLine < 8)
-        global.currentLine++;
-      else
-        global.currentLine = 1;
-    });
-  }
-
   intervalRefresh() async {
-    final listDataT01 =
-        await global.mySqlServer.getInspectionData(global.rangeDaySQL);
+    final listDataT01 = await global.mySqlServer
+        .selectTable01InspectionData(global.rangeDaySQL);
     if (listDataT01.length != 0) {
       if (!mounted) return;
       setState(() {
@@ -143,23 +131,6 @@ class _LineChartState extends State<LineChart> {
                   color: Colors.teal,
                   isSetting ? Icons.save : Icons.settings,
                 )),
-            SizedBox(
-              width: 15,
-            ),
-            InkWell(
-                onTap: () {
-                  global.screenTypeInt = 1;
-                  global.sharedPreferences
-                      .setInt('dashboardType', global.screenTypeInt);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => Dashboard()),
-                  );
-                },
-                child: Icon(
-                  Icons.exit_to_app,
-                  color: Colors.teal,
-                ))
           ],
         ),
         body: Padding(
@@ -172,17 +143,14 @@ class _LineChartState extends State<LineChart> {
                 child: Container(
                     width: global.screenWPixel,
                     child: global.chart.createChartQtyRateUI(
-                        global.chartData,
-                        '',
-                        global.catalogue,
-                        global.currentLine)),
+                        global.chartData, '', 'day', global.currentLine)),
               ),
-              Container(
-                child: Text(
-                  '''Developed by Nguyen Thai Son , Version : ${global.version}''',
-                  style: TextStyle(fontSize: 4),
-                ),
-              ),
+              // Container(
+              //   child: Text(
+              //     '''Developed by Nguyen Thai Son , Version : ${global.version}''',
+              //     style: TextStyle(fontSize: 5),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -222,18 +190,6 @@ class _LineChartState extends State<LineChart> {
         SizedBox(
           width: 50,
         ),
-        Text('Tự động chuyển line'),
-        Checkbox(
-          onChanged: (bool? value) {
-            setState(() {
-              global.autoChangeLine = value!;
-            });
-          },
-          value: global.autoChangeLine,
-        ),
-        SizedBox(
-          width: 50,
-        ),
         Row(
           children: [
             Text(
@@ -267,81 +223,4 @@ class _LineChartState extends State<LineChart> {
       ],
     );
   }
-
-  // List<ChartSeries<InspectionChartData, String>> getMultipleAxisLineSeries() {
-  //   return <ChartSeries<InspectionChartData, String>>[
-  //     StackedColumnSeries<InspectionChartData, String>(
-  //       dataSource: global.inspectionChartData!,
-  //       xValueMapper: (InspectionChartData data, _) =>
-  //           DateFormat('dd-MM').format(
-  //         data.getDate,
-  //       ),
-  //       yValueMapper: (InspectionChartData data, _) => data.getQty1stOK,
-  //       dataLabelSettings: DataLabelSettings(
-  //           textStyle: TextStyle(fontSize: 15),
-  //           isVisible: true,
-  //           labelAlignment: ChartDataLabelAlignment.auto),
-  //       name: 'SL kiểm lần 1 đạt',
-  //       color: Colors.blue,
-  //     ),
-  //     StackedColumnSeries<InspectionChartData, String>(
-  //       dataSource: global.inspectionChartData!,
-  //       xValueMapper: (InspectionChartData data, _) =>
-  //           DateFormat('dd-MM').format(
-  //         data.getDate,
-  //       ),
-  //       yValueMapper: (InspectionChartData data, _) => data.getQty1stNOK,
-  //       dataLabelSettings: DataLabelSettings(
-  //           textStyle: TextStyle(fontSize: 15),
-  //           isVisible: true,
-  //           labelAlignment: ChartDataLabelAlignment.auto),
-  //       name: 'SL kiểm lần 1 lỗi',
-  //       color: Colors.orange[300],
-  //     ),
-  //     StackedColumnSeries<InspectionChartData, String>(
-  //       dataSource: global.inspectionChartData!,
-  //       xValueMapper: (InspectionChartData data, _) =>
-  //           DateFormat('dd-MM').format(
-  //         data.getDate,
-  //       ),
-  //       yValueMapper: (InspectionChartData data, _) => data.getQtyAfterRepaire,
-  //       dataLabelSettings: DataLabelSettings(
-  //           textStyle: TextStyle(fontSize: 15),
-  //           isVisible: true,
-  //           labelAlignment: ChartDataLabelAlignment.auto),
-  //       name: 'SL sửa sau kiểm hàng',
-  //       color: Colors.red,
-  //     ),
-  //     LineSeries<InspectionChartData, String>(
-  //         markerSettings: MarkerSettings(isVisible: true),
-  //         dataSource: global.inspectionChartData,
-  //         yAxisName: 'yAxis1',
-  //         xValueMapper: (InspectionChartData data, _) =>
-  //             DateFormat('dd-MM').format(
-  //               data.getDate,
-  //             ),
-  //         yValueMapper: (InspectionChartData data, _) =>
-  //             data.getRationDefect1st * 100,
-  //         // dataLabelSettings: DataLabelSettings(
-  //         //     isVisible: true, labelAlignment: ChartDataLabelAlignment.auto),
-  //         name: 'TL kiểm lần 1 lỗi',
-  //         color: Colors.pink,
-  //         width: 4),
-  //     LineSeries<InspectionChartData, String>(
-  //         markerSettings: MarkerSettings(isVisible: true),
-  //         dataSource: global.inspectionChartData,
-  //         yAxisName: 'yAxis1',
-  //         xValueMapper: (InspectionChartData data, _) =>
-  //             DateFormat('dd-MM').format(
-  //               data.getDate,
-  //             ),
-  //         yValueMapper: (InspectionChartData data, _) =>
-  //             data.getRationDefectAfterRepaire,
-  //         // dataLabelSettings: DataLabelSettings(
-  //         //     isVisible: true, labelAlignment: ChartDataLabelAlignment.top),
-  //         name: 'TL kiểm lỗi sau sửa',
-  //         color: Colors.green,
-  //         width: 4)
-  //   ];
-  // }
 }

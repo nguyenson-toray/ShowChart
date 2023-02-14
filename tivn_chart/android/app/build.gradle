@@ -58,6 +58,12 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+   
+        //     applicationVariants.all { variant ->
+        //     variant.outputs.all {
+        //         outputFileName = "TIVN-QuangNgai-${variant.getName()}.apk"
+        //     }
+        // }
         }
     }
 }
@@ -79,24 +85,24 @@ dependencies {
 //         universalApk true
 //     }
 // }
-    // flavorDimensions "distribute"
-    // productFlavors {
-    //     appCenter {
-    //         dimension "distribute"
-    //     }
-        // googlePlay {
-        //     dimension "distribute"
-        // }
-    // }
+//     flavorDimensions "distribute"
+//     productFlavors {
+//         appCenter {
+//             dimension "distribute"
+//         }
+//         googlePlay {
+//             dimension "distribute"
+//         }
+//     }
 // }
  
-dependencies {
-    def appCenterSdkVersion = '5.0.0'
-    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
-    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
-    implementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}" 
+// dependencies {
+//     def appCenterSdkVersion = '5.0.0'
+//     implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+//     implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
+//     implementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}" 
 
-}
+// }
  
 
  
