@@ -445,7 +445,7 @@ class ChartProduction {
         color: Colors.blueAccent,
       ),
       StackedColumnSeries<ChartProduction, String>(
-        dataSource: dataInput!,
+        dataSource: dataInput,
         xValueMapper: (ChartProduction data, _) => data.getCatalogue,
         yValueMapper: (ChartProduction data, _) => data.getQty1stNOK,
         dataLabelSettings: myDataLabelSettings,

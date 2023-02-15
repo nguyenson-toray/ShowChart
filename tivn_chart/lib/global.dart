@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tivn_chart/chart/chartProduction.dart';
-import 'package:tivn_chart/dataClass/lastSetting.dart';
+import 'package:tivn_chart/dataClass/inspectionSetting.dart';
 import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
 import 'package:tivn_chart/dataBase/mySqlServer.dart';
 import 'package:tivn_chart/dataBase/mySQLite.dart';
@@ -13,6 +13,7 @@ import 'package:tivn_chart/dataClass/t04PlanProduction.dart';
 import 'package:tivn_chart/dataClass/t05MainPowerSewingTime.dart';
 import 'package:tivn_chart/dataClass/t06Color.dart';
 import 'package:tivn_chart/dataClass/t08Combo.dart';
+import 'package:tivn_chart/ui/workSettingWidget.dart';
 
 class global {
   static String currentGroupDefectName = 'Thông số';
@@ -21,7 +22,6 @@ class global {
   static bool confirmYes = false;
   static late SharedPreferences sharedPreferences;
   static final navigatorKey = GlobalKey<NavigatorState>();
-  static int line = 1;
   static int plan = 0;
   static int actual = 0;
   static int sumDefect1 = 0;
@@ -58,9 +58,11 @@ class global {
   static int screenTypeInt = 1;
   static bool showSetting = false;
   static bool isSetting = false;
-  static bool isTV = true;
-  static String device = 'TV55';
+  static bool isTV = false;
+  static bool isFisrtRun = false;
+  static String device = 'smartphone';
   static Widget currentScreen = Container();
+  static List<int> lines = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   static int currentLine = 1;
   static double screenW = 0;
@@ -79,17 +81,19 @@ class global {
   static T011stInspectionData t01 = T011stInspectionData();
   static List<T011stInspectionData> t01s = [];
   static List<T011stInspectionData> t01sLocal = <T011stInspectionData>[];
-  static List<T011stInspectionData> t01sByCurrentSetting =
+  static List<T011stInspectionData> t01sFilteredByInspectionSetting =
       <T011stInspectionData>[];
-  static T011stInspectionData t01SummaryByCurrentSetting =
+  static T011stInspectionData t01SummaryByInspectionSetting =
       T011stInspectionData();
   static List<T02Week> t02s = [];
   static List<T03ProductionItem> t03s = [];
   static List<T04PlanProduction> t04s = [];
   static List<T05MainPowerSewingTime> t05s = [];
   static List<T06Color> t06s = [];
+  // static List<T07> t07s = [];
+
   static List<T08Combo> t08s = [];
-  static LastSetting lastSetting = LastSetting();
+  static late InspectionSetting inspectionSetting;
   static int secondsAutoGetData = 300;
   static int secondsAutoChangeLine = 120;
   static var planToday = 9999;

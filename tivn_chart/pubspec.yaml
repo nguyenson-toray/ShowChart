@@ -50,7 +50,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   change_app_package_name: ^1.1.0 
-  # ---> flutter pub run change_app_package_name:main com.tivn.chart
+  # ---> flutter pub run change_app_package_name:main com.tivn.app
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -64,7 +64,7 @@ flutter_launcher_name:
   # ----> flutter pub run flutter_launcher_name:main
   icons_launcher: ^2.0.6
 icons_launcher:
-  image_path: 'D:\Programming\Flutter\ShowChart\tivn_chart\asset\ic_launcher.png'
+  image_path: 'D:\Programming\Flutter\ShowChart\tivn_chart\assets\ic_launcher.png'
   platforms:
     android:
       enable: true
@@ -81,35 +81,56 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
+  # To add assetss to your application, add an assets section, like this:
   assets: 
     - assets/logo.png 
     - assets/ic_launcher.png
     - assets/hdvsmm.mp3
     - assets/loading.gif
+    - assets/chart.png
+    - assets/customer.png
+    - assets/size.png
+    - assets/color.png
+    - assets/style.png 
+    - assets/letter-l.png
+    - assets/letter-i.png
+    - assets/letter-n.png
+    - assets/letter-e.png
+    - assets/1.png
+    - assets/2.png
+    - assets/c.png
+    - assets/check1.png
+    - assets/check2.png
+    - assets/add.png
+    - assets/minus.png
+    - assets/arrow-up.png
+    - assets/arrow-down.png
+    - assets/error.png
+    - assets/warning-yellow.png
+    - assets/warning-red.png
   #   - images/a_dot_ham.jpeg
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware
+  # An image assets can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assetss-and-images/#resolution-aware
 
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/assets-and-images/#from-packages
+  # For details regarding adding assetss from package dependencies, see
+  # https://flutter.dev/assetss-and-images/#from-packages
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
+  # list giving the assets and other descriptors for the font. For
   # example:
   # fonts:
   #   - family: Schyler
   #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
+  #       - assets: fonts/Schyler-Regular.ttf
+  #       - assets: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
+  #       - assets: fonts/TrajanPro.ttf
+  #       - assets: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
   # For details regarding fonts from package dependencies,

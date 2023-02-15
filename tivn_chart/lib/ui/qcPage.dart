@@ -7,7 +7,7 @@ import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
 import 'package:tivn_chart/dataClass/inspectionDetail.dart';
 import 'package:tivn_chart/dataFuntion/myFuntions.dart';
 import 'package:tivn_chart/ui/listViewData.dart';
-import 'package:tivn_chart/ui/workSetting.dart';
+import 'package:tivn_chart/ui/workSettingWidget.dart';
 import 'package:tivn_chart/ui/inspectionDataSource.dart';
 import 'package:tivn_chart/global.dart';
 // import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -23,6 +23,7 @@ class QcPage extends StatefulWidget {
 
 class QcPageState extends State<QcPage> {
   int actual = 0;
+  int plan = 0;
   int sumDefect = 0;
   double rationDefect = 0;
   bool buttonFinishVisible = true;
@@ -37,6 +38,15 @@ class QcPageState extends State<QcPage> {
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   showAlertOKorDefect();
     // });
+    global.t04s.forEach((element) {
+      var date = element.getX021;
+      if (date == global.todayString &&
+          element.getX011 == global.inspectionSetting.getLine) {
+        plan = element.getX13; //so luong ke hoach
+        print(
+            'Line ${global.inspectionSetting.getLine} - plan today: ${plan.toString()} pcs');
+      }
+    });
     super.initState();
   }
 
@@ -58,7 +68,7 @@ class QcPageState extends State<QcPage> {
             padding: EdgeInsets.all(8),
             child: Column(
               children: [
-                WorkSetting(callback: refresh),
+                WorkSettingWiget(callback: refresh),
                 createSummaryChart(),
                 Divider(
                   color: Colors.teal.shade200,
@@ -85,7 +95,8 @@ class QcPageState extends State<QcPage> {
                 // showData()
                 Container(
                     child: ListViewData(
-                        data: global.t01sByCurrentSetting.reversed.toList()))
+                        data: global.t01sFilteredByInspectionSetting.reversed
+                            .toList()))
               ],
             ),
           ),
@@ -274,13 +285,14 @@ class QcPageState extends State<QcPage> {
                 alignment: Alignment.center,
                 child: Text('Lỗi'))),
       ],
-      source: inspectionDataSource(inspectionData: global.t01sByCurrentSetting),
+      source: inspectionDataSource(
+          inspectionData: global.t01sFilteredByInspectionSetting),
     );
   }
 
   Widget createSummaryChart() {
     List<T011stInspectionData> data = [];
-    data.add(global.t01SummaryByCurrentSetting);
+    data.add(global.t01SummaryByInspectionSetting);
     return SizedBox(
       height: 200,
       child: Row(
@@ -303,7 +315,7 @@ class QcPageState extends State<QcPage> {
               ColumnSeries<T011stInspectionData, String>(
                   dataSource: data,
                   xValueMapper: (T011stInspectionData data, _) => data.getX02,
-                  yValueMapper: (T011stInspectionData data, _) => global.plan,
+                  yValueMapper: (T011stInspectionData data, _) => plan,
                   name: 'Kế hoạch',
                   color: Colors.blue,
                   dataLabelSettings: DataLabelSettings(
@@ -346,12 +358,12 @@ class QcPageState extends State<QcPage> {
             child: CircularPercentIndicator(
               radius: 50.0,
               lineWidth: 20.0,
-              percent: global.t01SummaryByCurrentSetting.getX11 /
-                  global.t01SummaryByCurrentSetting.getX06,
+              percent: global.t01SummaryByInspectionSetting.getX11 /
+                  global.t01SummaryByInspectionSetting.getX06,
               header: Text("Tỉ lệ lỗi"),
               center: Text(
-                global.t01SummaryByCurrentSetting.getX06 > 0
-                    ? '${(global.t01SummaryByCurrentSetting.getX11 / global.t01SummaryByCurrentSetting.getX06 * 100).toStringAsFixed(2)} %'
+                global.t01SummaryByInspectionSetting.getX06 > 0
+                    ? '${(global.t01SummaryByInspectionSetting.getX11 / global.t01SummaryByInspectionSetting.getX06 * 100).toStringAsFixed(2)} %'
                     : "0 %",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),

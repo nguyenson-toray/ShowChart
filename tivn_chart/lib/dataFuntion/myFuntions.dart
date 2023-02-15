@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:iso_calendar/iso_calendar.dart';
-import 'package:tivn_chart/dataClass/lastSetting.dart';
+import 'package:tivn_chart/dataClass/inspectionSetting.dart';
 import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
 import 'package:tivn_chart/global.dart';
 import 'dart:convert';
@@ -119,9 +119,9 @@ class MyFuntions {
   }
 //
 
-  static List<T011stInspectionData> t01FilterByLastSetting(
-      List<T011stInspectionData> allInspectionData, LastSetting setting) {
-    print('t01FilterByLastSetting');
+  static List<T011stInspectionData> t01FilterByLastInspectionSetting(
+      List<T011stInspectionData> allInspectionData, InspectionSetting setting) {
+    print('t01FilterByLastInspectionSetting');
 
     List<T011stInspectionData> output = <T011stInspectionData>[];
 
@@ -129,7 +129,7 @@ class MyFuntions {
       final date = DateFormat(global.dateFormat).parse(element.getX02);
       final today = DateFormat(global.dateFormat).parse(global.todayString);
       if (date == today &&
-          element.getInspectionType == setting.getSecondary &&
+          element.getInspectionType == setting.getInspectionType &&
           element.getX01 == setting.getLine &&
           element.getX04 == setting.getColor &&
           element.getX03 == setting.getStyleCode &&
@@ -141,14 +141,14 @@ class MyFuntions {
   }
 
   //
-  static T011stInspectionData t01sSummaryByLastSetting(
-      List<T011stInspectionData> dataInput, LastSetting setting) {
-    print('t01sSummaryByLastSetting');
+  static T011stInspectionData t01sSummaryByLastInspectionSetting(
+      List<T011stInspectionData> dataInput, InspectionSetting setting) {
+    print('t01sSummaryByLastInspectionSetting');
     T011stInspectionData output = T011stInspectionData();
     if (dataInput.length == 0) return output;
     output.setTMonth = global.today.month;
     output.setTYear = global.today.year;
-    output.setInspectionType = setting.getSecondary;
+    output.setInspectionType = setting.getInspectionType;
     output.setX01 = setting.getLine;
     output.setX02 = global.todayString;
     output.setX03 = setting.getStyleCode;
@@ -228,10 +228,9 @@ class MyFuntions {
 
   static void saveData() {
     print('Save DATA');
-
     global.t01 = new T011stInspectionData();
     global.t01.setValue(
-        global.lastSetting,
+        global.inspectionSetting,
         global.result,
         global.isRecheck,
         global.isTypeC,
@@ -339,16 +338,16 @@ class MyFuntions {
       global.t01.calculateValue();
       print('------------ global.t01.calculateValue');
     }
-    print("global.t01 : " + global.t01.toStrings());
+    print("global.t01 : " + global.t01.toString());
     global.t01sLocal.add(global.t01);
-    global.t01sByCurrentSetting.add(global.t01);
-    global.t01SummaryByCurrentSetting = MyFuntions.t01sSummaryByLastSetting(
-        global.t01sByCurrentSetting, global.lastSetting);
-    global.mySqlServer
-        .updateInspectionDataToT01(global.t01SummaryByCurrentSetting);
-
+    global.t01sFilteredByInspectionSetting.add(global.t01);
+    global.t01SummaryByInspectionSetting =
+        MyFuntions.t01sSummaryByLastInspectionSetting(
+            global.t01sFilteredByInspectionSetting, global.inspectionSetting);
     //save to SqLite
     global.mySqlife.insertIntoTable_T011stInspectionData(global.t01);
+    global.mySqlServer
+        .updateInspectionDataToT01(global.t01SummaryByInspectionSetting);
 
     global.comment = '';
   }

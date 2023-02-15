@@ -1,12 +1,17 @@
 import 'dart:io';
-
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tivn_chart/dataBase/mySQLite.dart';
+import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
+import 'package:tivn_chart/dataFuntion/myFuntions.dart';
 import 'package:tivn_chart/global.dart';
-import 'package:intl/intl.dart';
+import 'package:tivn_chart/ui/inputInspectionPage.dart';
+import 'package:tivn_chart/ui/qcPage.dart';
 import 'package:tivn_chart/ui/startPage.dart';
 import 'package:wakelock/wakelock.dart';
 import 'dart:ui';
@@ -15,46 +20,65 @@ import 'package:network_info_plus/network_info_plus.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Wakelock.enable();
+  initializeDateFormatting('en');
+  await getsharedPreferences();
+  await detectDeviceInfo();
+  !global.isTV ?? await initDataSqLite();
+  // -------------for test in debug mode
+  if (kDebugMode) {
+    // if (androidInfo.model == 'AOSP TV on x86') {
+    global.device = 'TVControl';
+    global.isTV = true;
+    // global.rangeTime = 14;
+    // global.sharedPreferences.setInt('rangeTime', global.rangeTime);
+    // global.autoChangeLine = false;
+    // }
+  }
+
+  //-----------
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  global.version = packageInfo.version;
+  global.todayString = DateFormat(global.dateFormat).format(
+    global.today,
+  );
+  global.isTV ?? Wakelock.enable(); // alway screen On
+  SystemChrome.setPreferredOrientations([
+    global.isTV ? DeviceOrientation.landscapeLeft : DeviceOrientation.portraitUp
+  ]).then((_) {
+    runApp(new MyApp());
+  });
+}
+
+initDataSqLite() async {
+  global.todayString = DateFormat(global.dateFormat).format(
+    global.today,
+  );
+  global.mySqlife = MySqLite();
+  const String firstRun = 'firstRun';
   global.sharedPreferences = await SharedPreferences.getInstance();
-  if (global.sharedPreferences.getInt("currentLine") == null) {
-    global.sharedPreferences.setInt('currentLine', 1);
-    global.currentLine = 1;
-  } else
-    global.currentLine = global.sharedPreferences.getInt("currentLine")!;
+  if (global.sharedPreferences.getBool(firstRun) == null) {
+    global.sharedPreferences.setBool(firstRun, true);
+    global.isFisrtRun = true;
+  }
+  global.isFisrtRun
+      ? await global.mySqlife.createDB()
+      : await global.mySqlife.openDB();
+  var inspectionSettings = await global.mySqlife.LoadInspectionSetting();
+  inspectionSettings.forEach((element) {
+    print('inspectionSetting : ' + inspectionSettings.toString());
+  });
+  if (inspectionSettings.length > 0) {
+    global.inspectionSetting = inspectionSettings.last;
+  }
+  global.t01sLocal = await global.mySqlife.loadInspectionDataT01();
 
-  if (global.sharedPreferences.getInt("screenTypeInt") == null) {
-    global.sharedPreferences.setInt('screenTypeInt', 1);
-    global.screenTypeInt = 1;
-  } else
-    global.screenTypeInt = global.sharedPreferences.getInt("screenTypeInt")!;
-  // global.screenTypeInt = 0;
-  if (global.sharedPreferences.getBool("autoChangeLine") == null) {
-    global.sharedPreferences.setBool('autoChangeLine', false);
-    global.autoChangeLine = false;
-  } else
-    global.autoChangeLine = global.sharedPreferences.getBool("autoChangeLine")!;
+  global.t01sFilteredByInspectionSetting =
+      MyFuntions.t01FilterByLastInspectionSetting(
+          global.t01sLocal, global.inspectionSetting);
+}
 
-  if (global.sharedPreferences.getString('catalogue') == null) {
-    global.sharedPreferences.setString('catalogue', 'day');
-    global.catalogue = 'day';
-  } else
-    global.catalogue = global.sharedPreferences.getString('catalogue')!;
-
-  if (global.sharedPreferences.getInt("rangeTime") == null) {
-    global.sharedPreferences.setInt('rangeTime', 6);
-    global.rangeTime = 6;
-  } else
-    global.rangeTime = global.sharedPreferences.getInt("rangeTime")!;
-
-  if (global.sharedPreferences.getInt("inspection12") == null) {
-    global.sharedPreferences.setInt('inspection12', 1);
-    global.inspection12 = 1;
-  } else
-    global.inspection12 = global.sharedPreferences.getInt("inspection12")!;
-
+Future<void> detectDeviceInfo() async {
   var pixelRatio = window.devicePixelRatio;
-
   //Size in physical pixels
   var physicalScreenSize = window.physicalSize;
   global.screenW = physicalScreenSize.width;
@@ -95,29 +119,45 @@ Future<void> main() async {
   }
   print('wifiIP : ' + wifiIP!);
   print('device : ' + global.device);
+}
 
-  // -------------for test in debug mode
-  if (kDebugMode) {
-    if (androidInfo.model == 'AOSP TV on x86') {
-      global.device = 'TVControl';
-      global.isTV = true;
-      // global.rangeTime = 14;
-      // global.sharedPreferences.setInt('rangeTime', global.rangeTime);
-      // global.autoChangeLine = false;
-    }
-  }
+Future<void> getsharedPreferences() async {
+  global.sharedPreferences = await SharedPreferences.getInstance();
+  if (global.sharedPreferences.getInt("currentLine") == null) {
+    global.sharedPreferences.setInt('currentLine', 1);
+    global.currentLine = 1;
+  } else
+    global.currentLine = global.sharedPreferences.getInt("currentLine")!;
 
-  //-----------
-  PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  global.version = packageInfo.version;
-  global.todayString = DateFormat(global.dateFormat).format(
-    global.today,
-  );
-  SystemChrome.setPreferredOrientations([
-    global.isTV ? DeviceOrientation.landscapeLeft : DeviceOrientation.portraitUp
-  ]).then((_) {
-    runApp(new MyApp());
-  });
+  if (global.sharedPreferences.getInt("screenTypeInt") == null) {
+    global.sharedPreferences.setInt('screenTypeInt', 1);
+    global.screenTypeInt = 1;
+  } else
+    global.screenTypeInt = global.sharedPreferences.getInt("screenTypeInt")!;
+  // global.screenTypeInt = 0;
+  if (global.sharedPreferences.getBool("autoChangeLine") == null) {
+    global.sharedPreferences.setBool('autoChangeLine', false);
+    global.autoChangeLine = false;
+  } else
+    global.autoChangeLine = global.sharedPreferences.getBool("autoChangeLine")!;
+
+  if (global.sharedPreferences.getString('catalogue') == null) {
+    global.sharedPreferences.setString('catalogue', 'day');
+    global.catalogue = 'day';
+  } else
+    global.catalogue = global.sharedPreferences.getString('catalogue')!;
+
+  if (global.sharedPreferences.getInt("rangeTime") == null) {
+    global.sharedPreferences.setInt('rangeTime', 6);
+    global.rangeTime = 6;
+  } else
+    global.rangeTime = global.sharedPreferences.getInt("rangeTime")!;
+
+  if (global.sharedPreferences.getInt("inspection12") == null) {
+    global.sharedPreferences.setInt('inspection12', 1);
+    global.inspection12 = 1;
+  } else
+    global.inspection12 = global.sharedPreferences.getInt("inspection12")!;
 }
 
 class MyApp extends StatefulWidget {
@@ -136,7 +176,6 @@ class _MyApp extends State<MyApp> {
   @override
   initState() {
     //do some thing
-    WidgetsFlutterBinding.ensureInitialized();
     super.initState();
   }
 
@@ -149,13 +188,25 @@ class _MyApp extends State<MyApp> {
         LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent(),
       },
       child: MaterialApp(
-        title: 'TIVN-QN',
-        // onGenerateRoute: initialSlideRoutes,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: StartPage(), // Dashboard(),
-      ),
+          title: 'TIVN-QN',
+          // onGenerateRoute: initialSlideRoutes,
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: StartPage(),
+          navigatorKey: global.navigatorKey,
+          initialRoute: '/',
+          routes: {
+            '': (context) => const StartPage(),
+            '/QcPage': (context) => QcPage(),
+            '/InputInspectionPage': (context) =>
+                InputInspectionPage(callback: refresh),
+            // '/ErrorPage': (context) => const ErrorPage(), // Dashboard(),
+          }),
     );
+  }
+
+  refresh(List<T011stInspectionData> param) {
+    setState(() {});
   }
 }

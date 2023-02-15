@@ -20,15 +20,24 @@ class _StartPagetState extends State<StartPage> {
   double logoH = 30;
   double buttonH = 80;
   double buttonW = 280;
-  var isLoaded = false;
-  var isSelected = false;
+  bool isLoaded = false;
+  String functionSellected = '';
+  bool loadedAll = false;
+  bool loaded1 = false;
+  bool loaded2 = false;
+  bool loaded3 = false;
+  bool loaded4 = false;
+  bool loaded5 = false;
+  bool loaded6 = false;
+  bool loaded7 = false;
+  bool loaded8 = false;
   var myTextStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   @override
   void initState() {
     // TODO: implement initState
     global.isTV ? logoH = 100 : logoH = 50;
     Timer(Duration(milliseconds: 500), () {
-      print("initData after 1000 milliseconds");
+      print("initState - initData after 500 milliseconds");
       initData();
     });
 
@@ -40,7 +49,7 @@ class _StartPagetState extends State<StartPage> {
     return SafeArea(
         child: Scaffold(
             body: global.device.contains('TV')
-                ? showLoading()
+                ? showloaded()
                 : Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -77,10 +86,10 @@ class _StartPagetState extends State<StartPage> {
                                     )),
                                 onPressed: () async {
                                   setState(() {
-                                    isSelected = true;
+                                    functionSellected = 'Management';
                                     global.screenTypeInt = 1;
                                   });
-                                  if (isLoaded && isSelected) {
+                                  if (isLoaded) {
                                     Loader.hide();
                                     Navigator.pushReplacement(
                                       context,
@@ -88,8 +97,10 @@ class _StartPagetState extends State<StartPage> {
                                           builder: (context) =>
                                               new Dashboard()),
                                     );
-                                  } else
-                                    showLoading();
+                                  } else {
+                                    showloaded();
+                                    initData();
+                                  }
                                 }),
                           ),
                         ),
@@ -118,59 +129,20 @@ class _StartPagetState extends State<StartPage> {
                                     )),
                                 onPressed: () async {
                                   setState(() {
-                                    isSelected = true;
+                                    functionSellected = 'QC';
                                     // global.screenTypeInt = 0;
                                   });
-                                  if (isLoaded && isSelected) {
+                                  if (isLoaded) {
                                     Loader.hide();
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => new QcPage()),
                                     );
-                                  } else
-                                    showLoading();
-                                }),
-                          ),
-                        ),
-                        SizedBox(
-                          height: logoH,
-                        ),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(6.0),
-                          child: Container(
-                            // decoration: global.myBoxDecoration,
-                            height: buttonH,
-                            width: buttonW,
-                            child: ElevatedButton.icon(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all(Colors.teal)),
-                                icon: Icon(
-                                  Icons.workspaces,
-                                  size: 40,
-                                ),
-                                label: Container(
-                                    width: buttonW,
-                                    child: Text(
-                                      'Sewing line',
-                                      style: myTextStyle,
-                                    )),
-                                onPressed: () async {
-                                  setState(() {
-                                    isSelected = true;
-                                    global.screenTypeInt = 0;
-                                  });
-                                  if (isLoaded && isSelected) {
-                                    Loader.hide();
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              new LineChart()),
-                                    );
-                                  } else
-                                    showLoading();
+                                  } else {
+                                    showloaded();
+                                    initData();
+                                  }
                                 }),
                           ),
                         ),
@@ -179,7 +151,7 @@ class _StartPagetState extends State<StartPage> {
                   )));
   }
 
-  showLoading() {
+  showloaded() {
     Loader.show(
       context,
       overlayColor: global.isTV ? Colors.white : Colors.black54,
@@ -191,53 +163,78 @@ class _StartPagetState extends State<StartPage> {
           //   color: Colors.tealAccent,
           // )
           child: Column(children: [
-            Image.asset('assets/logo.png'),
+            global.isTV ? Image.asset('assets/logo.png') : Container(),
             Image.asset('assets/loading.gif')
           ])),
     );
   }
 
   Future<void> initData() async {
-    print('initData');
+    print('initData-global.device: ${global.device}');
 
     var isConnected = await global.mySqlServer.checkConnection();
-
     if (isConnected) {
-      global.t01s = await global.mySqlServer
-          .selectTable01InspectionData(global.rangeDaySQL);
-      if (!global.device.contains('TV')) {
-        global.t03s = await global.mySqlServer.selectAllTable03ProductionItem();
-        global.t04s = await global.mySqlServer.selectAllTable04PlanProduction();
-        global.t06s = await global.mySqlServer.selectAllTable06Color();
-        global.t08s = await global.mySqlServer.selectAllTable08Combo();
-      }
-
-      isLoaded = true;
-      Loader.hide();
-      if (global.device == 'TVLine') {
-        global.screenTypeInt = 0;
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => new LineChart()),
-        );
-      }
-
-      if (global.device == 'TVControl')
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => new Dashboard()),
-        );
-      // await global.mySqlServer
-      //     .selectTable01InspectionData(global.rangeDaySQL)
-      //     .then((value) => setState(() {
-      //           if (value.length > 0) {
-      //             global.t01s = value;
-      //             isLoaded = true;
-      //           }
-      //         }));
+      do {
+        if (!loaded1) {
+          global.mySqlServer
+              .selectTable01InspectionData(global.rangeDaySQL)
+              .then((value) => {
+                    loaded1 = true,
+                    global.t01s = value,
+                    if (global.device == 'TVLine')
+                      {
+                        Loader.hide(),
+                        global.screenTypeInt = 0,
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => new LineChart()),
+                        )
+                      },
+                    if (global.device == 'TVControl')
+                      {
+                        Loader.hide(),
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => new Dashboard()),
+                        )
+                      }
+                  });
+        }
+        global.mySqlServer
+            .selectAllTable03ProductionItem()
+            .then((value) => {global.t03s = value, loaded3 = true});
+        global.mySqlServer
+            .selectAllTable04PlanProduction()
+            .then((value) => {global.t04s = value, loaded4 = true});
+        global.mySqlServer
+            .selectAllTable06Color()
+            .then((value) => {global.t06s = value, loaded6 = true});
+        global.mySqlServer
+            .selectAllTable08Combo()
+            .then((value) => {global.t08s = value, loaded8 = true});
+        loadedAll = loaded1 & loaded3 & loaded4 & loaded6 & loaded8;
+        if (loadedAll) {
+          Loader.hide();
+          if (functionSellected == 'QC') {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => new QcPage()),
+            );
+          } else if (functionSellected == 'Management') {
+            global.screenTypeInt = 1;
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => new Dashboard()),
+            );
+          }
+        }
+      } while (loadedAll);
     } else {
       print("SQL Server not available -Load offline data");
       MyFuntions.showToastNoConnection();
     }
+    print('initData-DONE');
   }
 }

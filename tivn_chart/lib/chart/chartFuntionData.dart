@@ -16,14 +16,15 @@ class ChartFuntionData {
     String catalogue,
   ) {
     print(
-        '=============== createChartData   t01s.length :  ${t01s.length.toString()}  range: ${range.toString()}   catalogue : ${catalogue}  line : ${line.toString()}');
+        'createChartData   t01s.length :  ${t01s.length.toString()}  range: ${range.toString()}   catalogue : ${catalogue}  line : ${line.toString()}    inspectionType:$inspectionType');
 
     var t01Filtered = [...t01s]; //clone list data
     List<ChartProduction> resultDataChart = <ChartProduction>[];
 
     t01Filtered.removeWhere((element) => element.getX01 == 9);
+    print('t01Filtered.lenght1 = ' + t01Filtered.length.toString());
     t01Filtered.removeWhere((e) => e.getInspectionType != inspectionType);
-
+    print('t01Filtered.lenght2 = ' + t01Filtered.length.toString());
     switch (catalogue) {
       case 'day':
         {

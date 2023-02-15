@@ -1,41 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:tivn_chart/dataClass/lastSetting.dart';
+import 'package:tivn_chart/dataClass/inspectionSetting.dart';
 import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
 import 'package:tivn_chart/dataFuntion/myFuntions.dart';
 import 'package:tivn_chart/global.dart';
 
-class WorkSetting extends StatefulWidget {
+class WorkSettingWiget extends StatefulWidget {
   Function(T011stInspectionData param) callback;
-  WorkSetting({
+  WorkSettingWiget({
     Key? key,
     required this.callback,
   }) : super(key: key);
   @override
-  _WorkSetting createState() => _WorkSetting();
+  _WorkSettingWiget createState() => _WorkSettingWiget();
 }
 
-class _WorkSetting extends State<WorkSetting> {
+class _WorkSettingWiget extends State<WorkSettingWiget> {
   bool isEditing = false;
-
+  int line = 1;
+  String customer = '';
+  String color = '';
+  String style = '';
+  String size = '';
   List<String> customers = [];
   List<String> styles = [];
   List<String> colors = [];
   List<String> sizes = [];
   List<String> descriptions = [];
-  List<int> lines = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  List<String> inspectionTypes = ['Sơ cấp', 'Thứ cấp'];
-  String inspectionType = 'Sơ cấp';
+  List<String> inspectionTypeStrings = ['', 'Sơ cấp', 'Thứ cấp'];
+  String inspectionTypeString = 'Sơ cấp';
   @override
   void initState() {
+    line = global.inspectionSetting.getLine;
+    customer = global.inspectionSetting.getCustomer;
+    style = global.inspectionSetting.getStyle;
+    size = global.inspectionSetting.getSize;
     customers = getCustomersName();
     styles = getStyles(global.customer);
     sizes = getSizes();
     colors = getColors(styles[0]);
     isEditing = false;
-    inspectionType = global.lastSetting.getSecondary ? 'Thứ cấp' : 'Sơ cấp';
-    // TODO: implement initState
-
+    inspectionTypeString =
+        inspectionTypeStrings[global.inspectionSetting.getInspectionType];
     super.initState();
   }
 
@@ -55,8 +61,9 @@ class _WorkSetting extends State<WorkSetting> {
           // ),
           isEditing
               ? DropdownButton<String>(
-                  value: global.line.toString(),
-                  items: lines.map<DropdownMenuItem<String>>((int value) {
+                  value: line.toString(),
+                  items:
+                      global.lines.map<DropdownMenuItem<String>>((int value) {
                     return DropdownMenuItem<String>(
                       value: value.toString(),
                       child: Text(
@@ -67,19 +74,19 @@ class _WorkSetting extends State<WorkSetting> {
                   }).toList(),
                   onChanged: (String? newValue) {
                     setState(() {
-                      global.line = int.parse(newValue!);
+                      line = int.parse(newValue!);
                     });
                   },
                 )
               : CircleAvatar(
-                  maxRadius: 25, child: Text('Line ' + global.line.toString())),
+                  maxRadius: 25, child: Text('Line ' + line.toString())),
           SizedBox(
             width: 5,
           ),
           isEditing
               ? DropdownButton<String>(
-                  value: inspectionType,
-                  items: inspectionTypes
+                  value: inspectionTypeString,
+                  items: inspectionTypeStrings
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -93,21 +100,20 @@ class _WorkSetting extends State<WorkSetting> {
                     setState(() {
                       print('inspectionTypeNameValue = ' +
                           inspectionTypeNameValue!);
-                      global.inspectionTypeName = inspectionTypeNameValue!;
-                      inspectionType = inspectionTypeNameValue!;
+                      inspectionTypeString = inspectionTypeNameValue;
                     });
                   },
                 )
-              : Text(inspectionType),
+              : Text(inspectionTypeString),
 
           SizedBox(
             width: 20,
           ),
-          Image.asset('asset/customer.png'),
+          Image.asset('assets/customer.png'),
           // const Text("Khách hàng : ", style: TextStyle(fontSize: 14)),
           isEditing
               ? DropdownButton<String>(
-                  value: global.customer,
+                  value: customer,
                   items:
                       customers.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
@@ -120,11 +126,11 @@ class _WorkSetting extends State<WorkSetting> {
                   }).toList(),
                   onChanged: (String? newValue) {
                     setState(() {
-                      global.customer = newValue.toString();
-                      styles = getStyles(global.customer);
-                      global.style = styles[0];
+                      customer = newValue.toString();
+                      styles = getStyles(customer);
+                      style = styles[0];
                       colors = getColors(global.style);
-                      global.color = colors[0];
+                      color = colors[0];
                     });
                   },
                 )
@@ -133,11 +139,11 @@ class _WorkSetting extends State<WorkSetting> {
             width: 20,
           ),
 
-          Image.asset('asset/style.png'),
+          Image.asset('assets/style.png'),
           // const Text("Mã hàng : ", style: TextStyle(fontSize: 14)),
           isEditing
               ? DropdownButton<String>(
-                  value: global.style,
+                  value: style,
                   items: styles.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -149,9 +155,9 @@ class _WorkSetting extends State<WorkSetting> {
                   }).toList(),
                   onChanged: (String? newValue) {
                     setState(() {
-                      global.style = newValue.toString();
+                      style = newValue.toString();
                       colors = getColors(global.style);
-                      global.color = colors[0];
+                      color = colors[0];
                     });
                   },
                 )
@@ -159,7 +165,7 @@ class _WorkSetting extends State<WorkSetting> {
           SizedBox(
             width: 20,
           ),
-          Image.asset('asset/color.png'),
+          Image.asset('assets/color.png'),
           // const Text("Màu : ", style: TextStyle(fontSize: 14)),
           isEditing
               ? DropdownButton<String>(
@@ -175,7 +181,7 @@ class _WorkSetting extends State<WorkSetting> {
                   }).toList(),
                   onChanged: (String? newValue) {
                     setState(() {
-                      global.color = newValue.toString();
+                      color = newValue.toString();
                     });
                   },
                 )
@@ -183,7 +189,7 @@ class _WorkSetting extends State<WorkSetting> {
           SizedBox(
             width: 20,
           ),
-          Image.asset('asset/size.png'),
+          Image.asset('assets/size.png'),
           // Text("Size : ", style: TextStyle(fontSize: 14)),
           isEditing
               ? DropdownButton<String>(
@@ -200,11 +206,11 @@ class _WorkSetting extends State<WorkSetting> {
                   // Step 5.
                   onChanged: (String? newValue) {
                     setState(() {
-                      global.size = newValue.toString();
+                      size = newValue.toString();
                     });
                   },
                 )
-              : Text(global.size),
+              : Text(size),
           SizedBox(
             width: 20,
           ),
@@ -225,7 +231,7 @@ class _WorkSetting extends State<WorkSetting> {
                 if (isEditing == false) {
                   isEditing = true;
                 } else {
-                  saveWorkSetting();
+                  saveWorkSettingWiget();
                   isEditing = false;
                 }
               });
@@ -255,9 +261,6 @@ class _WorkSetting extends State<WorkSetting> {
         styles.add(element.getX151);
       }
     });
-    // result = MyFuntions.removeDuplicateListString(styles);
-    // print(
-    //     'getStyles of customerName : ${customerName} -> ${result.toString()}');
     return styles.toSet().toList();
   }
 
@@ -293,47 +296,43 @@ class _WorkSetting extends State<WorkSetting> {
     global.t08s.forEach((element) {
       if (element.getCSize != null) sizes.add(element.getCSize);
     });
-    // return MyFuntions.removeDuplicateListString(sizes);
     return sizes.toSet().toList();
   }
 
-  saveWorkSetting() async {
-    var plan;
-    // global.sharedPreferences.setInt('line', global.line);
+  saveWorkSettingWiget() async {
+    print('saveWorkSettingWiget');
+    global.inspectionSetting = InspectionSetting(
+        line: line,
+        color: color,
+        customer: customer,
+        inspectionType: inspectionTypeStrings.indexOf(inspectionTypeString),
+        size: size,
+        style: style,
+        styleCode: getStyleCode(style));
+    print('SAVE SQL Lite: global.inspectionSetting : ' +
+        global.inspectionSetting.toString());
+    global.mySqlife.deleteRowsInTable('InspectionSetting');
+    global.mySqlife
+        .insertIntoTable('InspectionSetting', global.inspectionSetting);
     global.t04s.forEach((element) {
       var date = element.getX021;
-      if (date == global.todayString && element.getX011 == global.line) {
+      if (date == global.todayString &&
+          element.getX011 == global.inspectionSetting.getLine) {
         global.plan = element.getX13; //so luong ke hoach
       }
     });
     global.t01 = T011stInspectionData();
-    // global.t01InspectionData.setX01 = global.line;
-    // global.t01InspectionData.setX02 = global.todayString;
-    // global.t01InspectionData.setX03 = global.styleCode;
-    // global.t01InspectionData.setX04 = global.color;
-    // global.t01InspectionData.setX05 = global.size;
-    // global.t01InspectionData.setTMonth = DateTime.now().month;
-    // global.t01InspectionData.setTYear = DateTime.now().year;
-    print('global.inspectionTypeName = ' + global.inspectionTypeName);
-    global.lastSetting = LastSetting(
-        secondary: global.inspectionTypeName == 'Sơ cấp' ? false : true,
-        line: global.line,
-        color: global.color,
-        customer: global.customer,
-        size: global.size,
-        style: global.style,
-        styleCode: global.styleCode);
-    global.mySqlife.deleteRowsInTable('LastSetting');
-    global.mySqlife.insertIntoTable('LastSetting', global.lastSetting);
-    print('global.lastSetting : ' + global.lastSetting.toString());
+
     // global.t01sAllLocal = await global.mySqlife.loadInspectionDataT01();
-    global.t01sByCurrentSetting =
-        MyFuntions.t01FilterByLastSetting(global.t01sLocal, global.lastSetting);
-    global.t01SummaryByCurrentSetting = MyFuntions.t01sSummaryByLastSetting(
-        global.t01sByCurrentSetting, global.lastSetting);
+    global.t01sFilteredByInspectionSetting =
+        MyFuntions.t01FilterByLastInspectionSetting(
+            global.t01sLocal, global.inspectionSetting);
+    global.t01SummaryByInspectionSetting =
+        MyFuntions.t01sSummaryByLastInspectionSetting(
+            global.t01sFilteredByInspectionSetting, global.inspectionSetting);
 
     try {
-      widget.callback(global.t01SummaryByCurrentSetting);
+      widget.callback(global.t01SummaryByInspectionSetting);
     } catch (e) {
       print(e.toString());
     }

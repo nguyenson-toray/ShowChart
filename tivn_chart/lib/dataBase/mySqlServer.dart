@@ -1,8 +1,5 @@
-import 'dart:ffi';
 import 'dart:io';
-
 import 'package:connect_to_sql_server_directly/connect_to_sql_server_directly.dart';
-
 import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
 import 'package:tivn_chart/dataClass/t03ProductionItem.dart';
 import 'package:tivn_chart/dataClass/t04PlanProduction.dart';
@@ -20,17 +17,22 @@ class MySqlServer {
   int port = 1433;
   bool lanConnectionAvailable = false;
   final String dbNameSQL = 'Production';
-  final user = 'production';
+  // final String dbNameSQL = 'test';
+  // final user = 'production';
+  final user = 'app';
   final pass = 'Toray@123';
   final String instanceSql = 'MSSQLSERVER';
   final String tableT011stInspectionData = '[T01_1st inspection data]';
   final String tableT00Trans = '[T00_Trans]';
   final String tableT02Trans = '[T02_Week]';
-  final String table03ProductionItem = '[T03_Product item]';
+  final String table03ProductionItem = '[T03_Product Item]';
   final String table04PlanProduction = '[T04_Plan production]';
   final String table05ManPowerSewingTime = '[T05_Man_power_sewing_time]';
   final String table06Color = '[T06_Color]';
+  final String table07ReceivedOrder = '[T07 Received order]';
   final String table08Combo = '[T08_Combo]';
+  final String table09Translation = '[T09_Translation]';
+  final String table10OrderAssort = '[T10 Order assort]';
   Future<bool> checkConnection() async {
     var isConnected = false;
     await Socket.connect('$ipLAN', port, timeout: Duration(seconds: 3))
@@ -38,7 +40,6 @@ class MySqlServer {
       // do what need to be done
       print('Connection to IP LAN : $ipLAN:$port OK');
       lanConnectionAvailable = true;
-      print('socket : ' + socket.toString());
       // Don't forget to close socket
       socket.destroy();
     }).catchError((error) {
@@ -47,9 +48,10 @@ class MySqlServer {
           'Connection to IP LAN : $ipLAN NOT OK . Try to connect ip WAN : $ipWAN');
       print(error.toString());
     });
+    var ip = lanConnectionAvailable ? ipLAN : ipWAN;
     try {
       isConnected = await connection.initializeConnection(
-        lanConnectionAvailable ? ipLAN : ipWAN,
+        ip,
         dbNameSQL,
         user,
         pass,
@@ -57,7 +59,7 @@ class MySqlServer {
       );
       if (!isConnected) MyFuntions.showToastNoConnection();
     } catch (e) {
-      print(e.toString());
+      print('initializeConnection - $ip FAILSE :' + e.toString());
       MyFuntions.showToastNoConnection();
     }
     return isConnected;
@@ -88,31 +90,28 @@ class MySqlServer {
     final String query = '''select * from $tableT011stInspectionData''';
     var isConnected = false;
     print(
-        'Get Inspection data ( ${rangeDays.toString()} days : from ${DateFormat(global.dateFormat).format(
+        'select Table 01InspectionData   ( ${rangeDays.toString()} days : from ${DateFormat(global.dateFormat).format(
       beginDate,
     )} to today !!!');
     try {
-      if (true) {
-        var rowData;
-
-        await connection.getRowsOfQueryResult(query).then((value) => {
-              if (value.runtimeType == String)
-                {print('Query : $query => ERROR ')}
-              else
-                {
-                  tempResult = value.cast<Map<String, dynamic>>(),
-                  for (var element in tempResult)
-                    {
-                      rowData = T011stInspectionData.fromMap(element),
-                      day = DateTime.parse(rowData.getX02.toString()),
-                      if (day.isAfter(beginDate))
-                        {
-                          result.add(rowData),
-                        }
-                    }
-                }
-            });
-      }
+      var rowData;
+      await connection.getRowsOfQueryResult(query).then((value) => {
+            if (value.runtimeType == String)
+              {print('Query : $query => ERROR ')}
+            else
+              {
+                tempResult = value.cast<Map<String, dynamic>>(),
+                for (var element in tempResult)
+                  {
+                    rowData = T011stInspectionData.fromMap(element),
+                    day = DateTime.parse(rowData.getX02.toString()),
+                    if (day.isAfter(beginDate))
+                      {
+                        result.add(rowData),
+                      }
+                  }
+              }
+          });
     } catch (e) {
       print('getInspectionData --> Exception : ' + e.toString());
     }
@@ -122,11 +121,12 @@ class MySqlServer {
   Future<bool> updateInspectionDataToT01(
     T011stInspectionData input,
   ) async {
+    print('updateInspectionDataToT01');
     String queryInsert = '';
     String queryDeleteRow = '';
     bool result = false;
     var date = input.getX02;
-    DateTime date_standard = DateFormat("yyyy-MM-dd", "en").parse(date);
+    DateTime date_standard = DateFormat('yyyy-MM-dd', 'en').parse(date);
     queryInsert = '''INSERT INTO ${tableT011stInspectionData} 
           ([2nd], X01,X02,X03,X04,X05,X06,X07,X08,X09,X10,
           A1,A2,A3,B1,B2,B3,C1,C2,
@@ -136,7 +136,7 @@ class MySqlServer {
           G1,G2,G3,H,XC,	
           [Sum A],[Sum B],[Sum C],[Sum D],[Sum E],[Sum F],[Sum G],
           Total,X11,X12,[T-Month],[T-Year],TF) 
-        VALUES('${input.getInspectionType}, ${input.getX01}, '${date_standard}', ${input.getX03}, '${input.getX04}', '${input.getX05}', ${input.getX06}, ${input.getX07}, ${input.getX08}, ${input.getX09}, ${input.getX10},
+        VALUES(${input.getInspectionType}, ${input.getX01}, '${date_standard}', ${input.getX03}, '${input.getX04}', '${input.getX05}', ${input.getX06}, ${input.getX07}, ${input.getX08}, ${input.getX09}, ${input.getX10},
           ${input.getA1},	${input.getA2},	${input.getA3},	${input.getB1},	${input.getB2},	${input.getB3},	${input.getC1},	${input.getC2},	
           ${input.getD1},	${input.getD2},	${input.getD3},	${input.getD4},	
           ${input.getE1},	${input.getE2},	${input.getE3},	${input.getE4},	${input.getE5},	${input.getE6},	${input.getE7},
@@ -145,8 +145,7 @@ class MySqlServer {
           ${input.getSumA},	${input.getSumB},	${input.getSumC},	${input.getSumD},	${input.getSumE},	${input.getSumF},	${input.getSumG},	
           ${input.getTotal}, ${input.getX11},	${input.getX12}, ${input.getTMonth}, ${input.getTYear}, ${input.getTF}
         );''';
-    queryDeleteRow = '''
-      DELETE FROM $tableT011stInspectionData
+    queryDeleteRow = ''' DELETE FROM $tableT011stInspectionData
         WHERE  (X02 ='${date}' and [2nd]= ${input.getInspectionType} and X01 =${input.getX01} and X03 = ${input.getX03} and X04 = '${input.getX04}' and X05 = '${input.getX05}' 
       );''';
 

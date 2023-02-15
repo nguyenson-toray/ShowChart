@@ -55,7 +55,7 @@ class _InputInspectionPageState extends State<InputInspectionPage> {
                   MyFuntions.clearDefectQtyCmt();
                   if (count > global.totalChecked) Navigator.of(context).pop();
                   try {
-                    widget.callback(global.t01sByCurrentSetting);
+                    widget.callback(global.t01sFilteredByInspectionSetting);
                   } catch (e) {
                     print(e.toString());
                   }

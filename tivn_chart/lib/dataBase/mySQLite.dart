@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
-import 'package:tivn_chart/dataClass/lastSetting.dart';
-import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
-import 'package:sqflite/sqflite.dart';
+
 import 'package:intl/intl.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:tivn_chart/dataClass/inspectionDetail.dart';
+import 'package:tivn_chart/dataClass/inspectionSetting.dart';
+import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
+import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
 import 'package:tivn_chart/global.dart';
 
 class MySqLite {
@@ -17,12 +18,13 @@ class MySqLite {
   final String table05ManPowerSewingTime = 'T05_Man_power_sewing_time';
   final String table06Color = 'T06_Color';
   final String tableInspectionDetails = 'InspectionDetails';
-  final String tableLastSetting = 'LastSetting';
+  final String tabelinspectionSetting = 'InspectionSetting';
 
   String dbPath = '';
-  String dbName = 'Inspection.db';
+  String dbName = 'Toray.db';
   late Database database;
   String query = '';
+  MySqLite();
   Future<String> getPath() async {
     String path;
     path = await getDatabasesPath();
@@ -37,11 +39,12 @@ class MySqLite {
       databaseFactory.databaseExists(await getPath());
   Future<void> openDB() async {
     var path = await getPath();
+    print('============= openDB : $path');
     database = await openDatabase(path);
   }
 
   Future<void> createDB() async {
-    var lastSetting = LastSetting(line: 1);
+    var inspectionSetting = InspectionSetting(line: 1);
     try {
       var path = await getPath();
       print('============= createDB : $path');
@@ -52,13 +55,13 @@ class MySqLite {
           await db.execute('$queryCreate_T03_Product_item;');
           await db.execute('$queryCreate_T04_Plan_production;');
           await db.execute('$queryCreate_InspectionDetails;');
-          await db.execute('$queryCreate_LastSetting;');
+          await db.execute('$queryCreate_InspectionSetting;');
 
           // await db.execute('$queryCreate_InspectionSummary;');
         },
         version: 1,
       );
-      insertIntoTable(tableLastSetting, lastSetting);
+      insertIntoTable(tabelinspectionSetting, inspectionSetting);
       // await database.close();
     } catch (e) {
       print(e.toString());
@@ -120,7 +123,7 @@ class MySqLite {
           );''';
     String queryDeleteRow = '''
         DELETE FROM ${tableT011stInspectionData} 
-        WHERE  (X02 ='${global.todayString}' and  X01 =${input.getX01} and X03 = ${input.getX03} and X04 = '${input.getX04}' and X05 = '${input.getX05}' 
+        WHERE  ([2nd] ='${input.getInspectionType}' and X02 ='${global.todayString}' and  X01 =${input.getX01} and X03 = ${input.getX03} and X04 = '${input.getX04}' and X05 = '${input.getX05}' 
         );''';
     // var open = await isDbExits();
     // print('is open = ' + open.toString());
@@ -137,17 +140,17 @@ class MySqLite {
     }
   }
 
-  Future<List<LastSetting>> loadLastSetting() async {
-    print('loadLastSetting ');
-    List<LastSetting> NoResult = [];
+  Future<List<InspectionSetting>> LoadInspectionSetting() async {
+    print('LoadInspectionSetting ');
+    List<InspectionSetting> NoResult = [];
     List<Map<String, dynamic>> maps;
     try {
-      maps = await database.query(tableLastSetting);
+      maps = await database.query(tabelinspectionSetting);
       return List.generate(maps.length, (i) {
-        return LastSetting.fromMap(maps[i]);
+        return InspectionSetting.fromMap(maps[i]);
       });
     } catch (e) {
-      print('loadLastSetting Exception : ' + e.toString());
+      print('LoadInspectionSetting Exception : ' + e.toString());
     }
     return NoResult;
   }
@@ -178,11 +181,11 @@ class MySqLite {
       final today = DateFormat(global.dateFormat).parse(global.todayString);
 
       if (date == today &&
-          element.getLine == global.lastSetting.getLine &&
-          element.getCustomer == global.lastSetting.getCustomer &&
-          element.getStyle == global.lastSetting.getStyle &&
-          element.getSize == global.lastSetting.getSize &&
-          element.getColor == global.lastSetting.getColor) {
+          element.getLine == global.inspectionSetting.getLine &&
+          element.getCustomer == global.inspectionSetting.getCustomer &&
+          element.getStyle == global.inspectionSetting.getStyle &&
+          element.getSize == global.inspectionSetting.getSize &&
+          element.getColor == global.inspectionSetting.getColor) {
         result.add(element);
       }
     });
@@ -202,10 +205,10 @@ class MySqLite {
       final today = DateFormat(global.dateFormat).parse(global.todayString);
 
       if (date == today &&
-          element.getX01 == global.lastSetting.getLine &&
-          element.getX03 == global.lastSetting.getStyleCode &&
-          element.getX05 == global.lastSetting.getSize &&
-          element.getX04 == global.lastSetting.getColor) {
+          element.getX01 == global.inspectionSetting.getLine &&
+          element.getX03 == global.inspectionSetting.getStyleCode &&
+          element.getX05 == global.inspectionSetting.getSize &&
+          element.getX04 == global.inspectionSetting.getColor) {
         result = element;
         break;
       }
@@ -220,7 +223,6 @@ class MySqLite {
     List<Map<String, dynamic>> maps;
     try {
       maps = await database.query(tableT011stInspectionData);
-
       return List.generate(maps.length, (i) {
         return T011stInspectionData.fromMap(maps[i]);
       });
@@ -235,7 +237,7 @@ class MySqLite {
   final String queryCreate_T01_1st_inspection_data =
       r'''CREATE TABLE 'T01_1st_inspection_data' 
   (_id INTEGER PRIMARY KEY , 
-   '2nd' BOOL, X01 INTEGER, X02 DATETIME default current_timestamp, X03 INTEGER, X04 VARCHAR(20),  X05 VARCHAR(20), X06 INTEGER,  X07 INTEGER,	X08 INTEGER,	X09 INTEGER,	X10 INTEGER,	
+   [2nd] INTEGER, X01 INTEGER, X02 DATETIME default current_timestamp, X03 INTEGER, X04 VARCHAR(20),  X05 VARCHAR(20), X06 INTEGER,  X07 INTEGER,	X08 INTEGER,	X09 INTEGER,	X10 INTEGER,	
    A1 INTEGER, 	A2 INTEGER,	A3	INTEGER,
    B1	INTEGER, B2 INTEGER,	B3	INTEGER,C1	INTEGER,C2	INTEGER,D1	INTEGER,D2	INTEGER,D3 INTEGER,
    D4 INTEGER,	E1 INTEGER,	E2 INTEGER,	E3 INTEGER,	E4 INTEGER,	E5 INTEGER,	E6 INTEGER,	E7 INTEGER,	
@@ -262,17 +264,17 @@ class MySqLite {
 ''';
   final String queryCreate_InspectionDetails = r'''
  CREATE TABLE 'InspectionDetails' (id INTEGER AUTO INCREMENT PRIMARY KEY ,time INTEGER, date  DATETIME, line INTERGER, customer VARCHAR(20), style VARCHAR(20),
-  styleCode INTERGER, color VARCHAR(20), size VARCHAR(20),  spectionFirstSecond INTEGER, 
+  styleCode INTERGER, color VARCHAR(20), size VARCHAR(20),  inspectionType INTEGER, 
   quantity INTERGER, result VARCHAR(20), groupDefect VARCHAR(20), defect VARCHAR(20), comment VARCHAR(50)
   );
 ''';
-  final String queryCreate_LastSetting = '''
-    CREATE TABLE 'LastSetting' (secondary  BOOL, line INTERGER, customer VARCHAR(20), style VARCHAR(20),
+  final String queryCreate_InspectionSetting = '''
+    CREATE TABLE 'InspectionSetting' (inspectionType  INTEGER, line  INTERGER, customer VARCHAR(20), style VARCHAR(20),
       styleCode INTERGER, color VARCHAR(20), size VARCHAR(20) 
     );
     ''';
   final String queryCreate_InspectionSummary = r'''
-CREATE TABLE 'InspectionSummary' (id INTEGER AUTO INCREMENT PRIMARY KEY ,date  DATETIME, time INTEGER, secondInspection BOOL,  line INTERGER, customer VARCHAR(20), style VARCHAR(20),
+CREATE TABLE 'InspectionSummary' (id INTEGER AUTO INCREMENT PRIMARY KEY ,date  DATETIME, time INTEGER, inspectionType INTEGER,  line  INTERGER, customer VARCHAR(20), style VARCHAR(20),
   styleCode INTERGER, color VARCHAR(20), size VARCHAR(20),  planToday  INTEGER, actual INTEGER, sumDefect REAL, rationDefect REAL
  );
 ''';

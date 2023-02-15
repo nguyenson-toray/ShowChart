@@ -8,6 +8,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:tivn_chart/chart/chartFuntionData.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:intl/intl.dart';
+import 'package:tivn_chart/ui/startPage.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({super.key});
@@ -26,17 +27,6 @@ class _Dashboard extends State<Dashboard> {
   double wChartPhone = 0;
   int padding = 10;
   bool fullScreen = false;
-  List<String> lines = [
-    'All',
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-  ];
   RadioGroupController myController = RadioGroupController();
   @override
   void initState() {
@@ -77,7 +67,7 @@ class _Dashboard extends State<Dashboard> {
     var dataInput = [...global.t01s];
     setState(() {
       print(
-          'refreshChartData : screenTypeInt = ${global.screenTypeInt.toString()}     currentLine = ${global.currentLine.toString()}');
+          'refreshChartData : screenTypeInt = ${global.screenTypeInt.toString()}     currentLine = ${global.currentLine.toString()}    inspection12 = ${global.inspection12}');
       global.chartData.clear();
       global.chartData = ChartFuntionData.createChartData(
         dataInput,
@@ -394,12 +384,7 @@ class _Dashboard extends State<Dashboard> {
       global.screenTypeInt == 1
           ? global.screenTypeInt = 2
           : global.screenTypeInt = 1;
-      // global.screenTypeInt++;
-
-      // if (global.screenTypeInt > 2 && !global.isTV)
-      //   global.screenTypeInt = 1;
-      // else if (global.screenTypeInt > 2 && global.isTV)
-      //   global.screenTypeInt = 0;
+      global.sharedPreferences.setInt('screenTypeInt', global.screenTypeInt);
     });
   }
 
@@ -445,8 +430,6 @@ class _Dashboard extends State<Dashboard> {
           onTap: () {
             setState(() {
               changescreenTypeInt();
-              global.sharedPreferences
-                  .setInt('screenTypeInt', global.screenTypeInt);
               buildScreen(global.screenTypeInt);
             });
           },
@@ -472,14 +455,28 @@ class _Dashboard extends State<Dashboard> {
     switch (global.screenTypeInt) {
       case 1:
         {
-          result = InkWell(
-              onTap: () {
-                setState(() {
-                  fullScreen = !fullScreen;
-                });
-              },
-              child:
-                  Icon(fullScreen ? Icons.fullscreen_exit : Icons.fullscreen));
+          result = Row(
+            children: [
+              InkWell(
+                  onTap: () {
+                    setState(() {
+                      fullScreen = !fullScreen;
+                    });
+                  },
+                  child: Icon(
+                      fullScreen ? Icons.fullscreen_exit : Icons.fullscreen)),
+              global.device == 'smartphone'
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => StartPage()),
+                        );
+                      },
+                      child: Icon(Icons.exit_to_app))
+                  : Container(),
+            ],
+          );
         }
         break;
       case 2:
