@@ -25,15 +25,9 @@ class global {
   static int plan = 0;
   static int actual = 0;
   static int sumDefect1 = 0;
-  static int styleCode = 1;
-  static String style = 'KSRWL-002JA';
-  static String customer = 'KASCO';
-  static String size = 'XS';
-  static String color = 'LAVENDER';
   static bool isRecheck = false;
   static bool needUpdateSQL = false;
   static int totalChecked = 0;
-  static String inspectionTypeName = 'Sơ cấp';
   static int qtyInspection1 = 0;
   static int qtyInspectionOK1 = 0;
   static int qtyInspection2 = 0;

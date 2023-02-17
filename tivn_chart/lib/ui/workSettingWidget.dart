@@ -18,10 +18,10 @@ class WorkSettingWiget extends StatefulWidget {
 class _WorkSettingWiget extends State<WorkSettingWiget> {
   bool isEditing = false;
   int line = 1;
-  String customer = '';
-  String color = '';
-  String style = '';
-  String size = '';
+  String customer = 'KASCO';
+  String color = 'LAVENDER';
+  String style = 'KSRWL-002JA';
+  String size = 'XS';
   List<String> customers = [];
   List<String> styles = [];
   List<String> colors = [];
@@ -36,7 +36,7 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
     style = global.inspectionSetting.getStyle;
     size = global.inspectionSetting.getSize;
     customers = getCustomersName();
-    styles = getStyles(global.customer);
+    styles = getStyles(customer);
     sizes = getSizes();
     colors = getColors(styles[0]);
     isEditing = false;
@@ -154,12 +154,12 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
                       customer = newValue.toString();
                       styles = getStyles(customer);
                       style = styles[0];
-                      colors = getColors(global.style);
+                      colors = getColors(style);
                       color = colors[0];
                     });
                   },
                 )
-              : Text(global.customer),
+              : Text(customer),
           SizedBox(
             width: 20,
           ),
@@ -179,14 +179,15 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
                     );
                   }).toList(),
                   onChanged: (String? newValue) {
+                    print('newValue =' + newValue.toString());
                     setState(() {
                       style = newValue.toString();
-                      colors = getColors(global.style);
+                      colors = getColors(style);
                       color = colors[0];
                     });
                   },
                 )
-              : Text(global.style),
+              : Text(style),
           SizedBox(
             width: 20,
           ),
@@ -194,7 +195,7 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
           // const Text("Màu : ", style: TextStyle(fontSize: 14)),
           isEditing
               ? DropdownButton<String>(
-                  value: global.color,
+                  value: color,
                   items: colors.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -210,7 +211,7 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
                     });
                   },
                 )
-              : Text(global.color),
+              : Text(color),
           SizedBox(
             width: 20,
           ),
@@ -218,7 +219,7 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
           // Text("Size : ", style: TextStyle(fontSize: 14)),
           isEditing
               ? DropdownButton<String>(
-                  value: global.size,
+                  value: size,
                   items: sizes.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
