@@ -8,7 +8,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:tivn_chart/chart/chartFuntionData.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:intl/intl.dart';
-import 'package:tivn_chart/ui/startPage.dart';
+import 'package:tivn_chart/ui/start.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({super.key});

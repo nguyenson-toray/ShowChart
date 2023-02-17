@@ -404,6 +404,7 @@ class T011stInspectionData {
     if (isTypeC) {
       x10 = qtyChecked;
     } else if (!isRecheck) {
+      //kiem lan 1
       x06 = qtyChecked;
       if (result == 'ĐẠT') {
         x07 = qtyChecked;
@@ -412,6 +413,7 @@ class T011stInspectionData {
         x07 = 0;
       }
     } else {
+      //kiem lan 2
       if (result == 'ĐẠT') {
         x08 = qtyChecked;
         x09 = qtyChecked;
@@ -425,6 +427,7 @@ class T011stInspectionData {
     tMonth = global.today.month;
     tYear = global.today.year;
     totalChecked = qtyChecked;
+    calculateValue();
   }
 
   calculateValue() {
@@ -511,7 +514,7 @@ class T011stInspectionData {
 
   factory T011stInspectionData.fromMap(Map<String, dynamic> map) {
     return T011stInspectionData(
-      id: map['ID']?.toInt() ?? 0,
+      id: map['ID'] != null ? map['ID']?.toInt() : map['_id']?.toInt(),
       inspectionType: map['2nd']?.toInt() ?? 0,
       x01: map['X01']?.toInt() ?? 0,
       x02: map['X02'] ?? '',

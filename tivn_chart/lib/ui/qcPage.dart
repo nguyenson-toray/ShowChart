@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,6 @@ class QcPage extends StatefulWidget {
 
 class QcPageState extends State<QcPage> {
   int actual = 0;
-  int plan = 0;
   int sumDefect = 0;
   double rationDefect = 0;
   bool buttonFinishVisible = true;
@@ -42,11 +43,33 @@ class QcPageState extends State<QcPage> {
       var date = element.getX021;
       if (date == global.todayString &&
           element.getX011 == global.inspectionSetting.getLine) {
-        plan = element.getX13; //so luong ke hoach
+        global.planToday = element.getX13; //so luong ke hoach
         print(
-            'Line ${global.inspectionSetting.getLine} - plan today: ${plan.toString()} pcs');
+            'Line ${global.inspectionSetting.getLine} - plan today: ${global.planToday.toString()} pcs');
       }
     });
+    Timer.periodic(new Duration(seconds: global.secondsAutoUpdateDataToSQL),
+        (timer) async {
+      if (global.needUpdateSQL) {
+        print(
+            '${DateTime.now().toString()}  Update Inspection Data From Local to SQL server : ${global.t01SummaryByInspectionSetting.toString()}');
+        await global.mySqlServer
+            .updateInspectionDataToT01(global.t01SummaryByInspectionSetting);
+        setState(() {
+          global.needUpdateSQL = false;
+        });
+      }
+    });
+    global.t01sFilteredByInspectionSetting =
+        MyFuntions.t01FilterByLastInspectionSetting(
+            global.t01sLocal, global.inspectionSetting);
+    global.t01SummaryByInspectionSetting =
+        MyFuntions.t01sSummaryByLastInspectionSetting(
+            global.t01sFilteredByInspectionSetting, global.inspectionSetting);
+
+    print(
+        'initState-t01SummaryByInspectionSetting : ${global.t01SummaryByInspectionSetting.toString()}');
+
     super.initState();
   }
 
@@ -71,7 +94,9 @@ class QcPageState extends State<QcPage> {
                 WorkSettingWiget(callback: refresh),
                 createSummaryChart(),
                 Divider(
-                  color: Colors.teal.shade200,
+                  color: global.needUpdateSQL
+                      ? Colors.yellow
+                      : Colors.teal.shade100,
                   thickness: 3.0,
                 ),
                 const SizedBox(
@@ -89,14 +114,16 @@ class QcPageState extends State<QcPage> {
                 //       )
                 //     : Container(),
                 Divider(
-                  color: Colors.teal.shade100,
-                  thickness: 2.0,
+                  color: global.needUpdateSQL
+                      ? Colors.yellow
+                      : Colors.teal.shade100,
+                  thickness: 3.0,
                 ),
                 // showData()
                 Container(
                     child: ListViewData(
-                        data: global.t01sFilteredByInspectionSetting.reversed
-                            .toList()))
+                        data: global.t01sFilteredByInspectionSetting))
+                // global.t01sFilteredByInspectionSetting.toList()))
               ],
             ),
           ),
@@ -315,7 +342,8 @@ class QcPageState extends State<QcPage> {
               ColumnSeries<T011stInspectionData, String>(
                   dataSource: data,
                   xValueMapper: (T011stInspectionData data, _) => data.getX02,
-                  yValueMapper: (T011stInspectionData data, _) => plan,
+                  yValueMapper: (T011stInspectionData data, _) =>
+                      global.planToday,
                   name: 'Kế hoạch',
                   color: Colors.blue,
                   dataLabelSettings: DataLabelSettings(
@@ -371,6 +399,11 @@ class QcPageState extends State<QcPage> {
               progressColor: Colors.red,
             ),
           ),
+          // Icon(
+          //   size: 40,
+          //   Icons.upload_file,
+          //   color: global.needUpdateSQL ? Colors.yellow : Colors.green,
+          // ),
         ],
       ),
     );

@@ -68,12 +68,25 @@ class MySqLite {
     }
   }
 
-  Future<void> deleteRowsInTable(String tabelName) async {
-    print("deleteRowsInTable : $tabelName");
+  Future<void> deleteAllRowsInTable(String tabelName) async {
+    print("deleteAllRowsInTable : $tabelName");
     try {
       int result = await database.rawDelete('DELETE FROM  $tabelName');
     } catch (e) {
       print('deleteRowsinTable  ERROR : ' + e.toString());
+    }
+  }
+
+  Future<void> deleteRowInTableInspections(int id) async {
+    print("deleteRowInTable : $tableT011stInspectionData");
+    String query = '''DELETE FROM  $tableT011stInspectionData  WHERE _id = $id;
+    ''';
+    print(query);
+    try {
+      int result = await database.rawDelete(query);
+      print('result : $result');
+    } catch (e) {
+      print('deleteRowInTableInspections  ERROR : ' + e.toString());
     }
   }
 
@@ -95,6 +108,7 @@ class MySqLite {
 
   Future<void> insertIntoTable_T011stInspectionData(
       T011stInspectionData input) async {
+    print('insertIntoTable_T011stInspectionData');
     String defectName = '';
     if (input.getDefectName == null || input.getDefectName.length == 0)
       defectName = '';
@@ -102,7 +116,7 @@ class MySqLite {
     DateTime date_DateTime = DateFormat("yyyy-MM-dd").parse(input.getX02);
     var date_String = input.getX02;
     String queryInsert = '''INSERT INTO ${tableT011stInspectionData} 
-            ([2nd],X01,X02,X03,X04,X05,X06,X07,X08,X09,X10,
+            (_id, [2nd],X01,X02,X03,X04,X05,X06,X07,X08,X09,X10,
             A1,A2,A3,B1,B2,B3,C1,C2,
             D1,D2,D3,D4,
             E1,E2,E3,E4,E5,E6,E7,
@@ -111,7 +125,7 @@ class MySqLite {
             [Sum A],[Sum B],[Sum C],[Sum D],[Sum E],[Sum F],[Sum G],
             Total,X11,X12,[T-Month],[T-Year],TF,
             time,isReCheck,defectNames,totalChecked ) 
-          VALUES(${input.getInspectionType},${input.getX01}, '${global.todayString}', ${input.getX03}, '${input.getX04}', '${input.getX05}', ${input.getX06}, ${input.getX07}, ${input.getX08}, ${input.getX09}, ${input.getX10},
+          VALUES(${input.getId}, ${input.getInspectionType},${input.getX01}, '${global.todayString}', ${input.getX03}, '${input.getX04}', '${input.getX05}', ${input.getX06}, ${input.getX07}, ${input.getX08}, ${input.getX09}, ${input.getX10},
             ${input.getA1},	${input.getA2},	${input.getA3},	${input.getB1},	${input.getB2},	${input.getB3},	${input.getC1},	${input.getC2},	
             ${input.getD1},	${input.getD2},	${input.getD3},	${input.getD4},	
             ${input.getE1},	${input.getE2},	${input.getE3},	${input.getE4},	${input.getE5},	${input.getE6},	${input.getE7},

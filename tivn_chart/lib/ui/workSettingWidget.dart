@@ -59,6 +59,7 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
           //   "Line : ",
           //   style: TextStyle(fontSize: 14),
           // ),
+
           isEditing
               ? DropdownButton<String>(
                   value: line.toString(),
@@ -78,8 +79,22 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
                     });
                   },
                 )
-              : CircleAvatar(
-                  maxRadius: 25, child: Text('Line ' + line.toString())),
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(5.0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: 70,
+                    height: 30,
+                    color: global.needUpdateSQL
+                        ? Colors.yellowAccent
+                        : Colors.greenAccent,
+                    child: Text(
+                      'LINE ' + line.toString().toUpperCase(),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+
           SizedBox(
             width: 5,
           ),
@@ -98,13 +113,23 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
                   }).toList(),
                   onChanged: (String? inspectionTypeNameValue) {
                     setState(() {
-                      print('inspectionTypeNameValue = ' +
-                          inspectionTypeNameValue!);
-                      inspectionTypeString = inspectionTypeNameValue;
+                      inspectionTypeString = inspectionTypeNameValue!;
                     });
                   },
                 )
-              : Text(inspectionTypeString),
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(5.0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: 70,
+                    height: 30,
+                    color: Colors.greenAccent,
+                    child: Text(
+                      inspectionTypeString.toUpperCase(),
+                      // style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
 
           SizedBox(
             width: 20,
@@ -300,6 +325,15 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
   }
 
   saveWorkSettingWiget() async {
+    global.t04s.forEach((element) {
+      var date = element.getX021;
+      if (date == global.todayString &&
+          element.getX011 == global.inspectionSetting.getLine) {
+        global.planToday = element.getX13; //so luong ke hoach
+        print(
+            'Line ${global.inspectionSetting.getLine} - plan today: ${global.planToday.toString()} pcs');
+      }
+    });
     print('saveWorkSettingWiget');
     global.inspectionSetting = InspectionSetting(
         line: line,
@@ -311,7 +345,7 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
         styleCode: getStyleCode(style));
     print('SAVE SQL Lite: global.inspectionSetting : ' +
         global.inspectionSetting.toString());
-    global.mySqlife.deleteRowsInTable('InspectionSetting');
+    global.mySqlife.deleteAllRowsInTable('InspectionSetting');
     global.mySqlife
         .insertIntoTable('InspectionSetting', global.inspectionSetting);
     global.t04s.forEach((element) {

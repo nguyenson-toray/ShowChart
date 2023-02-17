@@ -83,6 +83,8 @@ flutter:
 
   # To add assetss to your application, add an assets section, like this:
   assets: 
+    - assets/vietnam.png 
+    - assets/japan.png 
     - assets/logo.png 
     - assets/ic_launcher.png
     - assets/hdvsmm.mp3

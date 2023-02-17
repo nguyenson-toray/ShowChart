@@ -238,8 +238,11 @@ class MyFuntions {
         global.totalChecked,
         global.defectQtys,
         global.defectNames);
-
-    global.t01.setTime = DateFormat('hh:mm:ss').format(DateTime.now());
+    var time = DateFormat('hh:mm:ss').format(DateTime.now());
+    var id = DateFormat('yyMMddhhmmss').format(DateTime.now());
+    print('id : ' + id.toString());
+    global.t01.setId = int.parse(id);
+    global.t01.setTime = time;
     global.t01.setDefectName = global.defectTotal;
     global.t01.setIsReCheck = global.isRecheck;
     global.t01.setTotalChecked = global.totalChecked;
@@ -335,8 +338,6 @@ class MyFuntions {
           default:
         }
       });
-      global.t01.calculateValue();
-      print('------------ global.t01.calculateValue');
     }
     print("global.t01 : " + global.t01.toString());
     global.t01sLocal.add(global.t01);
@@ -346,9 +347,8 @@ class MyFuntions {
             global.t01sFilteredByInspectionSetting, global.inspectionSetting);
     //save to SqLite
     global.mySqlife.insertIntoTable_T011stInspectionData(global.t01);
-    global.mySqlServer
-        .updateInspectionDataToT01(global.t01SummaryByInspectionSetting);
 
     global.comment = '';
+    global.needUpdateSQL = true;
   }
 }

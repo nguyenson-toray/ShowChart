@@ -31,6 +31,7 @@ class global {
   static String size = 'XS';
   static String color = 'LAVENDER';
   static bool isRecheck = false;
+  static bool needUpdateSQL = false;
   static int totalChecked = 0;
   static String inspectionTypeName = 'Sơ cấp';
   static int qtyInspection1 = 0;
@@ -94,7 +95,8 @@ class global {
 
   static List<T08Combo> t08s = [];
   static late InspectionSetting inspectionSetting;
-  static int secondsAutoGetData = 300;
+  static int secondsAutoGetData = 60;
+  static int secondsAutoUpdateDataToSQL = 30;
   static int secondsAutoChangeLine = 120;
   static var planToday = 9999;
   static var actualToday = 0;

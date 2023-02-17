@@ -411,7 +411,7 @@ class ChartProduction {
             majorGridLines: const MajorGridLines(width: 0),
             labelFormat: '{value}%',
             minimum: 0,
-            maximum: 50,
+            maximum: 35,
             interval: 10)
       ],
       primaryXAxis:
@@ -437,7 +437,7 @@ class ChartProduction {
         labelAlignment: ChartDataLabelAlignment.auto);
     return <ChartSeries<ChartProduction, String>>[
       StackedColumnSeries<ChartProduction, String>(
-        dataSource: dataInput!,
+        dataSource: dataInput,
         xValueMapper: (ChartProduction data, _) => data.getCatalogue,
         yValueMapper: (ChartProduction data, _) => data.getQty1stOK,
         dataLabelSettings: myDataLabelSettings,
@@ -453,7 +453,7 @@ class ChartProduction {
         color: Colors.orangeAccent,
       ),
       StackedColumnSeries<ChartProduction, String>(
-        dataSource: dataInput!,
+        dataSource: dataInput,
         xValueMapper: (ChartProduction data, _) => data.getCatalogue,
         yValueMapper: (ChartProduction data, _) => data.getQtyAfterRepaire,
         dataLabelSettings: myDataLabelSettings,

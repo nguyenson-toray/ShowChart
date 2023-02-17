@@ -12,7 +12,7 @@ import 'package:tivn_chart/dataFuntion/myFuntions.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:tivn_chart/ui/inputInspectionPage.dart';
 import 'package:tivn_chart/ui/qcPage.dart';
-import 'package:tivn_chart/ui/startPage.dart';
+import 'package:tivn_chart/ui/start.dart';
 import 'package:wakelock/wakelock.dart';
 import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -23,12 +23,12 @@ Future<void> main() async {
   initializeDateFormatting('en');
   await getsharedPreferences();
   await detectDeviceInfo();
-  !global.isTV ?? await initDataSqLite();
+  if (!global.isTV) await initDataSqLite();
   // -------------for test in debug mode
   if (kDebugMode) {
     // if (androidInfo.model == 'AOSP TV on x86') {
-    global.device = 'TVControl';
-    global.isTV = true;
+    // global.device = 'TVLine';
+    // global.isTV = true;
     // global.rangeTime = 14;
     // global.sharedPreferences.setInt('rangeTime', global.rangeTime);
     // global.autoChangeLine = false;
@@ -41,7 +41,7 @@ Future<void> main() async {
   global.todayString = DateFormat(global.dateFormat).format(
     global.today,
   );
-  global.isTV ?? Wakelock.enable(); // alway screen On
+  if (global.isTV) Wakelock.enable(); // alway screen On
   SystemChrome.setPreferredOrientations([
     global.isTV ? DeviceOrientation.landscapeLeft : DeviceOrientation.portraitUp
   ]).then((_) {
@@ -71,10 +71,6 @@ initDataSqLite() async {
     global.inspectionSetting = inspectionSettings.last;
   }
   global.t01sLocal = await global.mySqlife.loadInspectionDataT01();
-
-  global.t01sFilteredByInspectionSetting =
-      MyFuntions.t01FilterByLastInspectionSetting(
-          global.t01sLocal, global.inspectionSetting);
 }
 
 Future<void> detectDeviceInfo() async {
