@@ -74,13 +74,9 @@ class _InputInspectionPageState extends State<InputInspectionPage> {
                           global.defectCmts,
                           global.defectQtys);
 
-                      global.t01sLocal.removeAt(indexInT01sLocal);
-                      global.t01sLocal.add(t01CurrentFiltered);
-                      //
-                      global.t01sFilteredByInspectionSetting
-                          .removeAt(indexInT01sFiltered);
-                      global.t01sFilteredByInspectionSetting
-                          .add(t01CurrentFiltered);
+                      global.t01sLocal[indexInT01sLocal] = t01CurrentFiltered;
+                      global.t01sFilteredByInspectionSetting[
+                          indexInT01sFiltered] = t01CurrentFiltered;
                       //
                       global.t01SummaryByInspectionSetting =
                           MyFuntions.t01sSummaryByLastInspectionSetting(
