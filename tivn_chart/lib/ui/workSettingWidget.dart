@@ -82,10 +82,22 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
               : Row(
                   children: [
                     Container(
+                      width: 40,
+                      height: 30,
+                      alignment: Alignment.bottomLeft,
+                      child: Text(
+                        'Version : ${global.version}',
+                        style: TextStyle(fontSize: 6),
+                      ),
+                    ),
+                    Container(
                       height: 20,
                       width: 100,
                       alignment: Alignment.centerLeft,
                       child: Image.asset('assets/logo.png'),
+                    ),
+                    SizedBox(
+                      width: 20,
                     ),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(5.0),

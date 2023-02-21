@@ -145,12 +145,13 @@ class _LineChartState extends State<LineChart> {
                     child: global.chart.createChartQtyRateUI(
                         global.chartData, '', 'day', global.currentLine)),
               ),
-              // Container(
-              //   child: Text(
-              //     '''Developed by Nguyen Thai Son , Version : ${global.version}''',
-              //     style: TextStyle(fontSize: 5),
-              //   ),
-              // ),
+              Container(
+                alignment: Alignment.bottomRight,
+                child: Text(
+                  'Version : ${global.version}',
+                  style: TextStyle(fontSize: 5),
+                ),
+              ),
             ],
           ),
         ),

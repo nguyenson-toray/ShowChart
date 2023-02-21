@@ -103,7 +103,7 @@ class QcPageState extends State<QcPage> {
                         child: LinearProgressIndicator(),
                       )
                     : Divider(
-                        color: Colors.teal.shade100,
+                        color: Colors.teal,
                         thickness: 3.0,
                       ),
                 Row(

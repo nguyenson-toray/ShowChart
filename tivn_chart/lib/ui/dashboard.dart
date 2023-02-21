@@ -129,7 +129,7 @@ class _Dashboard extends State<Dashboard> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   global.screenTypeInt != 0 ? option() : Container(),
-                  buildScreen(global.screenTypeInt)
+                  buildScreen(global.screenTypeInt),
                 ],
               )),
         ),
@@ -436,7 +436,10 @@ class _Dashboard extends State<Dashboard> {
             });
           },
           child: Row(
-            children: [Icon(Icons.dashboard), Text(global.screenName)],
+            children: [
+              Icon(Icons.dashboard),
+              Text(global.screenName),
+            ],
           )),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -595,6 +598,11 @@ class _Dashboard extends State<Dashboard> {
       // height: 30,
       // width: global.screenWPixel,
       child: Row(children: [
+        Text('Version : ${global.version}',
+            style: TextStyle(fontSize: 8, color: Colors.indigoAccent)),
+        SizedBox(
+          width: 25,
+        ),
         rangeDay(),
         SizedBox(
           width: 25,
