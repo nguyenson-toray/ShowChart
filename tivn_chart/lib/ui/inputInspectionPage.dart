@@ -48,17 +48,76 @@ class _InputInspectionPageState extends State<InputInspectionPage> {
             ),
             InkWell(
               child: Icon(Icons.save, size: 40),
-              onTap: () {
-                setState(() {
-                  count++;
-                  MyFuntions.saveData();
-                  MyFuntions.clearDefectQtyCmt();
-                  if (count > global.totalChecked) Navigator.of(context).pop();
-                  try {
-                    widget.callback(global.t01sFilteredByInspectionSetting);
-                  } catch (e) {
-                    print(e.toString());
+              onTap: () async {
+                if (global.editT01s) {
+                  T011stInspectionData t01CurrentFiltered = global
+                      .t01sFilteredByInspectionSetting
+                      .where((element) => element.getId == global.currentIdT01)
+                      .first;
+
+                  if (t01CurrentFiltered.getCheckNo >= 2) {
+                    print('  if (t01CurrentFiltered.getCheckNo >= 2) {');
+                    T011stInspectionData t01CurrentAllLocal = global.t01sLocal
+                        .where(
+                            (element) => element.getId == global.currentIdT01)
+                        .first;
+                    int indexInT01sLocal =
+                        global.t01sLocal.indexOf(t01CurrentAllLocal);
+                    int indexInT01sFiltered = global
+                        .t01sFilteredByInspectionSetting
+                        .indexOf(t01CurrentFiltered);
+
+                    setState(() {
+                      t01CurrentFiltered = MyFuntions.editT01AddDefects(
+                          t01CurrentFiltered,
+                          global.defectNames,
+                          global.defectCmts,
+                          global.defectQtys);
+
+                      global.t01sLocal.removeAt(indexInT01sLocal);
+                      global.t01sLocal.add(t01CurrentFiltered);
+                      //
+                      global.t01sFilteredByInspectionSetting
+                          .removeAt(indexInT01sFiltered);
+                      global.t01sFilteredByInspectionSetting
+                          .add(t01CurrentFiltered);
+                      //
+                      global.t01SummaryByInspectionSetting =
+                          MyFuntions.t01sSummaryByLastInspectionSetting(
+                              global.t01sFilteredByInspectionSetting,
+                              global.inspectionSetting);
+                      //save to SqLite
+                      global.mySqlife
+                          .deleteRowInTableInspections(global.currentIdT01);
+                      global.mySqlife
+                        ..insertIntoTable_T011stInspectionData(
+                            t01CurrentFiltered);
+
+                      global.comment = '';
+                      print(
+                          '${DateTime.now().toString()}  Update Inspection Data From Local to SQL server : ${global.t01SummaryByInspectionSetting.toString()}');
+                    });
+                    global.mySqlServer
+                        .updateInspectionDataToT01(
+                            global.t01SummaryByInspectionSetting)
+                        .then((value) => {global.needUpdateSQL = !value});
                   }
+                } else {
+                  setState(() {
+                    count++;
+                    MyFuntions.saveNewT01();
+                  });
+                }
+                setState(() {
+                  MyFuntions.clearDefectQtyCmt();
+                  if (count > global.totalChecked || global.editT01s)
+                    try {
+                      global.editT01s = false;
+                      widget.callback(global.t01sFilteredByInspectionSetting);
+                      Navigator.of(context).pop();
+                    } catch (e) {
+                      print(e.toString());
+                    }
                 });
               },
             )

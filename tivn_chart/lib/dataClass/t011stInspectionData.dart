@@ -65,9 +65,10 @@ class T011stInspectionData {
   int tYear;
   int tF;
   String time;
-  bool isReCheck;
+  int checkNo;
   String defectName;
   int totalChecked;
+  bool lastResult;
   get getId => this.id;
 
   set setId(id) => this.id = id;
@@ -308,9 +309,9 @@ class T011stInspectionData {
 
   set setTime(time) => this.time = time;
 
-  get getIsReCheck => this.isReCheck;
+  get getCheckNo => this.checkNo;
 
-  set setIsReCheck(isReCheck) => this.isReCheck = isReCheck;
+  set setCheckNo(checkNo) => this.checkNo = checkNo;
 
   get getDefectName => this.defectName;
 
@@ -319,7 +320,9 @@ class T011stInspectionData {
   get getTotalChecked => this.totalChecked;
 
   set setTotalChecked(totalChecked) => this.totalChecked = totalChecked;
+  get getLastResult => this.lastResult;
 
+  set setLastResult(lastResult) => this.lastResult = lastResult;
   T011stInspectionData(
       {this.id = 0,
       this.inspectionType = 1,
@@ -381,19 +384,20 @@ class T011stInspectionData {
       this.tYear = 0,
       this.tF = 0,
       this.time = '',
-      this.isReCheck = false,
+      this.checkNo = 1,
       this.defectName = '',
-      this.totalChecked = 0});
+      this.totalChecked = 0,
+      this.lastResult = true});
 
   setValue(
-      InspectionSetting setting,
-      String result,
-      bool isRecheck,
-      bool isTypeC,
-      String comment,
-      int qtyChecked,
-      Map<String, List<int>> defectQty,
-      Map<String, List<String>> defectName) {
+    InspectionSetting setting,
+    String result,
+    int checkNo,
+    String comment,
+    int qtyChecked,
+    Map<String, List<int>> defectQty,
+    Map<String, List<String>> defectName,
+  ) {
     inspectionType = setting.getInspectionType;
     x01 = setting.getLine;
     x02 = global.todayString;
@@ -401,26 +405,39 @@ class T011stInspectionData {
     x04 = setting.getColor;
     x05 = setting.getSize;
     totalChecked = qtyChecked;
-    if (isTypeC) {
-      x10 = qtyChecked;
-    } else if (!isRecheck) {
-      //kiem lan 1
-      x06 = qtyChecked;
-      if (result == 'ĐẠT') {
-        x07 = qtyChecked;
-      } else {
-        x06 = 1;
-        x07 = 0;
-      }
-    } else {
-      //kiem lan 2
-      if (result == 'ĐẠT') {
-        x08 = qtyChecked;
-        x09 = qtyChecked;
-      } else {
-        x08 = 1;
-        x09 = 0;
-      }
+    lastResult = result == 'ĐẠT' ? true : false;
+    switch (checkNo) {
+      case 1:
+        {
+          x06 = qtyChecked;
+          if (lastResult) {
+            x07 = qtyChecked;
+          } else {
+            x06 = 1;
+            x07 = 0;
+          }
+        }
+        break;
+      case 2:
+        {
+          x08 = 1;
+          if (lastResult) {
+            x09 = 1;
+          } else {
+            x09 = 0;
+          }
+        }
+        break;
+      case 3:
+        {
+          if (lastResult) {
+            x10 = 0;
+          } else {
+            x10 = 1;
+          }
+        }
+        break;
+      default:
     }
 
     xc = comment;
@@ -506,78 +523,79 @@ class T011stInspectionData {
       'tYear': tYear,
       'tF': tF,
       'time': time,
-      'isReCheck': isReCheck,
+      'checkNo': checkNo,
       'defectName': defectName,
       'totalChecked': totalChecked,
+      'lastResult': lastResult,
     };
   }
 
   factory T011stInspectionData.fromMap(Map<String, dynamic> map) {
     return T011stInspectionData(
-      id: map['ID'] != null ? map['ID']?.toInt() : map['_id']?.toInt(),
-      inspectionType: map['2nd']?.toInt() ?? 0,
-      x01: map['X01']?.toInt() ?? 0,
-      x02: map['X02'] ?? '',
-      x03: map['X03']?.toInt() ?? 0,
-      x04: map['X04'] ?? '',
-      x05: map['X05'] ?? '',
-      x06: map['X06']?.toInt() ?? 0,
-      x07: map['X07']?.toInt() ?? 0,
-      x08: map['X08']?.toInt() ?? 0,
-      x09: map['X09']?.toInt() ?? 0,
-      x10: map['X10']?.toInt() ?? 0,
-      a1: map['A1']?.toInt() ?? 0,
-      a2: map['A2']?.toInt() ?? 0,
-      a3: map['A3']?.toInt() ?? 0,
-      b1: map['B1']?.toInt() ?? 0,
-      b2: map['B2']?.toInt() ?? 0,
-      b3: map['B3']?.toInt() ?? 0,
-      c1: map['C1']?.toInt() ?? 0,
-      c2: map['C2']?.toInt() ?? 0,
-      d1: map['D1']?.toInt() ?? 0,
-      d2: map['D2']?.toInt() ?? 0,
-      d3: map['D3']?.toInt() ?? 0,
-      d4: map['D4']?.toInt() ?? 0,
-      e1: map['E1']?.toInt() ?? 0,
-      e2: map['E2']?.toInt() ?? 0,
-      e3: map['E3']?.toInt() ?? 0,
-      e4: map['E4']?.toInt() ?? 0,
-      e5: map['E5']?.toInt() ?? 0,
-      e6: map['E6']?.toInt() ?? 0,
-      e7: map['E7']?.toInt() ?? 0,
-      f1: map['F1']?.toInt() ?? 0,
-      f2: map['F2']?.toInt() ?? 0,
-      f3: map['F3']?.toInt() ?? 0,
-      f4: map['F4']?.toInt() ?? 0,
-      f5: map['F5']?.toInt() ?? 0,
-      f6: map['F6']?.toInt() ?? 0,
-      f7: map['F7']?.toInt() ?? 0,
-      f8: map['F8']?.toInt() ?? 0,
-      f9: map['F9']?.toInt() ?? 0,
-      g1: map['G1']?.toInt() ?? 0,
-      g2: map['G2']?.toInt() ?? 0,
-      g3: map['G3']?.toInt() ?? 0,
-      h: map['H']?.toInt() ?? 0,
-      xc: map['XC'] ?? '',
-      sumA: map['sum A']?.toInt() ?? 0,
-      sumB: map['Sum B']?.toInt() ?? 0,
-      sumC: map['Sum C']?.toInt() ?? 0,
-      sumD: map['Sum D']?.toInt() ?? 0,
-      sumE: map['Sum E']?.toInt() ?? 0,
-      sumF: map['Sum F']?.toInt() ?? 0,
-      sumG: map['Sum G']?.toInt() ?? 0,
-      sumH: map['Sum H']?.toInt() ?? 0,
-      total: map['Total']?.toInt() ?? 0,
-      x11: map['X11']?.toInt() ?? 0,
-      x12: map['X12']?.toInt() ?? 0,
-      tMonth: map['T-Month']?.toInt() ?? 0,
-      tYear: map['T-Year']?.toInt() ?? 0,
-      tF: map['TF']?.toInt() ?? 0,
-      time: map['time'] ?? '',
-      isReCheck: map['isReCheck'] == 1 ? true : false,
-      defectName: map['defectName'] ?? '',
-      totalChecked: map['totalChecked']?.toInt() ?? 0,
-    );
+        id: map['ID'] != null ? map['ID']?.toInt() : map['_id']?.toInt(),
+        inspectionType: map['2nd']?.toInt() ?? 0,
+        x01: map['X01']?.toInt() ?? 0,
+        x02: map['X02'] ?? '',
+        x03: map['X03']?.toInt() ?? 0,
+        x04: map['X04'] ?? '',
+        x05: map['X05'] ?? '',
+        x06: map['X06']?.toInt() ?? 0,
+        x07: map['X07']?.toInt() ?? 0,
+        x08: map['X08']?.toInt() ?? 0,
+        x09: map['X09']?.toInt() ?? 0,
+        x10: map['X10']?.toInt() ?? 0,
+        a1: map['A1']?.toInt() ?? 0,
+        a2: map['A2']?.toInt() ?? 0,
+        a3: map['A3']?.toInt() ?? 0,
+        b1: map['B1']?.toInt() ?? 0,
+        b2: map['B2']?.toInt() ?? 0,
+        b3: map['B3']?.toInt() ?? 0,
+        c1: map['C1']?.toInt() ?? 0,
+        c2: map['C2']?.toInt() ?? 0,
+        d1: map['D1']?.toInt() ?? 0,
+        d2: map['D2']?.toInt() ?? 0,
+        d3: map['D3']?.toInt() ?? 0,
+        d4: map['D4']?.toInt() ?? 0,
+        e1: map['E1']?.toInt() ?? 0,
+        e2: map['E2']?.toInt() ?? 0,
+        e3: map['E3']?.toInt() ?? 0,
+        e4: map['E4']?.toInt() ?? 0,
+        e5: map['E5']?.toInt() ?? 0,
+        e6: map['E6']?.toInt() ?? 0,
+        e7: map['E7']?.toInt() ?? 0,
+        f1: map['F1']?.toInt() ?? 0,
+        f2: map['F2']?.toInt() ?? 0,
+        f3: map['F3']?.toInt() ?? 0,
+        f4: map['F4']?.toInt() ?? 0,
+        f5: map['F5']?.toInt() ?? 0,
+        f6: map['F6']?.toInt() ?? 0,
+        f7: map['F7']?.toInt() ?? 0,
+        f8: map['F8']?.toInt() ?? 0,
+        f9: map['F9']?.toInt() ?? 0,
+        g1: map['G1']?.toInt() ?? 0,
+        g2: map['G2']?.toInt() ?? 0,
+        g3: map['G3']?.toInt() ?? 0,
+        h: map['H']?.toInt() ?? 0,
+        xc: map['XC'] ?? '',
+        sumA: map['sum A']?.toInt() ?? 0,
+        sumB: map['Sum B']?.toInt() ?? 0,
+        sumC: map['Sum C']?.toInt() ?? 0,
+        sumD: map['Sum D']?.toInt() ?? 0,
+        sumE: map['Sum E']?.toInt() ?? 0,
+        sumF: map['Sum F']?.toInt() ?? 0,
+        sumG: map['Sum G']?.toInt() ?? 0,
+        sumH: map['Sum H']?.toInt() ?? 0,
+        total: map['Total']?.toInt() ?? 0,
+        x11: map['X11']?.toInt() ?? 0,
+        x12: map['X12']?.toInt() ?? 0,
+        tMonth: map['T-Month']?.toInt() ?? 0,
+        tYear: map['T-Year']?.toInt() ?? 0,
+        tF: map['TF']?.toInt() ?? 0,
+        time: map['time'] ?? '',
+        checkNo: map['checkNo']?.toInt() ?? 1,
+        defectName: map['defectName'] ?? '',
+        totalChecked: map['totalChecked']?.toInt() ?? 0,
+        lastResult: MyFuntions.parseBool(map['lastResult']?.toInt() ?? 1));
   }
 
   String toJson() => json.encode(toMap());
@@ -587,6 +605,6 @@ class T011stInspectionData {
 
   @override
   String toString() {
-    return 'T011stInspectionData(id: $id, inspectionType: $inspectionType, x01: $x01, x02: $x02, x03: $x03, x04: $x04, x05: $x05, x06: $x06, x07: $x07, x08: $x08, x09: $x09, x10: $x10, a1: $a1, a2: $a2, a3: $a3, b1: $b1, b2: $b2, b3: $b3, c1: $c1, c2: $c2, d1: $d1, d2: $d2, d3: $d3, d4: $d4, e1: $e1, e2: $e2, e3: $e3, e4: $e4, e5: $e5, e6: $e6, e7: $e7, f1: $f1, f2: $f2, f3: $f3, f4: $f4, f5: $f5, f6: $f6, f7: $f7, f8: $f8, f9: $f9, g1: $g1, g2: $g2, g3: $g3, h: $h, xc: $xc, sumA: $sumA, sumB: $sumB, sumC: $sumC, sumD: $sumD, sumE: $sumE, sumF: $sumF, sumG: $sumG, sumH: $sumH, total: $total, x11: $x11, x12: $x12, tMonth: $tMonth, tYear: $tYear, tF: $tF, time: $time, isReCheck: $isReCheck, defectName: $defectName, totalChecked: $totalChecked)';
+    return 'T011stInspectionData(id: $id, inspectionType: $inspectionType, x01: $x01, x02: $x02, x03: $x03, x04: $x04, x05: $x05, x06: $x06, x07: $x07, x08: $x08, x09: $x09, x10: $x10, a1: $a1, a2: $a2, a3: $a3, b1: $b1, b2: $b2, b3: $b3, c1: $c1, c2: $c2, d1: $d1, d2: $d2, d3: $d3, d4: $d4, e1: $e1, e2: $e2, e3: $e3, e4: $e4, e5: $e5, e6: $e6, e7: $e7, f1: $f1, f2: $f2, f3: $f3, f4: $f4, f5: $f5, f6: $f6, f7: $f7, f8: $f8, f9: $f9, g1: $g1, g2: $g2, g3: $g3, h: $h, xc: $xc, sumA: $sumA, sumB: $sumB, sumC: $sumC, sumD: $sumD, sumE: $sumE, sumF: $sumF, sumG: $sumG, sumH: $sumH, total: $total, x11: $x11, x12: $x12, tMonth: $tMonth, tYear: $tYear, tF: $tF, time: $time, isReCheck: $checkNo, defectName: $defectName, totalChecked: $totalChecked), lastResult $lastResult';
   }
 }

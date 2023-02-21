@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:tivn_chart/dataFuntion/myFuntions.dart';
 import 'package:tivn_chart/global.dart';
-import 'dart:io';
-import 'package:intl/intl.dart';
 import 'package:tivn_chart/ui/dashboard.dart';
 import 'package:tivn_chart/ui/lineChart.dart';
 import 'package:tivn_chart/ui/qcPage.dart';
@@ -26,13 +24,11 @@ class _StartPageState extends State<StartPage> {
   @override
   void initState() {
     // TODO: implement initState
+
     global.isTV ? logoH = 100 : logoH = 50;
     Timer(Duration(milliseconds: 500), () async {
-      print("initState - initData after 500 milliseconds");
-
       initData().then((value) => (value) {
             setState(() {
-              print('setState setState setState');
               isLoaded = value;
             });
           });
@@ -63,6 +59,15 @@ class _StartPageState extends State<StartPage> {
   }
 
   Future<bool> initData() async {
+    if (!global.isTV) {
+      setState(() {
+        global.screenWPixel = MediaQuery.of(context).size.width;
+        global.screenHPixel = MediaQuery.of(context).size.height;
+        print('-initData-Start--- screenWPixel : ${global.screenWPixel}');
+        print('-initData-Start--- screenHPixel : ${global.screenHPixel}');
+      });
+    }
+
     print('initData-global.device: ${global.device}');
     var isConnected = await global.mySqlServer.checkConnection();
     if (isConnected) {

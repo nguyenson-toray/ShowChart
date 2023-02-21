@@ -12,10 +12,10 @@
             "args": [
                 "-d",
                 "emulator-5554",
+                "SM T225",
                 "192.168.1.70",
                 "192.168.1.79", //line 9
                 "chrome",
-                "SM T225",
                 // "--no-sound-null-safety"
             ]
         },

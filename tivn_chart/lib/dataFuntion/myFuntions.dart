@@ -219,21 +219,21 @@ class MyFuntions {
         global.defectQtys[key]![i] = 0;
       }
     });
-    global.defectQtys.forEach((key, value) {
+    global.defectCmts.forEach((key, value) {
       for (int i = 0; i < value.length; i++) {
         global.defectCmts[key]![i] = '';
       }
     });
   }
 
-  static void saveData() {
-    print('Save DATA');
+  static void saveNewT01() {
+    print('saveNewT01');
     global.t01 = new T011stInspectionData();
     global.t01.setValue(
         global.inspectionSetting,
         global.result,
-        global.isRecheck,
-        global.isTypeC,
+        global.checkNo,
+        // global.isTypeC,
         global.commentTotal,
         global.totalChecked,
         global.defectQtys,
@@ -244,12 +244,8 @@ class MyFuntions {
     global.t01.setId = int.parse(id);
     global.t01.setTime = time;
     global.t01.setDefectName = global.defectTotal;
-    global.t01.setIsReCheck = global.isRecheck;
+    global.t01.setCheckNo = global.checkNo;
     global.t01.setTotalChecked = global.totalChecked;
-    // print('----------defectQtys----------------- ' +
-    //     global.defectQtys.toString());
-    // print('-----------defectCmts---------------- ' +
-    //     global.defectCmts.toString());
     if (global.result == 'LỖI') {
       global.t01.setTotalChecked = 1;
       String cmt = '';
@@ -318,7 +314,7 @@ class MyFuntions {
               global.t01.setF5 = value[4];
               global.t01.setF6 = value[5];
               global.t01.setF7 = value[6];
-              global.t01.setF8 = value[8];
+              global.t01.setF8 = value[7];
               global.t01.setF9 = value[8];
             }
             break;
@@ -349,6 +345,111 @@ class MyFuntions {
     global.mySqlife.insertIntoTable_T011stInspectionData(global.t01);
 
     global.comment = '';
-    global.needUpdateSQL = true;
+
+    print(
+        '${DateTime.now().toString()}  Update Inspection Data From Local to SQL server : ${global.t01SummaryByInspectionSetting.toString()}');
+    global.mySqlServer
+        .updateInspectionDataToT01(global.t01SummaryByInspectionSetting)
+        .then((value) => {global.needUpdateSQL = !value});
+  }
+
+  static T011stInspectionData editT01AddDefects(
+      T011stInspectionData t01Input,
+      Map<String, List<String>> defectNames,
+      Map<String, List<String>> defectCmts,
+      Map<String, List<int>> defectQtys) {
+    print('editT01AddDefects - input : ${t01Input.toString()}');
+    T011stInspectionData output = t01Input;
+    print('defectCmts  : +${defectCmts}');
+    print('defectQtys  : +${defectQtys}');
+    String cmt = t01Input.getXc;
+    defectQtys.forEach((key, value) {
+      for (int i = 0; i < value.length; i++) {
+        if (value[i] > 0) {
+          output.setDefectName =
+              output.getDefectName + defectNames[key]![i] + " ; ";
+        }
+      }
+    });
+    defectCmts.forEach((key, value) {
+      value.forEach((element) {
+        if (element.length > 0) cmt = cmt + element + ' ; ';
+      });
+    });
+    output.setXc = cmt;
+    defectQtys.forEach((key, value) {
+      switch (key) {
+        case "Thông số":
+          {
+            output.setA1 = output.getA1 + value[0];
+            output.setA2 = output.getA2 + value[1];
+            output.setA3 = output.getA3 + value[2];
+          }
+          break;
+        case "Phụ liệu":
+          {
+            output.setB1 = output.getB1 + value[0];
+            output.setB2 = output.getB2 + value[1];
+            output.setB2 = output.getB2 + value[2];
+          }
+          break;
+        case "Nguy hiểm":
+          {
+            output.setC1 = output.getC1 + value[0];
+            output.setC2 = output.getC2 + value[1];
+          }
+          break;
+        case "Vải":
+          {
+            output.setD1 = output.getD1 + value[0];
+            output.setD2 = output.getD2 + value[1];
+            output.setD3 = output.getD3 + value[2];
+            output.setD4 = output.getD4 + value[3];
+          }
+          break;
+        case "Lỗi may đan":
+          {
+            output.setE1 = output.getE1 + value[0];
+            output.setE2 = output.getE2 + value[1];
+            output.setE3 = output.getE3 + value[2];
+            output.setE4 = output.getE4 + value[3];
+            output.setE5 = output.getE5 + value[4];
+            output.setE6 = output.getE6 + value[5];
+            output.setE7 = output.getE7 + value[6];
+          }
+          break;
+
+        case "Ngoại quan, thành phẩm":
+          {
+            output.setF1 = output.getF1 + value[0];
+            output.setF2 = output.getF2 + value[1];
+            output.setF3 = output.getF3 + value[3];
+            output.setF4 = output.getF4 + value[3];
+            output.setF5 = output.getF5 + value[4];
+            output.setF6 = output.getF6 + value[5];
+            output.setF7 = output.getF7 + value[6];
+            output.setF8 = output.getF8 + value[7];
+            output.setF9 = output.getF9 + value[8];
+          }
+          break;
+
+        case "Vật liệu":
+          {
+            output.setG1 = output.getG1 + value[0];
+            output.setG2 = output.getG2 + value[1];
+            output.setG3 = output.getG3 + value[2];
+          }
+          break;
+        case "Lỗi khác":
+          {
+            output.setH = output.getH + value[0];
+          }
+          break;
+        default:
+      }
+    });
+
+    print("output : " + output.toString());
+    return output;
   }
 }

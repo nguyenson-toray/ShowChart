@@ -124,7 +124,7 @@ class MySqLite {
             G1,G2,G3,H,XC,	
             [Sum A],[Sum B],[Sum C],[Sum D],[Sum E],[Sum F],[Sum G],
             Total,X11,X12,[T-Month],[T-Year],TF,
-            time,isReCheck,defectNames,totalChecked ) 
+            time,checkNo,defectNames,totalChecked ) 
           VALUES(${input.getId}, ${input.getInspectionType},${input.getX01}, '${global.todayString}', ${input.getX03}, '${input.getX04}', '${input.getX05}', ${input.getX06}, ${input.getX07}, ${input.getX08}, ${input.getX09}, ${input.getX10},
             ${input.getA1},	${input.getA2},	${input.getA3},	${input.getB1},	${input.getB2},	${input.getB3},	${input.getC1},	${input.getC2},	
             ${input.getD1},	${input.getD2},	${input.getD3},	${input.getD4},	
@@ -133,7 +133,7 @@ class MySqLite {
             ${input.getG1},	${input.getG2},	${input.getG3},	${input.getH}, '${input.getXc}',	
             ${input.getSumA},	${input.getSumB},	${input.getSumC},	${input.getSumD},	${input.getSumE},	${input.getSumF},	${input.getSumG},	
             ${input.getTotal}, ${input.getX11},	${input.getX12}, ${input.getTMonth}, ${input.getTYear}, ${input.getTF}, 
-            '${input.getTime}', ${input.getIsReCheck},'${defectName}', ${input.getTotalChecked}
+            '${input.getTime}', ${input.getCheckNo},'${defectName}', ${input.getTotalChecked}
           );''';
     String queryDeleteRow = '''
         DELETE FROM ${tableT011stInspectionData} 
@@ -259,7 +259,7 @@ class MySqLite {
    G1 INTEGER,	G2 INTEGER,	G3 INTEGER,	H INTEGER,
    XC TEXT,	'Sum A' INTEGER, 	'Sum B' INTEGER,	'Sum C' INTEGER,	'Sum D' INTEGER,	'Sum E' INTEGER,	'Sum F' INTEGER,	'Sum G' INTEGER, 	
    Total INTEGER,	X11 INTEGER,	X12 INTEGER,	'T-Month' INTEGER,	'T-Year' INTEGER,	TF INTEGER, 
-   time VARCHAR(20),  isReCheck BOOL, defectNames VARCHAR(128), totalChecked INTEGER
+   time VARCHAR(20),  checkNo INTEGER, defectNames VARCHAR(128), totalChecked INTEGER
   );''';
   final String queryCreate_T02_Week = r'''c''';
   final String queryCreate_T03_Product_item =

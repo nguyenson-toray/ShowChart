@@ -24,12 +24,18 @@ class QcPage extends StatefulWidget {
 }
 
 class QcPageState extends State<QcPage> {
+  int wChart = 300;
   int actual = 0;
   int sumDefect = 0;
   double rationDefect = 0;
   bool buttonFinishVisible = true;
+  ChartSeriesController? chartSeriesController;
 
-  refresh(T011stInspectionData a) {
+  refreshT01(T011stInspectionData a) {
+    setState(() {});
+  }
+
+  refreshListT01(List<T011stInspectionData> a) {
     setState(() {});
   }
 
@@ -50,14 +56,10 @@ class QcPageState extends State<QcPage> {
     });
     Timer.periodic(new Duration(seconds: global.secondsAutoUpdateDataToSQL),
         (timer) async {
-      if (global.needUpdateSQL) {
-        print(
-            '${DateTime.now().toString()}  Update Inspection Data From Local to SQL server : ${global.t01SummaryByInspectionSetting.toString()}');
-        await global.mySqlServer
+      if (global.needUpdateSQL &&
+          global.t01SummaryByInspectionSetting.getX01 != '') {
+        global.needUpdateSQL = !await global.mySqlServer
             .updateInspectionDataToT01(global.t01SummaryByInspectionSetting);
-        setState(() {
-          global.needUpdateSQL = false;
-        });
       }
     });
     global.t01sFilteredByInspectionSetting =
@@ -87,45 +89,56 @@ class QcPageState extends State<QcPage> {
           return await showExitAppAlert();
         },
         child: Scaffold(
+          backgroundColor: Colors.tealAccent[50],
           body: Padding(
             padding: EdgeInsets.all(8),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                WorkSettingWiget(callback: refresh),
-                createSummaryChart(),
-                Divider(
-                  color: global.needUpdateSQL
-                      ? Colors.yellow
-                      : Colors.teal.shade100,
-                  thickness: 3.0,
+                WorkSettingWiget(callback: refreshT01),
+                global.needUpdateSQL
+                    ? SizedBox(
+                        height: 3,
+                        child: LinearProgressIndicator(),
+                      )
+                    : Divider(
+                        color: Colors.teal.shade100,
+                        thickness: 3.0,
+                      ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                        width: wChart.toDouble(),
+                        height: global.screenHPixel - 100,
+                        child: createSummaryChart(
+                            global.t01SummaryByInspectionSetting)),
+                    SizedBox(
+                      width: global.screenWPixel - wChart - 20,
+                      height: global.screenHPixel - 100,
+                      child: ListViewData(callback: refreshT01),
+                    )
+                  ],
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
-                inputInspection(),
-
-                // (global.result == 'LỖI' && global.defectTotal.length > 0)
-                //     ? Container(
-                //         alignment: Alignment.centerLeft,
-                //         child: Text(
-                //           'LỖI : ${global.defectTotal}\r\nMô tả : ${global.commentTotal}',
-                //           textAlign: TextAlign.left,
-                //         ),
-                //       )
-                //     : Container(),
-                Divider(
-                  color: global.needUpdateSQL
-                      ? Colors.yellow
-                      : Colors.teal.shade100,
-                  thickness: 3.0,
-                ),
-                // showData()
-                Container(
-                    child: ListViewData(
-                        data: global.t01sFilteredByInspectionSetting))
-                // global.t01sFilteredByInspectionSetting.toList()))
               ],
             ),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.lightBlueAccent,
+            child: Icon(
+              Icons.add,
+              size: 50,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              setState(() {
+                global.checkNo = 1;
+                showAlertOKorDefect();
+              });
+            },
           ),
         ),
       ),
@@ -230,67 +243,6 @@ class QcPageState extends State<QcPage> {
                 child: Text(
                   'Lần KT',
                 ))),
-        /*
-    GridColumn(
-        columnName: 'date',
-        label: Container(
-            padding: EdgeInsets.all(8.0),
-            alignment: Alignment.center,
-            child: Text('Date'))),
-    GridColumn(
-        columnName: 'line',
-        width: 50,
-        label: Container(
-            padding: EdgeInsets.all(8.0),
-            alignment: Alignment.center,
-            child: Text('Line'))),
-    GridColumn(
-        columnName: 'customer',
-        width: 150,
-        label: Container(
-            padding: EdgeInsets.all(8.0),
-            alignment: Alignment.center,
-            child: Text('Customer'))),
-    */
-        // GridColumn(
-        //     columnName: 'style',
-        //     width: 150,
-        //     label: Container(
-        //         padding: EdgeInsets.all(8.0),
-        //         alignment: Alignment.center,
-        //         child: Text(
-        //           'Style',
-        //           overflow: TextOverflow.ellipsis,
-        //         ))),
-        // GridColumn(
-        //     columnName: 'color',
-        //     label: Container(
-        //         padding: EdgeInsets.all(8.0),
-        //         alignment: Alignment.center,
-        //         child: Text('Color'))),
-        // GridColumn(
-        //     columnName: 'size',
-        //     width: 50,
-        //     label: Container(
-        //         padding: EdgeInsets.all(8.0),
-        //         alignment: Alignment.center,
-        //         child: Text('Size'))),
-        /*
-    GridColumn(
-        columnName: 'spectionFirstSecond',
-        width: 50,
-        label: Container(
-            padding: EdgeInsets.all(8.0),
-            alignment: Alignment.center,
-            child: Text('Lần KT'))),
-    GridColumn(
-        columnName: 'quantity',
-        width: 60,
-        label: Container(
-            padding: EdgeInsets.all(8.0),
-            alignment: Alignment.center,
-            child: Text('Số lượng'))),
-    */
         GridColumn(
             columnName: 'result',
             label: Container(
@@ -317,332 +269,130 @@ class QcPageState extends State<QcPage> {
     );
   }
 
-  Widget createSummaryChart() {
+  Widget createSummaryChart(T011stInspectionData dataInput) {
+    print('createSummaryChart ');
     List<T011stInspectionData> data = [];
     data.add(global.t01SummaryByInspectionSetting);
-    return SizedBox(
-      height: 200,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SfCartesianChart(
-            // title: ChartTitle(text: "Kết quả kiểm hàng"),
-            legend: Legend(
-              isVisible: true,
-            ), //ten mau
-            // Enable tooltip
-            // tooltipBehavior: TooltipBehavior(enable: true),
-            // borderWidth: 2,
-            primaryXAxis: CategoryAxis(labelRotation: 0),
-            primaryYAxis: NumericAxis(
-                minimum: 0, //maximum: 250,
-                interval: 10),
-            series: <ChartSeries<T011stInspectionData, String>>[
-              ColumnSeries<T011stInspectionData, String>(
-                  dataSource: data,
-                  xValueMapper: (T011stInspectionData data, _) => data.getX02,
-                  yValueMapper: (T011stInspectionData data, _) =>
-                      global.planToday,
-                  name: 'Kế hoạch',
-                  color: Colors.blue,
-                  dataLabelSettings: DataLabelSettings(
-                      isVisible: true,
-                      // Positioning the data label
-                      labelAlignment: ChartDataLabelAlignment.auto)),
-              ColumnSeries<T011stInspectionData, String>(
-                  dataSource: data,
-                  xValueMapper: (T011stInspectionData data, _) => data.getX02,
-                  yValueMapper: (T011stInspectionData data, _) => data.getX06,
-                  name: 'Thực tế',
-                  color: Colors.orange,
-                  dataLabelSettings: DataLabelSettings(
-                      isVisible: true,
-                      // Positioning the data label
-                      labelAlignment: ChartDataLabelAlignment.auto)),
-              ColumnSeries<T011stInspectionData, String>(
-                  dataSource: data,
-                  xValueMapper: (T011stInspectionData data, _) => data.getX02,
-                  yValueMapper: (T011stInspectionData data, _) => data.getX07,
-                  name: 'Đạt',
-                  color: Colors.green,
-                  dataLabelSettings: DataLabelSettings(
-                      isVisible: true,
-                      // Positioning the data label
-                      labelAlignment: ChartDataLabelAlignment.auto)),
-              ColumnSeries<T011stInspectionData, String>(
-                  dataSource: data,
-                  xValueMapper: (T011stInspectionData data, _) => data.getX02,
-                  yValueMapper: (T011stInspectionData data, _) => data.getX11,
-                  name: 'Lỗi',
-                  color: Color.fromARGB(255, 248, 17, 13),
-                  dataLabelSettings: DataLabelSettings(
-                      isVisible: true,
-                      labelAlignment: ChartDataLabelAlignment.auto)),
-            ],
-          ),
-          SizedBox(
-            width: 60,
-            child: CircularPercentIndicator(
-              radius: 50.0,
-              lineWidth: 20.0,
-              percent: global.t01SummaryByInspectionSetting.getX11 /
-                  global.t01SummaryByInspectionSetting.getX06,
-              header: Text("Tỉ lệ lỗi"),
-              center: Text(
-                global.t01SummaryByInspectionSetting.getX06 > 0
-                    ? '${(global.t01SummaryByInspectionSetting.getX11 / global.t01SummaryByInspectionSetting.getX06 * 100).toStringAsFixed(2)} %'
-                    : "0 %",
-                style: TextStyle(fontWeight: FontWeight.bold),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            SizedBox(
+              height: global.screenHPixel - 210,
+              child: SfCartesianChart(
+                // title: ChartTitle(text: "Kết quả kiểm hàng"),
+                legend: Legend(
+                    height: '45%',
+                    position: LegendPosition.bottom,
+                    isVisible: true,
+                    overflowMode: LegendItemOverflowMode.wrap), //ten mau
+                // Enable tooltip
+                // tooltipBehavior: TooltipBehavior(enable: true),
+                // borderWidth: 2,
+                primaryXAxis: CategoryAxis(labelRotation: 0),
+                primaryYAxis: NumericAxis(
+                    minimum: 0, //maximum: 250,
+                    interval: 10),
+                series: <ChartSeries<T011stInspectionData, String>>[
+                  ColumnSeries<T011stInspectionData, String>(
+                      dataSource: data,
+                      xValueMapper: (T011stInspectionData data, _) =>
+                          data.getX02,
+                      yValueMapper: (T011stInspectionData data, _) =>
+                          global.planToday,
+                      name: 'Kế hoạch',
+                      color: Colors.blue,
+                      dataLabelSettings: DataLabelSettings(
+                          isVisible: true,
+                          // Positioning the data label
+                          labelAlignment: ChartDataLabelAlignment.auto)),
+                  ColumnSeries<T011stInspectionData, String>(
+                      dataSource: data,
+                      xValueMapper: (T011stInspectionData data, _) =>
+                          data.getX02,
+                      yValueMapper: (T011stInspectionData data, _) =>
+                          data.getX06,
+                      name: 'Thực tế',
+                      color: Colors.orange,
+                      dataLabelSettings: DataLabelSettings(
+                          isVisible: true,
+                          // Positioning the data label
+                          labelAlignment: ChartDataLabelAlignment.auto)),
+                  ColumnSeries<T011stInspectionData, String>(
+                      dataSource: data,
+                      xValueMapper: (T011stInspectionData data, _) =>
+                          data.getX02,
+                      yValueMapper: (T011stInspectionData data, _) =>
+                          data.getX07,
+                      name: 'Đạt lần 1',
+                      color: Colors.green,
+                      dataLabelSettings: DataLabelSettings(
+                          isVisible: true,
+                          // Positioning the data label
+                          labelAlignment: ChartDataLabelAlignment.auto)),
+                  ColumnSeries<T011stInspectionData, String>(
+                      dataSource: data,
+                      xValueMapper: (T011stInspectionData data, _) =>
+                          data.getX02,
+                      yValueMapper: (T011stInspectionData data, _) =>
+                          data.getX11,
+                      name: 'Lỗi lần 1',
+                      color: Colors.red,
+                      dataLabelSettings: DataLabelSettings(
+                          isVisible: true,
+                          labelAlignment: ChartDataLabelAlignment.auto)),
+                  ColumnSeries<T011stInspectionData, String>(
+                      dataSource: data,
+                      xValueMapper: (T011stInspectionData data, _) =>
+                          data.getX02,
+                      yValueMapper: (T011stInspectionData data, _) =>
+                          data.getX08,
+                      name: 'Kiểm lần 2',
+                      color: Colors.tealAccent,
+                      dataLabelSettings: DataLabelSettings(
+                          isVisible: true,
+                          labelAlignment: ChartDataLabelAlignment.auto)),
+                  ColumnSeries<T011stInspectionData, String>(
+                      dataSource: data,
+                      xValueMapper: (T011stInspectionData data, _) =>
+                          data.getX02,
+                      yValueMapper: (T011stInspectionData data, _) =>
+                          data.getX09,
+                      name: 'Đạt sau sửa hàng',
+                      color: Colors.amber,
+                      dataLabelSettings: DataLabelSettings(
+                          isVisible: true,
+                          labelAlignment: ChartDataLabelAlignment.auto)),
+                ],
               ),
-              backgroundColor: Colors.black12,
-              progressColor: Colors.red,
             ),
+          ],
+        ),
+        Container(
+          padding: EdgeInsets.all(5),
+          width: global.screenWPixel * 0.3,
+          height: 110,
+          child: CircularPercentIndicator(
+            radius: 40.0,
+            lineWidth: 20.0,
+            percent: global.t01SummaryByInspectionSetting.getX11 /
+                global.t01SummaryByInspectionSetting.getX06,
+            header: Text("Tỉ lệ % lỗi"),
+            center: Text(
+              global.t01SummaryByInspectionSetting.getX06 > 0
+                  ? '${(global.t01SummaryByInspectionSetting.getX11 / global.t01SummaryByInspectionSetting.getX06 * 100).toStringAsFixed(2)}'
+                  : "0",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: Colors.black12,
+            progressColor: Colors.red,
           ),
-          // Icon(
-          //   size: 40,
-          //   Icons.upload_file,
-          //   color: global.needUpdateSQL ? Colors.yellow : Colors.green,
-          // ),
-        ],
-      ),
+        ),
+      ],
     );
   }
-
-  /*
-
-  void createInspectionDataRow() {
-    // var output = T011stInspectionData();
-    global.t01InspectionData.setX02 = global.todayString;
-    var defects = global.defectTotal.split(' - ').toList();
-    var groups = global.groupDefectNameTotal.split(' - ').toList();
-    switch (global.isRecheck) {
-      case 1:
-        {
-          global.t01InspectionData.setX06 = global.t01InspectionData.getX06 + 1;
-          if (global.result == 'ĐẠT') {
-            global.t01InspectionData.setX07 =
-                global.t01InspectionData.getX07 + 1;
-          } else {
-            // global.t01InspectionData.setXc=
-            defects.forEach((defect) {
-              print('defects.forEach((defect) :' + defect);
-              switch (defect) {
-                case 'Lỗi thông số':
-                  global.t01InspectionData.setA1 =
-                      global.t01InspectionData.getA1 + 1;
-                  break;
-                case 'Lệch trái phải':
-                  global.t01InspectionData.setA1 =
-                      global.t01InspectionData.getA2 + 1;
-                  break;
-                case 'Thông số  kéo căng':
-                  global.t01InspectionData.setA3 =
-                      global.t01InspectionData.getA3 + 1;
-                  break;
-                // B
-                case 'Dây kéo':
-                  global.t01InspectionData.setB1 =
-                      global.t01InspectionData.getB1 + 1;
-                  break;
-                case 'Nút':
-                  global.t01InspectionData.setB2 =
-                      global.t01InspectionData.getB2 + 1;
-                  break;
-                case 'Khác':
-                  global.t01InspectionData.setB3 =
-                      global.t01InspectionData.getB3 + 1;
-                  break;
-                // C
-                case 'Bavia Gờ sắc nhọn':
-                  global.t01InspectionData.setC1 =
-                      global.t01InspectionData.getC1 + 1;
-                  break;
-                case 'Dị vật':
-                  global.t01InspectionData.setC2 =
-                      global.t01InspectionData.getC2 + 1;
-                  break;
-                // D
-                case 'Khác màu, nhuộm':
-                  global.t01InspectionData.setD1 =
-                      global.t01InspectionData.getD1 + 1;
-                  break;
-                case 'Sợi màu':
-                  global.t01InspectionData.setD2 =
-                      global.t01InspectionData.getD2 + 1;
-                  break;
-                case 'Vón cục, nút thắt':
-                  global.t01InspectionData.setD3 =
-                      global.t01InspectionData.getD3 + 1;
-                  break;
-                case 'Sợi màu':
-                  global.t01InspectionData.setD4 =
-                      global.t01InspectionData.getD4 + 1;
-                  break;
-                //e
-                case 'May, đứt chỉ':
-                  global.t01InspectionData.setE1 =
-                      global.t01InspectionData.getE1 + 1;
-                  break;
-                case 'Bung tưa, lỏng chỉ':
-                  global.t01InspectionData.setE2 =
-                      global.t01InspectionData.getE2 + 1;
-                  break;
-                case 'Lỗ kim':
-                  global.t01InspectionData.setE3 =
-                      global.t01InspectionData.getE3 + 1;
-                  break;
-                case 'Bỏ mũi, sụp mí':
-                  global.t01InspectionData.setE4 =
-                      global.t01InspectionData.getE4 + 1;
-                  break;
-
-                case 'May vặn':
-                  global.t01InspectionData.setE5 =
-                      global.t01InspectionData.getE5 + 1;
-                  break;
-                case 'Xước sợi, rút sợi':
-                  global.t01InspectionData.setE6 =
-                      global.t01InspectionData.getE6 + 1;
-                  break;
-                case 'Bọ':
-                  global.t01InspectionData.setE7 =
-                      global.t01InspectionData.getE7 + 1;
-                  break;
-                //F
-                case 'Chỉ lượt, sót chỉ':
-                  global.t01InspectionData.setF1 =
-                      global.t01InspectionData.getF1 + 1;
-                  break;
-                case 'Dơ':
-                  global.t01InspectionData.setF2 =
-                      global.t01InspectionData.getF2 + 1;
-                  break;
-                case 'Dấu phấn':
-                  global.t01InspectionData.setF3 =
-                      global.t01InspectionData.getF3 + 1;
-                  break;
-                case 'In, ép':
-                  global.t01InspectionData.setF4 =
-                      global.t01InspectionData.getF4 + 1;
-                  break;
-                case 'Biến dạng':
-                  global.t01InspectionData.setF5 =
-                      global.t01InspectionData.getF5 + 1;
-                  break;
-                case 'Nhăn':
-                  global.t01InspectionData.setF6 =
-                      global.t01InspectionData.getF6 + 1;
-                  break;
-                case 'Cấn bóng':
-                  global.t01InspectionData.setF7 =
-                      global.t01InspectionData.getF7 + 1;
-                  break;
-                case 'Le mí':
-                  global.t01InspectionData.setF8 =
-                      global.t01InspectionData.getF8 + 1;
-                  break;
-                case 'Seam':
-                  global.t01InspectionData.setF9 =
-                      global.t01InspectionData.getF9 + 1;
-                  break;
-                //G
-                case 'Thẻ bài':
-                  global.t01InspectionData.setG1 =
-                      global.t01InspectionData.getG1 + 1;
-                  break;
-                case 'Nhãn giặt':
-                  global.t01InspectionData.setG2 =
-                      global.t01InspectionData.getG2 + 1;
-                  break;
-                case 'Nhãn khác':
-                  global.t01InspectionData.setG3 =
-                      global.t01InspectionData.getG3 + 1;
-                  break;
-                case 'Lỗi khác':
-                  global.t01InspectionData.setH =
-                      global.t01InspectionData.getH + 1;
-                  break;
-              }
-            });
-
-            // global.inspectionDetail.setGroupDefect =
-            //     global.currentGroupDefectName;
-          }
-
-          global.t01InspectionData.setSumA = global.t01InspectionData.getA1 +
-              global.t01InspectionData.getA2 +
-              global.t01InspectionData.getA3;
-
-          global.t01InspectionData.setSumB = global.t01InspectionData.getB1 +
-              global.t01InspectionData.getB2 +
-              global.t01InspectionData.getB3;
-
-          global.t01InspectionData.setSumC =
-              global.t01InspectionData.getC1 + global.t01InspectionData.getC2;
-
-          global.t01InspectionData.setSumD = global.t01InspectionData.getD1 +
-              global.t01InspectionData.getD2 +
-              global.t01InspectionData.getD3 +
-              global.t01InspectionData.getD4;
-
-          global.t01InspectionData.setSumE = global.t01InspectionData.getE1 +
-              global.t01InspectionData.getE2 +
-              global.t01InspectionData.getE3 +
-              global.t01InspectionData.getE4 +
-              global.t01InspectionData.getE5 +
-              global.t01InspectionData.getE6 +
-              global.t01InspectionData.getE7;
-
-          global.t01InspectionData.setSumF = global.t01InspectionData.getF1 +
-              global.t01InspectionData.getF2 +
-              global.t01InspectionData.getF3 +
-              global.t01InspectionData.getF4 +
-              global.t01InspectionData.getF5 +
-              global.t01InspectionData.getF6 +
-              global.t01InspectionData.getF7 +
-              global.t01InspectionData.getF8 +
-              global.t01InspectionData.getF9;
-
-          global.t01InspectionData.setSumG = global.t01InspectionData.getG1 +
-              global.t01InspectionData.getG2 +
-              global.t01InspectionData.getG3;
-
-          global.t01InspectionData.setTotal = global.t01InspectionData.getSumA +
-              global.t01InspectionData.getSumB +
-              global.t01InspectionData.getSumC +
-              global.t01InspectionData.getSumD +
-              global.t01InspectionData.getSumE +
-              global.t01InspectionData.getSumF +
-              global.t01InspectionData.getSumG;
-        }
-        break;
-      case 2:
-        {
-          global.t01InspectionData.setX08 = global.t01InspectionData.getX08 + 1;
-          if (global.result == 'ĐẠT') {
-            print('L2 dat');
-            global.t01InspectionData.setX09 =
-                global.t01InspectionData.getX09 + 1;
-          } else {
-            print('L2 LOI - HANG C');
-            global.t01InspectionData.setX10 =
-                global.t01InspectionData.getX10 + 1;
-          }
-          break;
-        }
-    }
-    global.t01InspectionData.setX11 =
-        global.t01InspectionData.getX06 - global.t01InspectionData.getX07;
-    global.t01InspectionData.setX12 =
-        global.t01InspectionData.getX08 - global.t01InspectionData.getX09;
-    global.t01InspectionData.setTF =
-        global.t01InspectionData.getX11 + global.t01InspectionData.getX12;
-    global.t01InspectionData.setTMonth = global.today.month;
-    global.t01InspectionData.setTYear = global.today.year;
-    // return output;
-  }
-*/
 
   showExitAppAlert() async {
     await QuickAlert.show(
@@ -676,7 +426,7 @@ class QcPageState extends State<QcPage> {
                           style: TextStyle(fontSize: 18))),
                   onPressed: () async {
                     setState(() {
-                      global.isRecheck = false;
+                      global.checkNo = 1;
                     });
                     showAlertOKorDefect();
                   }),
@@ -693,7 +443,7 @@ class QcPageState extends State<QcPage> {
                       child: Text("Tái kiểm", style: TextStyle(fontSize: 18))),
                   onPressed: () async {
                     setState(() {
-                      global.isRecheck = true;
+                      global.checkNo = 2;
                     });
                     showAlertOKorDefect();
                   }),
@@ -710,9 +460,9 @@ class QcPageState extends State<QcPage> {
                       child: Text("Hàng C", style: TextStyle(fontSize: 18))),
                   onPressed: () async {
                     setState(() {
-                      global.isRecheck = true;
+                      global.checkNo = 2;
                     });
-                    showAlertTypeC();
+                    // showAlertTypeC();
                   }),
             ],
           ),
@@ -770,75 +520,15 @@ class QcPageState extends State<QcPage> {
           // global.currentDefect = 'Lỗi thông số';
           // global.currentGroupDefectName = 'Thông số';
           global.result = 'ĐẠT';
-          MyFuntions.saveData();
+          MyFuntions.saveNewT01();
           global.totalChecked = 0;
           Navigator.of(context).pop();
         });
       },
       onCancelBtnTap: () {
         global.result = 'LỖI';
-        Navigator.of(context).pop();
-        Navigator.of(context).pushNamed('/InputInspectionPage');
+        Navigator.of(context).popAndPushNamed('/InputInspectionPage');
       },
     );
-  }
-
-  void showAlertTypeC() async {
-    global.totalChecked = 1;
-    return QuickAlert.show(
-        context: context,
-        type: QuickAlertType.confirm,
-        title: 'Nhập số lượng hàng C ?',
-        cancelBtnText: 'Bỏ qua',
-        confirmBtnText: 'OK',
-        onCancelBtnTap: () {
-          setState(() {
-            global.isTypeC = false;
-            global.totalChecked = 0;
-          });
-
-          Navigator.of(context).pop();
-        },
-        onConfirmBtnTap: () {
-          setState(() {
-            global.isTypeC = true;
-            MyFuntions.saveData();
-            global.totalChecked = 0;
-            global.isTypeC = false;
-          });
-          Navigator.of(context).pop();
-        },
-        widget: StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      if (global.totalChecked > 1) global.totalChecked--;
-                    });
-                  },
-                  child: Icon(Icons.remove, size: 40, color: Colors.redAccent),
-                ),
-                CircleAvatar(
-                  maxRadius: 14,
-                  child: Text(
-                    global.totalChecked.toString(),
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      global.totalChecked++;
-                    });
-                  },
-                  child: Icon(Icons.add, size: 40, color: Colors.greenAccent),
-                ),
-              ],
-            );
-          },
-        ));
   }
 }

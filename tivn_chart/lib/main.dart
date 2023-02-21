@@ -8,12 +8,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tivn_chart/dataBase/mySQLite.dart';
 import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
-import 'package:tivn_chart/dataFuntion/myFuntions.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:tivn_chart/ui/inputInspectionPage.dart';
 import 'package:tivn_chart/ui/qcPage.dart';
 import 'package:tivn_chart/ui/start.dart';
-import 'package:wakelock/wakelock.dart';
 import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -23,6 +21,7 @@ Future<void> main() async {
   initializeDateFormatting('en');
   await getsharedPreferences();
   await detectDeviceInfo();
+
   if (!global.isTV) await initDataSqLite();
   // -------------for test in debug mode
   if (kDebugMode) {
@@ -41,10 +40,10 @@ Future<void> main() async {
   global.todayString = DateFormat(global.dateFormat).format(
     global.today,
   );
-  if (global.isTV) Wakelock.enable(); // alway screen On
+
   SystemChrome.setPreferredOrientations([
-    global.isTV ? DeviceOrientation.landscapeLeft : DeviceOrientation.portraitUp
-  ]).then((_) {
+    DeviceOrientation.landscapeLeft // DeviceOrientation.portraitUp
+  ]).then((_) async {
     runApp(new MyApp());
   });
 }
@@ -71,50 +70,6 @@ initDataSqLite() async {
     global.inspectionSetting = inspectionSettings.last;
   }
   global.t01sLocal = await global.mySqlife.loadInspectionDataT01();
-}
-
-Future<void> detectDeviceInfo() async {
-  var pixelRatio = window.devicePixelRatio;
-  //Size in physical pixels
-  var physicalScreenSize = window.physicalSize;
-  global.screenW = physicalScreenSize.width;
-  global.screenH = physicalScreenSize.height;
-//Size in logical pixels
-  var logicalScreenSize = window.physicalSize / pixelRatio;
-  global.screenWPixel = logicalScreenSize.width;
-  global.screenHPixel = logicalScreenSize.height;
-
-  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-  print('screenW : ' + global.screenW.toString());
-  print('screenH : ' + global.screenH.toString());
-  print('screenWPixel : ' + global.screenWPixel.toString());
-  print('screenHPixel : ' + global.screenHPixel.toString());
-  print('manufacturer   ${androidInfo.manufacturer}');
-  print('model  ${androidInfo.model}');
-  print('product   ${androidInfo.product}');
-  print('sizeInches   ${androidInfo.displayMetrics.sizeInches}');
-  print('heightInches   ${androidInfo.displayMetrics.heightInches}');
-  print('widthInches   ${androidInfo.displayMetrics.widthInches}');
-  print('supportedAbis   ${androidInfo.supportedAbis.toString()}');
-
-  final wifiIP = await NetworkInfo().getWifiIP();
-
-  if (androidInfo.displayMetrics.sizeInches > 49) {
-    global.isTV = true;
-    if (global.ipsTVSewingLine.contains(wifiIP)) {
-      global.device = 'TVLine';
-      global.rangeTime = 14;
-      global.sharedPreferences.setInt('rangeTime', global.rangeTime);
-      global.autoChangeLine = false;
-    } else
-      global.device = 'TVControl';
-  } else {
-    global.isTV = false;
-    global.device = 'smartphone';
-  }
-  print('wifiIP : ' + wifiIP!);
-  print('device : ' + global.device);
 }
 
 Future<void> getsharedPreferences() async {
@@ -154,6 +109,52 @@ Future<void> getsharedPreferences() async {
     global.inspection12 = 1;
   } else
     global.inspection12 = global.sharedPreferences.getInt("inspection12")!;
+}
+
+Future<void> detectDeviceInfo() async {
+  var pixelRatio = window.devicePixelRatio;
+  //Size in physical pixels
+  var physicalScreenSize = window.physicalSize;
+  global.screenW = physicalScreenSize.width;
+  global.screenH = physicalScreenSize.height;
+//Size in logical pixels
+  var logicalScreenSize = window.physicalSize / pixelRatio;
+  global.screenWPixel = logicalScreenSize.width;
+  // global.screenWPixel = MediaQuery.of(context).size.width;
+  global.screenHPixel = logicalScreenSize.height;
+  // global.screenHPixel = MediaQuery.of(context).size.height;
+
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+  print('screenW : ' + global.screenW.toString());
+  print('screenH : ' + global.screenH.toString());
+  print('screenWPixel : ' + global.screenWPixel.toString());
+  print('screenHPixel : ' + global.screenHPixel.toString());
+  print('manufacturer   ${androidInfo.manufacturer}');
+  print('model  ${androidInfo.model}');
+  print('product   ${androidInfo.product}');
+  print('sizeInches   ${androidInfo.displayMetrics.sizeInches}');
+  print('heightInches   ${androidInfo.displayMetrics.heightInches}');
+  print('widthInches   ${androidInfo.displayMetrics.widthInches}');
+  print('supportedAbis   ${androidInfo.supportedAbis.toString()}');
+
+  final wifiIP = await NetworkInfo().getWifiIP();
+
+  if (androidInfo.displayMetrics.sizeInches > 49) {
+    global.isTV = true;
+    if (global.ipsTVSewingLine.contains(wifiIP)) {
+      global.device = 'TVLine';
+      global.rangeTime = 14;
+      global.sharedPreferences.setInt('rangeTime', global.rangeTime);
+      global.autoChangeLine = false;
+    } else
+      global.device = 'TVControl';
+  } else {
+    global.isTV = false;
+    global.device = 'smartphone';
+  }
+  print('wifiIP : ' + wifiIP!);
+  print('device : ' + global.device);
 }
 
 class MyApp extends StatefulWidget {

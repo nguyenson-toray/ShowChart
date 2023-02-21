@@ -34,6 +34,7 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
     line = global.inspectionSetting.getLine;
     customer = global.inspectionSetting.getCustomer;
     style = global.inspectionSetting.getStyle;
+    color = global.inspectionSetting.getColor;
     size = global.inspectionSetting.getSize;
     customers = getCustomersName();
     styles = getStyles(customer);
@@ -51,52 +52,59 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          // Image.asset('asset/letter-l.png'),
-          // Image.asset('asset/letter-i.png'),
-          // Image.asset('asset/letter-n.png'),
-          // Image.asset('asset/letter-e.png'),
-          // const Text(
-          //   "Line : ",
-          //   style: TextStyle(fontSize: 14),
-          // ),
-
           isEditing
-              ? DropdownButton<String>(
-                  value: line.toString(),
-                  items:
-                      global.lines.map<DropdownMenuItem<String>>((int value) {
-                    return DropdownMenuItem<String>(
-                      value: value.toString(),
-                      child: Text(
-                        value.toString(),
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      line = int.parse(newValue!);
-                    });
-                  },
-                )
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(5.0),
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: 70,
-                    height: 30,
-                    color: global.needUpdateSQL
-                        ? Colors.yellowAccent
-                        : Colors.greenAccent,
-                    child: Text(
-                      'LINE ' + line.toString().toUpperCase(),
+              ? Row(
+                  children: [
+                    Text(
+                      'LINE : ',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  ),
+                    DropdownButton<String>(
+                      value: line.toString(),
+                      items: global.lines
+                          .map<DropdownMenuItem<String>>((int value) {
+                        return DropdownMenuItem<String>(
+                          value: value.toString(),
+                          child: Text(
+                            value.toString(),
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          line = int.parse(newValue!);
+                        });
+                      },
+                    )
+                  ],
+                )
+              : Row(
+                  children: [
+                    Container(
+                      height: 20,
+                      width: 100,
+                      alignment: Alignment.centerLeft,
+                      child: Image.asset('assets/logo.png'),
+                    ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(5.0),
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 70,
+                        height: 30,
+                        color: Colors.amberAccent,
+                        child: Text(
+                          'LINE ' + line.toString().toUpperCase(),
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
 
           SizedBox(
-            width: 5,
+            width: 20,
           ),
           isEditing
               ? DropdownButton<String>(
@@ -123,10 +131,12 @@ class _WorkSettingWiget extends State<WorkSettingWiget> {
                     alignment: Alignment.center,
                     width: 70,
                     height: 30,
-                    color: Colors.greenAccent,
+                    color: global.inspectionSetting.getInspectionType == 1
+                        ? Colors.greenAccent
+                        : Colors.blueAccent,
                     child: Text(
                       inspectionTypeString.toUpperCase(),
-                      // style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

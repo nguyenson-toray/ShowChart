@@ -9,6 +9,7 @@ import 'package:tivn_chart/chart/chartFuntionData.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:intl/intl.dart';
 import 'package:tivn_chart/ui/start.dart';
+import 'package:wakelock/wakelock.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({super.key});
@@ -31,11 +32,12 @@ class _Dashboard extends State<Dashboard> {
   @override
   void initState() {
     // TODO: implement initState
+    if (global.isTV) Wakelock.enable(); // alway screen On
     hSetting = global.screenHPixel - 50;
     wSetting = global.screenWPixel * 0.1;
     hChart = ((global.screenHPixel - 60) * 0.5) - 6;
     wChart = global.screenWPixel * 0.325;
-    hChartPhone = global.screenHPixel * 0.6;
+    hChartPhone = global.screenHPixel * 0.7;
     wChartPhone = global.screenWPixel;
     getCurrentScreenName();
     refreshChartData();

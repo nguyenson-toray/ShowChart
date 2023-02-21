@@ -22,10 +22,12 @@ class global {
   static bool confirmYes = false;
   static late SharedPreferences sharedPreferences;
   static final navigatorKey = GlobalKey<NavigatorState>();
+  static int currentIdT01 = 0;
+  static bool editT01s = false;
   static int plan = 0;
   static int actual = 0;
   static int sumDefect1 = 0;
-  static bool isRecheck = false;
+  static int checkNo = 1;
   static bool needUpdateSQL = false;
   static int totalChecked = 0;
   static int qtyInspection1 = 0;
@@ -33,7 +35,7 @@ class global {
   static int qtyInspection2 = 0;
   static int qtyInspectionOK2 = 0;
   static int qtyInspectionC = 0;
-  static bool isTypeC = false;
+  // static bool isTypeC = false;
   static bool is2ndInspection = false;
   static String result = 'ĐẠT';
   static List<String> results = ['ĐẠT', 'LỖI'];

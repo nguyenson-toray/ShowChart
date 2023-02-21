@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:connect_to_sql_server_directly/connect_to_sql_server_directly.dart';
+import 'package:tivn_chart/dataClass/inspectionSetting.dart';
 import 'package:tivn_chart/dataClass/t011stInspectionData.dart';
 import 'package:tivn_chart/dataClass/t03ProductionItem.dart';
 import 'package:tivn_chart/dataClass/t04PlanProduction.dart';
@@ -16,9 +17,9 @@ class MySqlServer {
   final String ipWAN = '103.17.90.89';
   int port = 1433;
   bool lanConnectionAvailable = false;
-  final String dbNameSQL = 'Production';
   // final String dbNameSQL = 'test';
   // final user = 'production';
+  final String dbNameSQL = 'Production';
   final user = 'app';
   final pass = 'Toray@123';
   final String instanceSql = 'MSSQLSERVER';
@@ -118,14 +119,38 @@ class MySqlServer {
     return result;
   }
 
+  Future<bool> deleteRow(
+    InspectionSetting input,
+  ) async {
+    String queryDeleteRowSQL = '';
+    bool result = false;
+    var date = global.todayString;
+    if (date == '') return false;
+    DateTime date_standard = DateFormat('yyyy-MM-dd', 'en').parse(date);
+    queryDeleteRowSQL = ''' DELETE FROM $tableT011stInspectionData
+        WHERE  (X02 ='${date}' and [2nd]= ${input.getInspectionType} and X01 =${input.getLine} and X03 = ${input.getStyleCode} and X04 = '${input.getColor}' and X05 = '${input.getSize}' 
+      );''';
+
+    var isConnected = false;
+    try {
+      result = await connection.getStatusOfQueryResult(queryDeleteRowSQL);
+    } catch (e) {
+      print(e.toString());
+    }
+    print('deleteRowSQL => ${result.toString()}');
+    return result;
+  }
+
   Future<bool> updateInspectionDataToT01(
     T011stInspectionData input,
   ) async {
-    print('updateInspectionDataToT01');
+    print('updateInspectionDataToT01 - input : ${input.toString()}');
+
     String queryInsert = '';
     String queryDeleteRow = '';
     bool result = false;
     var date = input.getX02;
+    if (date == '') return false;
     DateTime date_standard = DateFormat('yyyy-MM-dd', 'en').parse(date);
     queryInsert = '''INSERT INTO ${tableT011stInspectionData} 
           ([2nd], X01,X02,X03,X04,X05,X06,X07,X08,X09,X10,
@@ -154,12 +179,12 @@ class MySqlServer {
       await connection
           .getStatusOfQueryResult(queryDeleteRow)
           .then((value) => print('queryDeleteRow => ${value.toString()}'));
-      await connection
-          .getStatusOfQueryResult(queryInsert)
-          .then((value) => print('queryInsert => ${value.toString()}'));
+
+      result = await connection.getStatusOfQueryResult(queryInsert);
     } catch (e) {
       print(e.toString());
     }
+    print('queryInsert => ${result.toString()}');
     return result;
   }
 
