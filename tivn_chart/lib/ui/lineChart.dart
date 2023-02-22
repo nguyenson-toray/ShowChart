@@ -1,13 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:tivn_chart/chart/chartFuntionData.dart';
 import 'package:tivn_chart/chart/chartProduction.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:intl/intl.dart';
-import 'package:tivn_chart/ui/dashboard.dart';
 
 class LineChart extends StatefulWidget {
   const LineChart({super.key});
@@ -61,7 +59,6 @@ class _LineChartState extends State<LineChart> {
     Timer.periodic(new Duration(seconds: global.secondsAutoGetData), (timer) {
       intervalRefresh();
     });
-
     super.initState();
   }
 

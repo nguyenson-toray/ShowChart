@@ -122,6 +122,10 @@ class global {
       )
     ],
   );
+  static String titleSLTLLTBTNM =
+      '合計生産量と平均不良率 - Sản lượng và tỷ lệ lỗi trung bình toàn nhà máy';
+  static String titleSLTLLCC =
+      'ライン別生産量と不良率 - Sản lượng và tỷ lệ lỗi các chuyền';
   static var listGroupDefect = <String>[
     'Thông số',
     'Phụ liệu',
@@ -131,6 +135,16 @@ class global {
     'Ngoại quan, thành phẩm',
     'Vật liệu',
     'Lỗi khác'
+  ];
+  static var listGroupDefectJP = <String>[
+    '寸法',
+    '付属',
+    '危険性',
+    '生地',
+    '縫製・編立',
+    '外観・仕上',
+    '資材',
+    'の他'
   ];
   static var groupDefectParameter = <String>[
     'Lỗi thông số',
@@ -199,16 +213,6 @@ class global {
     "Lỗi khác": ['']
   };
 
-  static var listGroupDefectJP = <String>[
-    '寸　法',
-    '付　属',
-    '危険性',
-    '生　地',
-    '縫製・編立',
-    '外観・仕上',
-    '資材/そ',
-    'の他'
-  ];
   static Map<String, List<String>> defectNames = {
     "Thông số": ["Lỗi thông số", "Lệch trái phải", "Thông số  kéo căng"],
     "Phụ liệu": ["Dây kéo", "Nút", "Khác"],

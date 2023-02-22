@@ -441,7 +441,7 @@ class ChartProduction {
         xValueMapper: (ChartProduction data, _) => data.getCatalogue,
         yValueMapper: (ChartProduction data, _) => data.getQty1stOK,
         dataLabelSettings: myDataLabelSettings,
-        name: '''初回検品合格数-SL kiểm lần 1 đạt''',
+        name: '''初回検品合格数 - SL kiểm lần 1 đạt''',
         color: Colors.blueAccent,
       ),
       StackedColumnSeries<ChartProduction, String>(
@@ -449,7 +449,7 @@ class ChartProduction {
         xValueMapper: (ChartProduction data, _) => data.getCatalogue,
         yValueMapper: (ChartProduction data, _) => data.getQty1stNOK,
         dataLabelSettings: myDataLabelSettings,
-        name: '補修後検品合格数-SL kiểm lần 1 lỗi',
+        name: '補修後検品合格数 - SL kiểm lần 1 lỗi',
         color: Colors.orangeAccent,
       ),
       StackedColumnSeries<ChartProduction, String>(
@@ -457,7 +457,7 @@ class ChartProduction {
         xValueMapper: (ChartProduction data, _) => data.getCatalogue,
         yValueMapper: (ChartProduction data, _) => data.getQtyAfterRepaire,
         dataLabelSettings: myDataLabelSettings,
-        name: '補修後検品数-SL sửa sau kiểm hàng',
+        name: '補修後検品数 - SL sửa sau kiểm hàng',
         color: Colors.redAccent,
       ),
       LineSeries<ChartProduction, String>(
@@ -469,7 +469,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) =>
               data.getRationDefect1st * 100,
           dataLabelSettings: myDataLabelSettings,
-          name: '初回不良率-TL lần 1 lỗi',
+          name: '初回不良率 - TL lần 1 lỗi',
           color: Colors.pink,
           width: 2),
       LineSeries<ChartProduction, String>(
@@ -480,7 +480,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) =>
               data.getRationDefectAfterRepaire,
           dataLabelSettings: myDataLabelSettings,
-          name: '補修後不良率-TL lỗi sau sửa',
+          name: '補修後不良率 - TL lỗi sau sửa',
           color: Colors.green,
           width: 2)
     ];
@@ -490,7 +490,7 @@ class ChartProduction {
   Widget createChartGroupAllUI(List<ChartProduction> dataInput) {
     return SfCartesianChart(
       title: ChartTitle(
-        text: 'エラーグループ-Nhóm lỗi',
+        text: '欠点大区分 - Nhóm lỗi',
         textStyle: TextStyle(
             fontSize: !global.isTV ? 12 : 10,
             fontWeight: FontWeight.bold,
@@ -532,7 +532,7 @@ class ChartProduction {
           xValueMapper: (ChartProduction data, _) => data.getCatalogue,
           yValueMapper: (ChartProduction data, _) => data.getA,
           dataLabelSettings: myDataLabelSettings,
-          name: global.listGroupDefectJP[0] + '-' + global.listGroupDefect[0],
+          name: global.listGroupDefectJP[0] + ' - ' + global.listGroupDefect[0],
           color: Colors.blue[800],
           width: 4),
       LineSeries<ChartProduction, String>(
@@ -542,7 +542,7 @@ class ChartProduction {
           xValueMapper: (ChartProduction data, _) => data.getCatalogue,
           yValueMapper: (ChartProduction data, _) => data.getB,
           dataLabelSettings: myDataLabelSettings,
-          name: global.listGroupDefectJP[1] + '-' + global.listGroupDefect[1],
+          name: global.listGroupDefectJP[1] + ' - ' + global.listGroupDefect[1],
           color: Colors.red,
           width: 2),
       LineSeries<ChartProduction, String>(
@@ -552,7 +552,7 @@ class ChartProduction {
           xValueMapper: (ChartProduction data, _) => data.getCatalogue,
           yValueMapper: (ChartProduction data, _) => data.getC,
           dataLabelSettings: myDataLabelSettings,
-          name: global.listGroupDefectJP[2] + '-' + global.listGroupDefect[2],
+          name: global.listGroupDefectJP[2] + ' - ' + global.listGroupDefect[2],
           color: Colors.grey,
           width: 2),
       LineSeries<ChartProduction, String>(
@@ -562,7 +562,7 @@ class ChartProduction {
           xValueMapper: (ChartProduction data, _) => data.getCatalogue,
           yValueMapper: (ChartProduction data, _) => data.getD,
           dataLabelSettings: myDataLabelSettings,
-          name: global.listGroupDefectJP[3] + '-' + global.listGroupDefect[3],
+          name: global.listGroupDefectJP[3] + ' - ' + global.listGroupDefect[3],
           color: Colors.yellow,
           width: 2),
       LineSeries<ChartProduction, String>(
@@ -572,7 +572,7 @@ class ChartProduction {
           xValueMapper: (ChartProduction data, _) => data.getCatalogue,
           yValueMapper: (ChartProduction data, _) => data.getE,
           dataLabelSettings: myDataLabelSettings,
-          name: global.listGroupDefectJP[4] + '-' + global.listGroupDefect[4],
+          name: global.listGroupDefectJP[4] + ' - ' + global.listGroupDefect[4],
           color: Colors.blue[900],
           width: 2),
       LineSeries<ChartProduction, String>(
@@ -584,7 +584,7 @@ class ChartProduction {
           xValueMapper: (ChartProduction data, _) => data.getCatalogue,
           yValueMapper: (ChartProduction data, _) => data.getF,
           dataLabelSettings: myDataLabelSettings,
-          name: global.listGroupDefectJP[5] + '-' + global.listGroupDefect[5],
+          name: global.listGroupDefectJP[5] + ' - ' + global.listGroupDefect[5],
           color: Colors.green,
           width: 2),
       LineSeries<ChartProduction, String>(
@@ -594,7 +594,7 @@ class ChartProduction {
           xValueMapper: (ChartProduction data, _) => data.getCatalogue,
           yValueMapper: (ChartProduction data, _) => data.getG,
           dataLabelSettings: myDataLabelSettings,
-          name: global.listGroupDefectJP[6] + '-' + global.listGroupDefect[6],
+          name: global.listGroupDefectJP[6] + ' - ' + global.listGroupDefect[6],
           color: Colors.teal,
           width: 2),
       LineSeries<ChartProduction, String>(
@@ -604,7 +604,7 @@ class ChartProduction {
           xValueMapper: (ChartProduction data, _) => data.getCatalogue,
           yValueMapper: (ChartProduction data, _) => data.getH,
           dataLabelSettings: myDataLabelSettings,
-          name: global.listGroupDefectJP[7] + '-' + global.listGroupDefect[7],
+          name: global.listGroupDefectJP[7] + ' - ' + global.listGroupDefect[7],
           color: Colors.orange,
           width: 2),
     ];
@@ -613,7 +613,7 @@ class ChartProduction {
   Widget createChartGroupEUI(List<ChartProduction> dataInput) {
     return SfCartesianChart(
       title: ChartTitle(
-        text: global.listGroupDefectJP[4] + '-' + global.listGroupDefect[4],
+        text: global.listGroupDefectJP[4] + ' - ' + global.listGroupDefect[4],
         textStyle: TextStyle(
             fontSize: !global.isTV ? 12 : 10,
             fontWeight: FontWeight.bold,
@@ -659,7 +659,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getE1,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Lỗi may đan']![0] +
-              '-' +
+              ' - ' +
               global.defectNames['Lỗi may đan']![0],
           color: Colors.blue[400],
           width: 2),
@@ -671,7 +671,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getE2,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Lỗi may đan']![1] +
-              '-' +
+              ' - ' +
               global.defectNames['Lỗi may đan']![1],
           color: Colors.red,
           width: 2),
@@ -683,7 +683,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getE3,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Lỗi may đan']![2] +
-              '-' +
+              ' - ' +
               global.defectNames['Lỗi may đan']![2],
           color: Colors.grey,
           width: 2),
@@ -695,7 +695,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getE4,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Lỗi may đan']![3] +
-              '-' +
+              ' - ' +
               global.defectNames['Lỗi may đan']![3],
           color: Colors.yellow,
           width: 2),
@@ -707,7 +707,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getE5,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Lỗi may đan']![4] +
-              '-' +
+              ' - ' +
               global.defectNames['Lỗi may đan']![4],
           color: Colors.blue[900],
           width: 2),
@@ -719,7 +719,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getE6,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Lỗi may đan']![5] +
-              '-' +
+              ' - ' +
               global.defectNames['Lỗi may đan']![5],
           color: Colors.green,
           width: 2),
@@ -731,7 +731,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getE7,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Lỗi may đan']![6] +
-              '-' +
+              ' - ' +
               global.defectNames['Lỗi may đan']![6],
           color: Colors.teal,
           width: 2),
@@ -741,7 +741,7 @@ class ChartProduction {
   Widget createChartGroupFUI(List<ChartProduction> dataInput) {
     return SfCartesianChart(
       title: ChartTitle(
-        text: global.listGroupDefectJP[5] + '-' + global.listGroupDefect[5],
+        text: global.listGroupDefectJP[5] + ' - ' + global.listGroupDefect[5],
         textStyle: TextStyle(
             fontSize: !global.isTV ? 12 : 10,
             fontWeight: FontWeight.bold,
@@ -786,7 +786,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getF1,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Ngoại quan, thành phẩm']![0] +
-              '-' +
+              ' - ' +
               global.defectNames['Ngoại quan, thành phẩm']![0],
           color: Colors.blue[400],
           width: 2),
@@ -798,7 +798,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getF2,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Ngoại quan, thành phẩm']![1] +
-              '-' +
+              ' - ' +
               global.defectNames['Ngoại quan, thành phẩm']![1],
           color: Colors.red,
           width: 2),
@@ -810,7 +810,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getF3,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Ngoại quan, thành phẩm']![2] +
-              '-' +
+              ' - ' +
               global.defectNames['Ngoại quan, thành phẩm']![2],
           color: Colors.grey,
           width: 2),
@@ -822,7 +822,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getF4,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Ngoại quan, thành phẩm']![3] +
-              '-' +
+              ' - ' +
               global.defectNames['Ngoại quan, thành phẩm']![3],
           color: Colors.yellow,
           width: 2),
@@ -834,7 +834,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getF5,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Ngoại quan, thành phẩm']![4] +
-              '-' +
+              ' - ' +
               global.defectNames['Ngoại quan, thành phẩm']![4],
           color: Colors.blue[900],
           width: 2),
@@ -846,7 +846,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getF6,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Ngoại quan, thành phẩm']![5] +
-              '-' +
+              ' - ' +
               global.defectNames['Ngoại quan, thành phẩm']![5],
           color: Colors.green,
           width: 2),
@@ -858,7 +858,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getF7,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Ngoại quan, thành phẩm']![6] +
-              '-' +
+              ' - ' +
               global.defectNames['Ngoại quan, thành phẩm']![6],
           color: Colors.teal,
           width: 2),
@@ -870,7 +870,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getF8,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Ngoại quan, thành phẩm']![7] +
-              '-' +
+              ' - ' +
               global.defectNames['Ngoại quan, thành phẩm']![7],
           color: Colors.orange,
           width: 2),
@@ -882,7 +882,7 @@ class ChartProduction {
           yValueMapper: (ChartProduction data, _) => data.getF9,
           dataLabelSettings: myDataLabelSettings,
           name: global.defectNamesJP['Ngoại quan, thành phẩm']![8] +
-              '-' +
+              ' - ' +
               global.defectNames['Ngoại quan, thành phẩm']![8],
           color: Colors.amber,
           width: 2),

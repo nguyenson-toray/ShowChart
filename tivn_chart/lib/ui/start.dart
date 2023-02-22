@@ -6,6 +6,7 @@ import 'package:tivn_chart/global.dart';
 import 'package:tivn_chart/ui/dashboard.dart';
 import 'package:tivn_chart/ui/lineChart.dart';
 import 'package:tivn_chart/ui/qcPage.dart';
+import 'package:wakelock/wakelock.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -80,6 +81,7 @@ class _StartPageState extends State<StartPage> {
       if (global.device == 'TVLine') {
         Loader.hide();
         global.screenTypeInt = 0;
+        Wakelock.enable(); // alway screen On
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => new LineChart()),
@@ -87,6 +89,7 @@ class _StartPageState extends State<StartPage> {
       }
       if (global.device == 'TVControl') {
         Loader.hide();
+        Wakelock.enable(); // alway screen On
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => new Dashboard()),
@@ -145,13 +148,13 @@ class _StartPageState extends State<StartPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
-                          height: logoH,
+                          height: 100,
                         ),
                         SizedBox(
                             height: logoH,
                             child: Image.asset('assets/logo.png')),
                         SizedBox(
-                          height: logoH * 3,
+                          height: 100,
                         ),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(6.0),
@@ -195,7 +198,7 @@ class _StartPageState extends State<StartPage> {
                           ),
                         ),
                         SizedBox(
-                          height: logoH,
+                          height: 100,
                         ),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(6.0),

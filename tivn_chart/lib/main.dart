@@ -25,9 +25,9 @@ Future<void> main() async {
   if (!global.isTV) await initDataSqLite();
   // -------------for test in debug mode
   if (kDebugMode) {
-    // global.isTV = true;
+    global.isTV = true;
     // global.rangeTime = 14;
-    // global.device = 'TVLine';
+    global.device = 'TVControl';
     // if (androidInfo.model == 'AOSP TV on x86') {
     // global.device = 'TVLine';
     // global.isTV = true;

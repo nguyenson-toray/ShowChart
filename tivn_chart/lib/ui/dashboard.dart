@@ -9,7 +9,6 @@ import 'package:tivn_chart/chart/chartFuntionData.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:intl/intl.dart';
 import 'package:tivn_chart/ui/start.dart';
-import 'package:wakelock/wakelock.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({super.key});
@@ -32,7 +31,6 @@ class _Dashboard extends State<Dashboard> {
   @override
   void initState() {
     // TODO: implement initState
-    if (global.isTV) Wakelock.enable(); // alway screen On
     hSetting = global.screenHPixel - 50;
     wSetting = global.screenWPixel * 0.1;
     hChart = ((global.screenHPixel - 60) * 0.5) - 6;
@@ -178,7 +176,7 @@ class _Dashboard extends State<Dashboard> {
                   width: global.screenWPixel / 2 - 5,
                   child: global.chart.createChartQtyRateUI(
                       global.chartData,
-                      '工場の全ラインの生産性・不良率-Sản lượng & tỉ lệ lỗi của toàn nhà máy',
+                      global.titleSLTLLTBTNM,
                       global.catalogue,
                       global.currentLine),
                 ),
@@ -187,7 +185,7 @@ class _Dashboard extends State<Dashboard> {
                   width: global.screenWPixel / 2 - 5,
                   child: global.chart.createChartQtyRateUI(
                       global.chartDataCompareLine,
-                      'ライン別の生産性・不良率 - Sản lượng & tỉ lệ lỗi của các chuyền ',
+                      global.titleSLTLLCC,
                       global.catalogue,
                       global.currentLine),
                 ),
@@ -281,11 +279,8 @@ class _Dashboard extends State<Dashboard> {
               decoration: global.myBoxDecoration,
               height: hChartPhone,
               width: wChartPhone,
-              child: global.chart.createChartQtyRateUI(
-                  global.chartData,
-                  '工場の全ラインの生産性・不良率-Sản lượng & tỉ lệ lỗi của toàn nhà máy',
-                  global.catalogue,
-                  global.currentLine),
+              child: global.chart.createChartQtyRateUI(global.chartData,
+                  global.titleSLTLLTBTNM, global.catalogue, global.currentLine),
             ),
           ),
           SizedBox(height: 5),
@@ -297,7 +292,7 @@ class _Dashboard extends State<Dashboard> {
               width: wChartPhone,
               child: global.chart.createChartQtyRateUI(
                   global.chartDataCompareLine,
-                  'ライン別の生産性・不良率 - Sản lượng & tỉ lệ lỗi của các chuyền ',
+                  global.titleSLTLLCC,
                   global.catalogue,
                   global.currentLine),
             ),
@@ -547,10 +542,10 @@ class _Dashboard extends State<Dashboard> {
             child: Icon(Icons.arrow_back_sharp),
             onTap: () {
               setState(() {
-                if (global.currentLine > 1)
+                if (global.currentLine > global.lines.first)
                   global.currentLine--;
                 else
-                  global.currentLine = 8;
+                  global.currentLine = global.lines.last;
                 global.sharedPreferences
                     .setInt('currentLine', global.currentLine);
                 refreshChartData();
@@ -561,10 +556,10 @@ class _Dashboard extends State<Dashboard> {
             child: Icon(Icons.arrow_forward_sharp),
             onTap: () {
               setState(() {
-                if (global.currentLine < 8)
+                if (global.currentLine < global.lines.last)
                   global.currentLine++;
                 else
-                  global.currentLine = 1;
+                  global.currentLine = global.lines.first;
                 global.sharedPreferences
                     .setInt('currentLine', global.currentLine);
                 refreshChartData();

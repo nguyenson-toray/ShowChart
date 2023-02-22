@@ -20,9 +20,8 @@ class ChartFuntionData {
 
     var t01Filtered = [...t01s]; //clone list data
     List<ChartProduction> resultDataChart = <ChartProduction>[];
-
-    t01Filtered.removeWhere((element) => element.getX01 == 9);
-    print('t01Filtered.lenght1 = ' + t01Filtered.length.toString());
+    // t01Filtered.removeWhere((element) => element.getX01 == 9);
+    // print('t01Filtered.lenght1 = ' + t01Filtered.length.toString());
     t01Filtered.removeWhere((e) => e.getInspectionType != inspectionType);
     print('t01Filtered.lenght2 = ' + t01Filtered.length.toString());
     switch (catalogue) {
@@ -210,7 +209,7 @@ class ChartFuntionData {
           var indexBegin = 0;
           if (daysFilter.length - range > 0)
             indexBegin = daysFilter.length - range;
-          for (int line = 1; line <= 8; line++) {
+          for (int line = 1; line <= global.lines.last; line++) {
             final lineString = 'Line ' + line.toString();
             List<T011stInspectionData> t01sDataLine = [];
             var chartDataLine = ChartProduction();
