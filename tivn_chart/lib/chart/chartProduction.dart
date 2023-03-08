@@ -8,6 +8,16 @@ import 'package:tivn_chart/global.dart';
 import 'package:iso_calendar/iso_calendar.dart';
 
 class ChartProduction {
+  Legend myLegend = Legend(
+      itemPadding: 5,
+      // height: '40%',
+      textStyle: TextStyle(
+          fontSize: !global.isTV ? 12 : 7,
+          fontWeight: FontWeight.normal,
+          color: Colors.black),
+      position: LegendPosition.bottom,
+      isVisible: true,
+      overflowMode: LegendItemOverflowMode.wrap);
   String catalogue;
   DateTime date;
   int line;
@@ -387,6 +397,7 @@ class ChartProduction {
   Widget createChartQtyRateUI(List<ChartProduction> dataInput, String title,
       String catalogue, int currentLine) {
     return SfCartesianChart(
+      margin: EdgeInsets.all(2),
       backgroundColor: Colors.white,
       title: ChartTitle(
         text: title,
@@ -395,15 +406,7 @@ class ChartProduction {
             fontWeight: FontWeight.bold,
             color: Colors.orange),
       ),
-      legend: Legend(
-        textStyle: TextStyle(
-            fontSize: !global.isTV ? 11 : (global.device == 'TVLine' ? 15 : 7),
-            fontWeight: FontWeight.normal,
-            color: Colors.black),
-        position: LegendPosition.bottom,
-        isVisible: true,
-        overflowMode: LegendItemOverflowMode.wrap,
-      ),
+      legend: myLegend,
       axes: <ChartAxis>[
         NumericAxis(
             opposedPosition: true,
@@ -420,8 +423,8 @@ class ChartProduction {
         majorGridLines: const MajorGridLines(width: 0),
         opposedPosition: false,
         minimum: 0,
-        // maximum: 50,
-        interval: 20,
+        // maximum: 1200,
+        interval: 100,
         // labelFormat: '{value}Pcs',
       ),
       series: getSeriesQtyRate(dataInput),
@@ -489,6 +492,7 @@ class ChartProduction {
   //--------------
   Widget createChartGroupAllUI(List<ChartProduction> dataInput) {
     return SfCartesianChart(
+      margin: EdgeInsets.all(2),
       title: ChartTitle(
         text: '欠点大区分 - Nhóm lỗi',
         textStyle: TextStyle(
@@ -497,15 +501,7 @@ class ChartProduction {
             color: Colors.orange),
       ),
       backgroundColor: Colors.white,
-      legend: Legend(
-          height: '40%',
-          textStyle: TextStyle(
-              fontSize: !global.isTV ? 12 : 7,
-              fontWeight: FontWeight.normal,
-              color: Colors.black),
-          position: LegendPosition.bottom,
-          isVisible: true,
-          overflowMode: LegendItemOverflowMode.wrap),
+      legend: myLegend,
       primaryXAxis:
           CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
@@ -612,6 +608,7 @@ class ChartProduction {
 
   Widget createChartGroupEUI(List<ChartProduction> dataInput) {
     return SfCartesianChart(
+      margin: EdgeInsets.all(2),
       title: ChartTitle(
         text: global.listGroupDefectJP[4] + ' - ' + global.listGroupDefect[4],
         textStyle: TextStyle(
@@ -620,16 +617,7 @@ class ChartProduction {
             color: Colors.orange),
       ),
       backgroundColor: Colors.white,
-      legend: Legend(
-          height: '40%',
-          shouldAlwaysShowScrollbar: false,
-          textStyle: TextStyle(
-              fontSize: !global.isTV ? 12 : 7,
-              fontWeight: FontWeight.normal,
-              color: Colors.black),
-          position: LegendPosition.bottom,
-          isVisible: true,
-          overflowMode: LegendItemOverflowMode.wrap),
+      legend: myLegend,
       primaryXAxis:
           CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
@@ -740,6 +728,7 @@ class ChartProduction {
 
   Widget createChartGroupFUI(List<ChartProduction> dataInput) {
     return SfCartesianChart(
+      margin: EdgeInsets.all(2),
       title: ChartTitle(
         text: global.listGroupDefectJP[5] + ' - ' + global.listGroupDefect[5],
         textStyle: TextStyle(
@@ -748,15 +737,7 @@ class ChartProduction {
             color: Colors.orange),
       ),
       backgroundColor: Colors.white,
-      legend: Legend(
-          height: '40%',
-          textStyle: TextStyle(
-              fontSize: !global.isTV ? 12 : 7,
-              fontWeight: FontWeight.normal,
-              color: Colors.black),
-          position: LegendPosition.bottom,
-          isVisible: true,
-          overflowMode: LegendItemOverflowMode.wrap),
+      legend: myLegend,
       primaryXAxis:
           CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(

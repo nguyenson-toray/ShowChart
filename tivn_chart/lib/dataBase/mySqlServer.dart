@@ -86,7 +86,7 @@ class MySqlServer {
     List<T011stInspectionData> result = [];
     List<Map<String, dynamic>> tempResult = [];
     late DateTime beginDate;
-    beginDate = global.today.subtract(Duration(days: rangeDays));
+    beginDate = DateTime.now().subtract(Duration(days: rangeDays));
     late DateTime day;
     final String query = '''select * from $tableT011stInspectionData''';
     var isConnected = false;

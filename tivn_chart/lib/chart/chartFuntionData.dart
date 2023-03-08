@@ -210,7 +210,7 @@ class ChartFuntionData {
           if (daysFilter.length - range > 0)
             indexBegin = daysFilter.length - range;
           for (int line = 1; line <= global.lines.last; line++) {
-            final lineString = 'Line ' + line.toString();
+            final lineString = line.toString();
             List<T011stInspectionData> t01sDataLine = [];
             var chartDataLine = ChartProduction();
             for (var index = indexBegin; index < daysFilter.length; index++) {

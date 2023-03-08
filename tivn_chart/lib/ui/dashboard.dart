@@ -33,7 +33,7 @@ class _Dashboard extends State<Dashboard> {
     // TODO: implement initState
     hSetting = global.screenHPixel - 50;
     wSetting = global.screenWPixel * 0.1;
-    hChart = ((global.screenHPixel - 60) * 0.5) - 6;
+    hChart = ((global.screenHPixel - 55) * 0.5);
     wChart = global.screenWPixel * 0.325;
     hChartPhone = global.screenHPixel * 0.7;
     wChartPhone = global.screenWPixel;
@@ -48,6 +48,17 @@ class _Dashboard extends State<Dashboard> {
     });
 
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("DidChangeDependencies");
+    // setState(() {
+    //   global.today = DateTime.now();
+    //   global.todayString = DateFormat(global.dateFormat).format(global.today);
+    // });
+    // refreshChartData();
   }
 
   getDataT01() async {
@@ -118,7 +129,7 @@ class _Dashboard extends State<Dashboard> {
           return await showExitAppAlert();
         },
         child: Scaffold(
-          backgroundColor: Colors.grey[300],
+          backgroundColor: Colors.blueGrey[100],
           appBar: buildAppBar(),
           body: SingleChildScrollView(
               padding: EdgeInsets.all(5),
@@ -172,8 +183,8 @@ class _Dashboard extends State<Dashboard> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  height: fullScreen ? global.screenHPixel - 70 : hChart - 40,
-                  width: global.screenWPixel / 2 - 5,
+                  height: fullScreen ? global.screenHPixel - 70 : hChart + 10,
+                  width: global.screenWPixel / 2 - 10,
                   child: global.chart.createChartQtyRateUI(
                       global.chartData,
                       global.titleSLTLLTBTNM,
@@ -181,8 +192,8 @@ class _Dashboard extends State<Dashboard> {
                       global.currentLine),
                 ),
                 Container(
-                  height: fullScreen ? global.screenHPixel - 70 : hChart - 40,
-                  width: global.screenWPixel / 2 - 5,
+                  height: fullScreen ? global.screenHPixel - 70 : hChart + 10,
+                  width: global.screenWPixel / 2 - 10,
                   child: global.chart.createChartQtyRateUI(
                       global.chartDataCompareLine,
                       global.titleSLTLLCC,
@@ -198,17 +209,17 @@ class _Dashboard extends State<Dashboard> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    height: hChart + 40,
+                    height: hChart - 10,
                     width: wChart,
                     child: global.chart.createChartGroupAllUI(global.chartData),
                   ),
                   Container(
-                    height: hChart + 40,
+                    height: hChart - 10,
                     width: wChart,
                     child: global.chart.createChartGroupFUI(global.chartData),
                   ),
                   Container(
-                    height: hChart + 40,
+                    height: hChart - 10,
                     width: wChart,
                     child: global.chart.createChartGroupEUI(global.chartData),
                   ),
@@ -225,7 +236,7 @@ class _Dashboard extends State<Dashboard> {
       child: Column(
         children: [
           Container(
-            height: fullScreen ? global.screenHPixel - 60 : hChart - 80,
+            height: fullScreen ? global.screenHPixel - 60 : hChart + 10,
             child: global.chart.createChartQtyRateUI(
                 global.chartData, '', global.catalogue, global.currentLine),
           ),
@@ -236,17 +247,17 @@ class _Dashboard extends State<Dashboard> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  height: hChart + 80,
+                  height: hChart - 10,
                   width: wChart,
                   child: global.chart.createChartGroupAllUI(global.chartData),
                 ),
                 Container(
-                  height: hChart + 80,
+                  height: hChart - 10,
                   width: wChart,
                   child: global.chart.createChartGroupFUI(global.chartData),
                 ),
                 Container(
-                  height: hChart + 80,
+                  height: hChart - 10,
                   width: wChart,
                   child: global.chart.createChartGroupEUI(global.chartData),
                 ),
@@ -421,8 +432,10 @@ class _Dashboard extends State<Dashboard> {
   AppBar buildAppBar() {
     return AppBar(
       toolbarHeight: 30,
-      // actionsIconTheme: IconThemeData(color: Colors.tealAccent),
-      backgroundColor: Colors.blue[700],
+      backgroundColor: Colors.blueAccent,
+      actionsIconTheme: IconThemeData(
+        color: Colors.white,
+      ),
       leading: InkWell(
           onTap: () {
             setState(() {
@@ -587,11 +600,6 @@ class _Dashboard extends State<Dashboard> {
   Widget option() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      // color: Colors.blue[50],
-      // alignment: Alignment.center,
-      // padding: EdgeInsets.fromLTRB(5, 1, 5, 1),
-      // height: 30,
-      // width: global.screenWPixel,
       child: Row(children: [
         Text('Version : ${global.version}',
             style: TextStyle(fontSize: 8, color: Colors.indigoAccent)),
@@ -638,7 +646,7 @@ class _Dashboard extends State<Dashboard> {
           decoration: RadioGroupDecoration(
             spacing: 2.0,
             labelStyle: TextStyle(color: Colors.black, fontSize: 8),
-            activeColor: Colors.amber,
+            activeColor: Colors.lightBlue,
           ),
         ),
         SizedBox(
@@ -664,7 +672,7 @@ class _Dashboard extends State<Dashboard> {
           decoration: RadioGroupDecoration(
             spacing: 2.0,
             labelStyle: TextStyle(color: Colors.black, fontSize: 8),
-            activeColor: Colors.amber,
+            activeColor: Colors.green,
           ),
         ),
       ]),
