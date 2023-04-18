@@ -31,10 +31,10 @@ class _Dashboard extends State<Dashboard> {
   @override
   void initState() {
     // TODO: implement initState
-    hSetting = global.screenHPixel - 50;
+    hSetting = global.screenHPixel - 40;
     wSetting = global.screenWPixel * 0.1;
-    hChart = ((global.screenHPixel - 55) * 0.5);
-    wChart = global.screenWPixel * 0.325;
+    hChart = ((global.screenHPixel - 35) * 0.5);
+    wChart = global.screenWPixel * 0.3280;
     hChartPhone = global.screenHPixel * 0.7;
     wChartPhone = global.screenWPixel;
     getCurrentScreenName();
@@ -131,16 +131,19 @@ class _Dashboard extends State<Dashboard> {
         child: Scaffold(
           backgroundColor: Colors.blueGrey[100],
           appBar: buildAppBar(),
-          body: SingleChildScrollView(
-              padding: EdgeInsets.all(5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  global.screenTypeInt != 0 ? option() : Container(),
-                  buildScreen(global.screenTypeInt),
-                ],
-              )),
+          body: Column(
+            children: [
+              SingleChildScrollView(
+                  padding: EdgeInsets.all(1),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      buildScreen(global.screenTypeInt),
+                    ],
+                  )),
+            ],
+          ),
         ),
       ),
     );
@@ -183,7 +186,7 @@ class _Dashboard extends State<Dashboard> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  height: fullScreen ? global.screenHPixel - 70 : hChart + 10,
+                  height: fullScreen ? global.screenHPixel - 30 : hChart + 10,
                   width: global.screenWPixel / 2 - 10,
                   child: global.chart.createChartQtyRateUI(
                       global.chartData,
@@ -192,7 +195,7 @@ class _Dashboard extends State<Dashboard> {
                       global.currentLine),
                 ),
                 Container(
-                  height: fullScreen ? global.screenHPixel - 70 : hChart + 10,
+                  height: fullScreen ? global.screenHPixel - 30 : hChart + 10,
                   width: global.screenWPixel / 2 - 10,
                   child: global.chart.createChartQtyRateUI(
                       global.chartDataCompareLine,
@@ -202,7 +205,7 @@ class _Dashboard extends State<Dashboard> {
                 ),
               ],
             ),
-            SizedBox(height: 5),
+            SizedBox(height: 3),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -236,11 +239,11 @@ class _Dashboard extends State<Dashboard> {
       child: Column(
         children: [
           Container(
-            height: fullScreen ? global.screenHPixel - 60 : hChart + 10,
+            height: fullScreen ? global.screenHPixel - 30 : hChart + 10,
             child: global.chart.createChartQtyRateUI(
                 global.chartData, '', global.catalogue, global.currentLine),
           ),
-          SizedBox(height: 5),
+          SizedBox(height: 3),
           Container(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -431,8 +434,8 @@ class _Dashboard extends State<Dashboard> {
 
   AppBar buildAppBar() {
     return AppBar(
-      toolbarHeight: 30,
-      backgroundColor: Colors.blueAccent,
+      toolbarHeight: 24,
+      backgroundColor: Colors.blue,
       actionsIconTheme: IconThemeData(
         color: Colors.white,
       ),
@@ -445,17 +448,25 @@ class _Dashboard extends State<Dashboard> {
           },
           child: Row(
             children: [
-              Icon(Icons.dashboard),
+              // SizedBox(height: 8, child: Image.asset('assets/logo.png')),
+              Icon(Icons.dashboard, color: Colors.white),
               Text(global.screenName),
+              Text('  Version : ${global.version}',
+                  style: TextStyle(fontSize: 5, color: Colors.tealAccent)),
+              // SizedBox(
+              //   width: 5,
+              // ),
             ],
           )),
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          global.screenTypeInt != 1
-              ? Text(('LINE ' + global.currentLine.toString()))
-              : SizedBox(height: 20, child: Image.asset('assets/logo.png')),
+          // global.screenTypeInt != 1
+          //     ? Text(('LINE ' + global.currentLine.toString()))
+          //     : SizedBox(height: 20, child: Image.asset('assets/logo.png')),
+
+          global.screenTypeInt != 0 ? option() : Container(),
         ],
       ),
       centerTitle: true,
@@ -565,6 +576,13 @@ class _Dashboard extends State<Dashboard> {
               });
             },
           ),
+          global.screenTypeInt != 1
+              ? Text(
+                  ('LINE ' + global.currentLine.toString()),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.amber),
+                )
+              : SizedBox(height: 20, child: Image.asset('assets/logo.png')),
           InkWell(
             child: Icon(Icons.arrow_forward_sharp),
             onTap: () {
@@ -601,12 +619,12 @@ class _Dashboard extends State<Dashboard> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(children: [
-        Text('Version : ${global.version}',
-            style: TextStyle(fontSize: 8, color: Colors.indigoAccent)),
-        SizedBox(
-          width: 25,
-        ),
-        rangeDay(),
+        // Text('Version : ${global.version}',
+        //     style: TextStyle(fontSize: 8, color: Colors.indigoAccent)),
+        // SizedBox(
+        //   width: 25,
+        // ),
+        // rangeDay(),
         SizedBox(
           width: 25,
         ),
@@ -646,7 +664,7 @@ class _Dashboard extends State<Dashboard> {
           decoration: RadioGroupDecoration(
             spacing: 2.0,
             labelStyle: TextStyle(color: Colors.black, fontSize: 8),
-            activeColor: Colors.lightBlue,
+            activeColor: Colors.indigo,
           ),
         ),
         SizedBox(

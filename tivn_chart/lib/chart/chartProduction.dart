@@ -12,7 +12,7 @@ class ChartProduction {
       itemPadding: 5,
       // height: '40%',
       textStyle: TextStyle(
-          fontSize: !global.isTV ? 12 : 7,
+          fontSize: global.device == 'TVLine' ? 16 : 8,
           fontWeight: FontWeight.normal,
           color: Colors.black),
       position: LegendPosition.bottom,
@@ -402,20 +402,19 @@ class ChartProduction {
       title: ChartTitle(
         text: title,
         textStyle: TextStyle(
-            fontSize: !global.isTV ? 12 : 10,
-            fontWeight: FontWeight.bold,
-            color: Colors.orange),
+            fontSize: 12, fontWeight: FontWeight.bold, color: Colors.orange),
       ),
       legend: myLegend,
       axes: <ChartAxis>[
         NumericAxis(
-            opposedPosition: true,
-            name: 'yAxis1',
-            majorGridLines: const MajorGridLines(width: 0),
-            labelFormat: '{value}%',
-            minimum: 0,
-            maximum: 35,
-            interval: 10)
+          opposedPosition: true,
+          name: 'yAxis1',
+          majorGridLines: const MajorGridLines(width: 0),
+          labelFormat: '{value}%',
+          minimum: 0,
+          maximum: 30,
+          // interval: 10
+        )
       ],
       primaryXAxis:
           CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
@@ -423,8 +422,8 @@ class ChartProduction {
         majorGridLines: const MajorGridLines(width: 0),
         opposedPosition: false,
         minimum: 0,
-        // maximum: 1200,
-        interval: 100,
+        // maximum: 150,
+        // interval: 50,
         // labelFormat: '{value}Pcs',
       ),
       series: getSeriesQtyRate(dataInput),
@@ -434,10 +433,10 @@ class ChartProduction {
 
   getSeriesQtyRate(List<ChartProduction> dataInput) {
     var myDataLabelSettings = DataLabelSettings(
-        textStyle: TextStyle(
-            fontSize: !global.isTV ? 12 : (global.screenTypeInt == 0 ? 15 : 8)),
-        isVisible: true,
-        labelAlignment: ChartDataLabelAlignment.auto);
+      labelAlignment: ChartDataLabelAlignment.middle,
+      textStyle: TextStyle(fontSize: global.device == 'TVLine' ? 15 : 12),
+      isVisible: true,
+    );
     return <ChartSeries<ChartProduction, String>>[
       StackedColumnSeries<ChartProduction, String>(
         dataSource: dataInput,
@@ -496,20 +495,19 @@ class ChartProduction {
       title: ChartTitle(
         text: '欠点大区分 - Nhóm lỗi',
         textStyle: TextStyle(
-            fontSize: !global.isTV ? 12 : 10,
-            fontWeight: FontWeight.bold,
-            color: Colors.orange),
+            fontSize: 12, fontWeight: FontWeight.bold, color: Colors.orange),
       ),
       backgroundColor: Colors.white,
       legend: myLegend,
       primaryXAxis:
           CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
-          opposedPosition: false,
-          majorGridLines: const MajorGridLines(width: 1),
-          minimum: 0,
-          // maximum: 100,
-          interval: 10),
+        opposedPosition: false,
+        majorGridLines: const MajorGridLines(width: 1),
+        minimum: 0,
+        // maximum: 100,
+        // interval: 10
+      ),
       series: getSeriesChartGroupAll(dataInput),
       tooltipBehavior: TooltipBehavior(enable: true),
     );
@@ -517,7 +515,7 @@ class ChartProduction {
 
   getSeriesChartGroupAll(List<ChartProduction> dataInput) {
     var myDataLabelSettings = DataLabelSettings(
-        textStyle: TextStyle(fontSize: !global.isTV ? 12 : 10),
+        textStyle: TextStyle(fontSize: 12),
         isVisible: true,
         labelAlignment: ChartDataLabelAlignment.auto);
     return <ChartSeries<ChartProduction, String>>[
@@ -612,9 +610,7 @@ class ChartProduction {
       title: ChartTitle(
         text: global.listGroupDefectJP[4] + ' - ' + global.listGroupDefect[4],
         textStyle: TextStyle(
-            fontSize: !global.isTV ? 12 : 10,
-            fontWeight: FontWeight.bold,
-            color: Colors.orange),
+            fontSize: 12, fontWeight: FontWeight.bold, color: Colors.orange),
       ),
       backgroundColor: Colors.white,
       legend: myLegend,
@@ -625,7 +621,7 @@ class ChartProduction {
         opposedPosition: false,
         minimum: 0,
         // maximum: 50,
-        interval: 10,
+        // interval: 10,
         // labelFormat: '{value}Pcs',
       ),
       series: getSeriesChartGroupE(dataInput),
@@ -635,7 +631,7 @@ class ChartProduction {
 
   getSeriesChartGroupE(List<ChartProduction> dataInput) {
     var myDataLabelSettings = DataLabelSettings(
-        textStyle: TextStyle(fontSize: !global.isTV ? 12 : 10),
+        textStyle: TextStyle(fontSize: 12),
         isVisible: true,
         labelAlignment: ChartDataLabelAlignment.auto);
     return <ChartSeries<ChartProduction, String>>[
@@ -732,9 +728,7 @@ class ChartProduction {
       title: ChartTitle(
         text: global.listGroupDefectJP[5] + ' - ' + global.listGroupDefect[5],
         textStyle: TextStyle(
-            fontSize: !global.isTV ? 12 : 10,
-            fontWeight: FontWeight.bold,
-            color: Colors.orange),
+            fontSize: 12, fontWeight: FontWeight.bold, color: Colors.orange),
       ),
       backgroundColor: Colors.white,
       legend: myLegend,
@@ -745,7 +739,7 @@ class ChartProduction {
         opposedPosition: false,
         minimum: 0,
         // maximum: 50,
-        interval: 10,
+        // interval: 10,
         // labelFormat: '{value}Pcs',
       ),
       series: getSeriesChartGroupF(dataInput),
@@ -755,7 +749,7 @@ class ChartProduction {
 
   getSeriesChartGroupF(List<ChartProduction> dataInput) {
     var myDataLabelSettings = DataLabelSettings(
-        textStyle: TextStyle(fontSize: !global.isTV ? 12 : 10),
+        textStyle: TextStyle(fontSize: 12),
         isVisible: true,
         labelAlignment: ChartDataLabelAlignment.auto);
     return <ChartSeries<ChartProduction, String>>[

@@ -4,6 +4,7 @@ import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:tivn_chart/dataFuntion/myFuntions.dart';
 import 'package:tivn_chart/global.dart';
 import 'package:tivn_chart/ui/dashboard.dart';
+import 'package:tivn_chart/ui/errorPage.dart';
 import 'package:tivn_chart/ui/lineChart.dart';
 import 'package:tivn_chart/ui/qcPage.dart';
 import 'package:wakelock/wakelock.dart';
@@ -19,6 +20,7 @@ class _StartPageState extends State<StartPage> {
   double logoH = 30;
   double buttonH = 80;
   double buttonW = 280;
+  double hightSpace = 100;
   bool isLoaded = false;
   String functionSellected = '';
   var myTextStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -27,6 +29,7 @@ class _StartPageState extends State<StartPage> {
     // TODO: implement initState
 
     global.isTV ? logoH = 100 : logoH = 50;
+    global.isTV ? hightSpace = 100 : hightSpace = 30;
     Timer(Duration(milliseconds: 500), () async {
       initData().then((value) => (value) {
             setState(() {
@@ -98,6 +101,10 @@ class _StartPageState extends State<StartPage> {
     } else {
       print("SQL Server not available -Load offline data");
       MyFuntions.showToastNoConnection();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => new ErrorPage()),
+      );
     }
     print('initData-DONE');
     setState(() {
@@ -148,13 +155,13 @@ class _StartPageState extends State<StartPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
-                          height: 100,
+                          height: hightSpace,
                         ),
                         SizedBox(
                             height: logoH,
                             child: Image.asset('assets/logo.png')),
                         SizedBox(
-                          height: 100,
+                          height: hightSpace,
                         ),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(6.0),
@@ -198,7 +205,7 @@ class _StartPageState extends State<StartPage> {
                           ),
                         ),
                         SizedBox(
-                          height: 100,
+                          height: hightSpace,
                         ),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(6.0),

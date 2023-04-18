@@ -43,12 +43,12 @@ Future<void> main() async {
   global.todayString = DateFormat(global.dateFormat).format(
     global.today,
   );
-
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.landscapeLeft // DeviceOrientation.portraitUp
-  ]).then((_) async {
-    runApp(new MyApp());
-  });
+  runApp(new MyApp());
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.landscapeLeft // DeviceOrientation.portraitUp
+  // ]).then((_) async {
+  //   runApp(new MyApp());
+  // });
 }
 
 initDataSqLite() async {
