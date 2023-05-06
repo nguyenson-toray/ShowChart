@@ -91,7 +91,7 @@ class global {
 
   static List<T08Combo> t08s = [];
   static late InspectionSetting inspectionSetting;
-  static int secondsAutoGetData = 60;
+  static int secondsAutoGetData = 120;
   static int secondsAutoUpdateDataToSQL = 30;
   static int secondsAutoChangeLine = 120;
   static var planToday = 9999;

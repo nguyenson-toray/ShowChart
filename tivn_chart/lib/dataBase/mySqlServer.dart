@@ -89,7 +89,6 @@ class MySqlServer {
     beginDate = DateTime.now().subtract(Duration(days: rangeDays));
     late DateTime day;
     final String query = '''select * from $tableT011stInspectionData''';
-    var isConnected = false;
     print(
         'select Table 01InspectionData   ( ${rangeDays.toString()} days : from ${DateFormat(global.dateFormat).format(
       beginDate,

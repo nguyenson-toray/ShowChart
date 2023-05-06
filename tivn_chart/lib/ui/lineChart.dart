@@ -63,24 +63,29 @@ class _LineChartState extends State<LineChart> {
   }
 
   intervalRefresh() async {
-    final listDataT01 = await global.mySqlServer
-        .selectTable01InspectionData(global.rangeDaySQL);
-    if (listDataT01.length != 0) {
-      if (!mounted) return;
-      setState(() {
-        global.chartData.clear();
-        global.chartData = ChartFuntionData.createChartData(
-          global.t01s,
-          global.currentLine,
-          global.inspection12,
-          global.rangeTime,
-          'day',
-        );
-        _chartSeriesController?.updateDataSource(
-            updatedDataIndexes:
-                List<int>.generate(global.chartData.length, (i) => i + 1));
-      });
-    }
+    await global.mySqlServer
+        .selectTable01InspectionData(global.rangeDaySQL)
+        .then((value) => setState(() {
+              if (value.length != 0) {
+                global.t01s.clear();
+                global.t01s = value;
+              }
+            }));
+    if (!mounted) return;
+    var dataInput = [...global.t01s];
+    setState(() {
+      global.chartData.clear();
+      global.chartData = ChartFuntionData.createChartData(
+        dataInput,
+        global.currentLine,
+        global.inspection12,
+        global.rangeTime,
+        'day',
+      );
+      _chartSeriesController?.updateDataSource(
+          updatedDataIndexes:
+              List<int>.generate(global.chartData.length, (i) => i + 1));
+    });
   }
 
   @override
